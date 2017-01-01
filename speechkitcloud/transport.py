@@ -50,7 +50,8 @@ class Transport:
     def __enter__(self):
         return self
 
-    def send(self, data):
+    def send(self, binary):
+        assert isinstance(binary, bytes)
         timeout = 0.1
         while True:
             _, wlist, xlist = select.select([], [self.socket], [self.socket], timeout)
@@ -59,19 +60,21 @@ class Transport:
             if wlist:
                 break
 
-        bytes_sent = self.socket.send(data)
+        bytes_sent = self.socket.send(binary)
         logger.debug('Sent {n} bytes'.format(n=bytes_sent))
-        logger.debug(data)
+        logger.debug(binary)
 
-    # def recv(self, length):
-    #     # TODO: findout why not working with SSL sockets
-    #     # while True:
-    #     #     rlist, wlist, xlist = select.select([self.socket], [], [self.socket], 0.1)
-    #     #     if len(xlist):
-    #     #         raise TransportError("recv unavailable!")
-    #     #     if len(rlist):
-    #     #         break
-    #     return self.socket.recv(length)
+    def recv(self, length):
+        # TODO: findout why not working with SSL sockets
+        # while True:
+        #     rlist, wlist, xlist = select.select([self.socket], [], [self.socket], 0.1)
+        #     if len(xlist):
+        #         raise TransportError("recv unavailable!")
+        #     if len(rlist):
+        #         break
+        received = self.socket.recv(length)
+        assert isinstance(received, bytes)
+        return received
 
     def sendFull(self, message):
         begin = 0
