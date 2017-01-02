@@ -8,6 +8,7 @@ Add `protoc` to `PATH` by modifying `~/.bash_profile`:
 Precompiled `protoc` binaries can be found at <https://github.com/google/protobuf>.
 
 To compile `*.proto` files into Python classes, use the following command:
+
 ```shell
 protoc --proto_path=input_dir --python_out=output_dir input_dir/*.proto
 ```
