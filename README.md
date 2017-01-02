@@ -13,11 +13,27 @@ To compile `*.proto` files into Python classes, use the following command:
 protoc --proto_path=input_dir --python_out=output_dir input_dir/*.proto
 ```
 
-## Working with Python virtual environments
+## Notes
+
+Available recognition models:
+* `freeform` (Default)
+* `freeform8alaw` (Use if your sound comes from a phone call)
+* `general` (missing from the official API)
+* `notes` (missing from the official API)
+* `queries`
+* Other: `maps`, `dates`, `names`, `numbers`, `music`, `buying`
+
+Use this host: `voice-stream.voicetech.yandex.net` and this port: 443 (SSL).
+
+
+
+
+
+# Working with Python virtual environments
 
 On Python 2.7:
 
-```bash
+```shell
 sudo pip install virtualenv
 virtualenv -p /usr/src/python2.7 venv
 source venv/bin/activate
@@ -28,7 +44,7 @@ deactivate
 
 On Python 3.5:
 
-```python
+```shell
 python3 -m venv venv
 source venv/bin/activate
 pip3 install protobuf
