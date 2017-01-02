@@ -25,17 +25,17 @@ class Transport:
             try:
                 self.socket = self._connect(host, port, **params)
                 break
-            except Exception as ex:
+            except Exception:
                 if not attempts_left:
                     raise
                 time.sleep(SECONDS_BETWEEN_ATTEMPTS)
 
     @staticmethod
-    def _connect(host, port, timeout=25, enable_ssl=False, ipv4=False):
+    def _connect(host, port, timeout=25, enable_ssl=False, ipv4=True):
         logger.info('Connecting to {host}:{port}...'.format(host=host, port=port))
         if enable_ssl:
             family = socket.AF_INET if ipv4 else socket.AF_INET6
-            s = socket.socket(family=family, type=socket.SOCK_STREAM)
+            s = socket.socket(family, socket.SOCK_STREAM)
             ssl_sock = ssl.wrap_socket(s)
             ssl_sock.connect((host, port))
             logger.debug(repr(ssl_sock.getpeername()))
@@ -47,14 +47,11 @@ class Transport:
             sock.settimeout(timeout)
         return sock
 
-    def __enter__(self):
-        return self
-
     def send(self, binary):
         assert isinstance(binary, bytes)
         timeout = 0.1
         while True:
-            _, wlist, xlist = select.select([], [self.socket], [self.socket], timeout)
+            rlist, wlist, xlist = select.select([], [self.socket], [self.socket], timeout)
             if xlist:
                 raise TransportError("send unavailable!")
             if wlist:
@@ -76,15 +73,32 @@ class Transport:
         assert isinstance(received, bytes)
         return received
 
+    def receive_until(self, expected_ending, critical_length=None):
+        assert critical_length is not None
+        assert isinstance(expected_ending, bytes)
+        buff = b''
+        while True:
+            buff += self.recv(1)
+            if buff.endswith(expected_ending):
+                return buff
+            if len(buff) > critical_length:
+                raise TransportError('Receiving exeeded critical length: {}'.format(buff))
+
+
     def sendFull(self, message):
-        begin = 0
-        while begin < len(message):
-            begin += self.socket.send(message[begin:])
+        assert isinstance(message, bytes)
+        # self.socket.sendall(message)
+        total_sent = 0
+        while total_sent < len(message):
+            sent = self.socket.send(message[total_sent:])
+            if not sent:
+                raise TransportError('Socket connection broken')
+            total_sent += sent
 
     def sendMessage(self, message):
         message_length_hex = utils.int_to_hex(len(message))
         self.socket.send(message_length_hex)
-        self.socket.send('\r\n')
+        self.socket.send(b'\r\n')
         self.sendFull(message)
         logger.debug('Message sent. Size: {}'.format(len(message)))
 
@@ -92,6 +106,8 @@ class Transport:
         size_info = b''
         while True:
             symbol = self.socket.recv(1)
+            if not len(symbol):
+                raise TransportError('Server closed connection.')
             if len(symbol) != 1:
                 raise TransportError('Received symbol length: {}'.format(len(symbol)))
             if symbol == b'\r':
@@ -135,7 +151,4 @@ class Transport:
     def close(self):
         logger.debug('Closing socket {}...'.format(self.socket))
         self.socket.close()
-
-    def __exit__(self, type, value, traceback):
-        self.close()
 
