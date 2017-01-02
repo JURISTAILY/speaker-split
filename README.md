@@ -16,8 +16,8 @@ protoc --proto_path=input_dir --python_out=output_dir input_dir/*.proto
 ## Notes
 
 Available recognition models:
-* `freeform` (Default)
-* `freeform8alaw` (Use if your sound comes from a phone call)
+* `freeform` (default)
+* `freeform8alaw` (use if your sound comes from a phone call)
 * `general` (missing from the official API)
 * `notes` (missing from the official API)
 * `queries`
