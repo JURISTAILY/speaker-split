@@ -7,7 +7,7 @@ class QJsonValue;
 
 class Sample : public CVector
 {
-    double speech;
+    bool speech;
     double timestamp;
     int classId;
 

@@ -24,7 +24,7 @@ Sample::Sample(const QJsonValue& data)
     if (!obj.contains(TIMESTAP_KEY)) {
         qDebug() << "unexpected input sample data (data should have a time stap datum)";
     }
-    speech = obj.value(TIMESTAP_KEY).toDouble();
+    timestamp = obj.value(TIMESTAP_KEY).toDouble();
     if (!obj.contains(SPEACH_KEY)) {
         qFatal("unexpected input sample data (data must have features data)");
     }
