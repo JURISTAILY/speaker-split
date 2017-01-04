@@ -51,3 +51,7 @@ pip3 install protobuf
 pip3 freeze
 deactivate
 ```
+
+# Working with core part
+
+compiled app take json input file as an argument. Result shoult be appear in the same folder and name with "out" suffix.
