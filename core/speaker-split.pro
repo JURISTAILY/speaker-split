@@ -8,10 +8,17 @@ QT       += core gui
 
 QT -= gui
 
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
+
+debug {
+    QT += gui
+    CONFIG += app_bundle
+    CONFIG -= console
+}
 
 TARGET = speaker-split
 TEMPLATE = app

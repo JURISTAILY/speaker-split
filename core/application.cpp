@@ -3,7 +3,13 @@
 #include <QStringList>
 
 Application::Application(int argc, char** argv)
-    : QCoreApplication(argc, argv)
+    :
+#ifndef QT_NO_DEBUG
+        QApplication
+#else
+        QCoreApplication
+#endif
+            (argc, argv)
     #ifdef QT_NO_DEBUG
     , data(([](){
         const QStringList arg(QCoreApplication::arguments());

@@ -20,6 +20,7 @@ public:
     Sample(const QJsonValue&);
 
     QJsonObject toJsonObject(const int classId = -1) const;
+    double timeBegin() const { return timestamp; }
 };
 
 #endif // SAMPLE_H

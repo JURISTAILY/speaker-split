@@ -17,9 +17,6 @@ public:
     QJsonArray classify(const TrainingSet&) const;
 private:
     NeuralSpan weights;
-    typedef std::multimap<int, int> Conformity;
-    typedef std::pair<int, int> ConformityItem;
-    Conformity conformity;
 };
 
 #endif // NEURALCOMPRESSOR_H

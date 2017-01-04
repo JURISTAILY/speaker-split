@@ -28,11 +28,11 @@ double NeuralSpan::norm(const CVector& synapse, const double* row)
 
     double delta(0.0);
     while (i != end) {
-        delta += sqr(*i - *row);
+        delta += fabs(*i - *row);
         ++row;
         ++i;
     }
-    return sqrt(delta);
+    return delta;
 }
 
 int NeuralSpan::nearest(const CVector& synapse) const
