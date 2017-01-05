@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 {
     Application a(argc, argv);
 
-    NeuralCompressor classificator(Application::trainingSet(), 30);
+    NeuralCompressor classificator(Application::trainingSet(), 5);
 
     QFile outFile(Application::outFileName("out"));
     if (!outFile.open(QFile::WriteOnly)) {

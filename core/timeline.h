@@ -8,17 +8,17 @@ class Timeline : public QWidget
 {
     Q_OBJECT
 
-    QMap<double, int> data;
+    QMap<double, QPair<int, bool>> data;
 
     void paintEvent(QPaintEvent*) override;
 
-    static QColor classToColor(int);
+    static QColor classToColor(QPair<int, bool>);
     double timeEnd() const;
     double timeBegin() const;
     double timeDelay() const;
 public:
     explicit Timeline(QWidget *parent = 0);
-    void setData(const QMap<double, int>&);
+    void setData(const QMap<double, QPair<int, bool> > &);
 
 
 signals:

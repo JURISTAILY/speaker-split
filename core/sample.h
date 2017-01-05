@@ -21,6 +21,7 @@ public:
 
     QJsonObject toJsonObject(const int classId = -1) const;
     double timeBegin() const { return timestamp; }
+    bool notSilence() const { return speech; }
 };
 
 #endif // SAMPLE_H

@@ -20,9 +20,9 @@ NeuralCompressor::NeuralCompressor(const TrainingSet& s, int l)
 {
     const double SIGMA(1);
 
-    for (int CKOKA_PA3(10); CKOKA_PA3--;) {
+    for (int CKOKA_PA3(1000); CKOKA_PA3--;) {
         //for each epoch
-        for (const Sample& sample : s) {
+        for (const Sample& sample : s) if (sample.notSilence()) {
             //norm from this sample to each neuron
             NeuralSpan::Distances g(weights.distance(sample));
             std::sort(g.begin(), g.end(), [](const NeuralSpan::DistanceItem& a, const NeuralSpan::DistanceItem& b) { return a.second < b.second; });
@@ -48,10 +48,10 @@ QJsonArray NeuralCompressor::classify(const TrainingSet& set) const
     }
 #ifndef QT_NO_DEBUG
     Timeline widget;
-    QMap<double, int> data;
+    QMap<double, QPair<int, bool>> data;
 
     for (const Sample& sample : set) {
-        data.insert(sample.timeBegin(), weights.nearest(sample));
+        data.insert(sample.timeBegin(), QPair<int, bool>(weights.nearest(sample), sample.notSilence()));
     }
     widget.setData(data);
     widget.show();
