@@ -2,10 +2,8 @@ import wave
 import functools
 import itertools
 from enum import Enum
-# from collections.abc import Sequence
 
 import numpy as np
-
 try:
     import webrtcvad
 except ImportError:
@@ -14,6 +12,11 @@ except ImportError:
 VAD_AGRESSIVINESS_LEVEL = 3  # 0, 1, 2, 3
 
 MaskType = Enum('MaskType', 'SPEECH, SILENCE')
+
+
+def _normalize(signal):
+    scale = np.absolute(signal).max()
+    return (1/scale) * signal
 
 
 class Mask:
@@ -67,7 +70,7 @@ class Track:
         assert self.sampwidth == 2  # only 2 bytes (16 bits) per sample
         assert self.framerate in [8000, 16000]
 
-        self.signal = np.fromstring(self.bytes, dtype=np.int16)
+        self.signal = _normalize(np.fromstring(self.bytes, dtype=np.int16))
 
     @property
     def duration(self):
@@ -135,7 +138,7 @@ class Dialog:
         self.track_client = factory(track_1.bytes[:common_length])
         self.track_operator = factory(track_2.bytes[:common_length])
 
-    def get_silence_info(self, mask_type):
+    def get_silence_info(self):
         mask_client = self.track_client.get_mask(MaskType.SILENCE)
         mask_operator = self.track_operator.get_mask(MaskType.SILENCE)
 
@@ -148,7 +151,6 @@ class Dialog:
                 'total_duration': mask.total_duration,
                 'total_ratio': mask.total_ratio,
                 'longest_segment_duration': mask.longest_segment_duration,
-                'segments_amount': mask.segments_amount,
             }
 
         return data
