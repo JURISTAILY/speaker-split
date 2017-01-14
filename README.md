@@ -1,5 +1,9 @@
 # Setting up Yandex.SpeechKit ASR
 
+Download Python client library:
+
+    git clone https://github.com/yandex/speechkitcloud
+
 Add `protoc` to `PATH` by modifying `~/.bash_profile`:
 
     PATH="/Users/kirill/protoc-3.1.0-osx-x86_64/bin:${PATH}"
@@ -17,8 +21,8 @@ protoc --proto_path=input_dir --python_out=output_dir input_dir/*.proto
 
 Available recognition models:
 * `freeform` (default)
-* `freeform8alaw` (use if your sound comes from a phone call)
-* `general` (missing from the official API)
+* `freeform8alaw` (use if your sound comes from a phone call) [Gives 500 Server Error]
+* `general` (missing from the official API) [looks like it's the same as freeform]
 * `notes` (missing from the official API)
 * `queries`
 * Other: `maps`, `dates`, `names`, `numbers`, `music`, `buying`
@@ -35,7 +39,7 @@ On Python 2.7:
 
 ```shell
 sudo pip install virtualenv
-virtualenv -p /usr/src/python2.7 venv
+virtualenv -p /usr/bin/python venv
 source venv/bin/activate
 pip install protobuf
 pip freeze

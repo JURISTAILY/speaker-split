@@ -27,23 +27,41 @@ def _filter(signal):
     return _normalize(signal)
 
 
+Meta = namedtuple('Meta', 'sampwidth, framerate')
+
+
+
+
+
+
 class Audio:
 
-    def __init__(self, filename):
+    def __init__(self, bytes, sampwidth, framerate):
+        self.bytes = bytes
+        self.sampwidth = sampwidth
+        self.framerate = framerate
+
+        assert self.sampwidth == 2  # only 2 bytes (16 bits) per sample
+        assert self.framerate in [8000, 16000]
+
+        self.signal = np.fromstring(self.bytes, dtype=np.int16)
+
+    @property
+    def duration(self):
+        return (self.bytes / self.sampwidth) / self.framerate
+
+    @classmethod
+    def from_file(cls, filename):
 
         with wave.open(filename, 'rb') as container:
-            self.meta = container.getparams()
-            self.bytes = container.readframes(self.meta.nframes)
+            meta = container.getparams()
+            bytes = container.readframes(-1)  # Read the whole stream
 
-        # Working only with 8, 16 or 32 kHz, 16-bit, mono format.
-        assert self.meta.nchannels == 1  # only mono
-        assert self.meta.sampwidth == 2  # only 2 bytes (16 bits) per sample
-        assert self.meta.framerate in [8000, 16000, 32000]
+        assert meta.nchannels == 1  # only mono
+        return cls(bytes, sampwidth=meta.sampwidth, framerate=meta.framerate)
 
-        self.signal = _filter(
-            np.fromstring(self.bytes, dtype=np.int16)
-        )
-        self.duration = self.meta.nframes / self.meta.framerate
+    def is_compatible_with(self, other):
+        return self.meta.framerate == other.meta.framerate
 
     def _get_frames(self, frame_duration):
         # frame_duration is in [ms].
@@ -51,7 +69,7 @@ class Audio:
         bytes_per_frame = int(
             self.meta.sampwidth * self.meta.framerate * frame_duration / 1000
         )
-
+        
         def _split(x, n):
             return [x[i:i+n] for i in range(0, len(x), n)]
 
@@ -104,6 +122,3 @@ def do():
 if __name__ == '__main__':
 
     do()
-
-
-
