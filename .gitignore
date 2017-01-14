@@ -88,5 +88,16 @@ ENV/
 # Rope project settings
 .ropeproject
 
+
 # Project specific items
 Notes/
+
+# qtsdk bin and autosave
+**.pro.user
+**.autosave
+
+# qt build ignore
+core/build**/
+
+# windows internal files
+**/Thumbs.db
