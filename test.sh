@@ -10,6 +10,6 @@ python yandex/asrclient-cli.py \
     --inter-utt-silence="1.2" \
     --silent \
     --capitalize \
-    audio_samples/sound9.wav
+    audio_samples/sound.wav
 
 deactivate
