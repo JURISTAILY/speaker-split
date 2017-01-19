@@ -7,72 +7,26 @@
 	<script src="lib/d3.min.js"></script>
 	<script src="lib/d3.parcoords.js"></script>
 	<link rel="stylesheet" type="text/css" href="lib/d3.parcoords.css">
+	<link rel="stylesheet" href="css.css">
 	<title></title>
 	<style type="text/css">
-	body, html {
-		margin:0px;
-		padding: 0px;
-		background: #e8ecf6;
-	}
-	a {
-		text-decoration:none;
-	}
-	.menu {
-		position: fixed;
-		display:block;
-		width: 300px;
-		bottom:0px;
-		top:0px;
-		float:left;
-		margin:0px;
-    	padding:70px 0px 0px 0px;
-		background: #262b3b url("img/logo.png") 0px 0px no-repeat;
-		color: #b5b7c1;
-		font-family: "Arial Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
-		font-size: 10pt;
-	}
-	.menu li:hover {
-		color: white;
-		cursor: pointer;
-		background: #202430;
-	}
-	.menu li {
-    	border-bottom: 1px solid #202430;
-    	border-top: 1px solid #2f3343;
-    	margin:0px;
-    	padding:11px 0px 11px 45px;
-    	overflow-x: hidden;
-    	white-space: nowrap;
-    }
-    .content>div {
-    	margin: 20px 0px 20px 0px;
-    	padding: 25px 30px 25px 30px;
-    	border: 1px solid #dcdcdc;
-    	background: white;
-    	border-radius: 2px;
-    }
-    .content {
-    	padding: 0px 20px 10px 20px;
-    	color: #525151;
-    	margin-left:300px;
-    }
     .label {
     	font-size:10pt;
     }
 	</style>
 </head>
 <body>
-	<ul class="menu">
-		<li>Сводный отчет</li>
-		<li>Анализ KPI операторов</li>
-		<li>Лояльность клиентов</li>
-		<li>Речевая аналитика</li>
-		<li>Реферальная программа</li>
-		<li>Поддержка</li>
-		<li>Биллинг</li>
-		<li>Настройки</li>
-	</ul>
-	<div class="content">
+	<nav>
+		<a href="#">Сводный отчет</a>
+		<a href="#">Анализ KPI операторов</a>
+		<a href="#">Лояльность клиентов</a>
+		<a href="#">Речевая аналитика</a>
+		<a href="#">Реферальная программа</a>
+		<a href="#">Поддержка</a>
+		<a href="#">Биллинг</a>
+		<a href="#">Настройки</a>
+	</nav>
+	<main>
 		<div>
 		Иллюстрационный элемент называется "параллельные координаты". Не стал пока разбираться с наложением подписей на осях и с изменением размера в целом (это не так просто). Просто показал базовую функциональность. Каждая линия описывает одного оператора. На первом графике показано, как это может смотреться при небольшом (9) количестве операторов, на втором - при 1000 операторов. На каждой из осей можно выделить фильтрующее окно, выделяя из общей массы интересующих операторов. Можно менять порядок осей просто перетаскивая их. Посмотреть, как может выглядеть законченный инструмент на основе параллельных координат можно <a href="http://bl.ocks.org/syntagmatic/3150059">тут</a>. Завтра дорисую то, как я вижу гистограммы. 
 			<div id="parcord" class="parcoords"></div>
@@ -80,7 +34,7 @@
 		<div>
 			<div id="parcord2" class="parcoords"></div>
 		</div>
-	</div>
+	</main>
 <script>
 var data = [ ];
 
