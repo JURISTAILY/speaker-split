@@ -3,12 +3,17 @@
 	/*background: repeating-linear-gradient(90deg,#efefef,#efefef 1px,#f7f7f7 1px ,#f7f7f7 4px),
 	linear-gradient(#cecece, rgba(247,247,247,0) 7px);*/
 	background: linear-gradient(#cecece, rgba(247,247,247,0) 7px),
-	 repeating-linear-gradient(90deg,#efefef,#efefef 1px,#f7f7f7 1px ,#f7f7f7 4px),
-	  linear-gradient(rgba(247,247,247,0), rgba(247,247,247,0) 547px, #cecece 555px);
-	border: 1px solid #dcdcdc;
+	 repeating-linear-gradient(90deg,#efefef,#efefef 1px,#f7f7f7 1px ,#f7f7f7 4px);
 	margin: 0px;
 	padding-bottom:32px;
 	color: #545454;
+	text-align: left;
+}
+
+.dialogue-details-bottom
+{
+	background: linear-gradient(rgba(247,247,247,0), #cecece);
+	height: 7px;
 }
 
 .dialogue-details h3
@@ -19,7 +24,8 @@
 
 
 /*=============================info styles=============================*/
-.dialogue-info {
+.dialogue-info 
+{
 	overflow-y: scroll;
 	border: 1px solid #d7d7d7;
 	height:462px;
@@ -38,12 +44,18 @@
 
 .dialogue-info td
 {
-	background-color: #fcfcfc;
+	background-color: white;
 	margin-top:1px;
 	padding-left:20px;
 	padding-right:20px;
 	height:40px;
 }
+
+.dialogue-info tr:hover td
+{
+	background: repeating-linear-gradient(90deg,#f5f9ff,#f5f9ff 1px,#ffffff 1px ,#ffffff 4px);
+}
+
 .dialogue-info tr:first-child td
 {
 	margin-top:0px;
@@ -73,6 +85,7 @@
 	margin-right:14px;
 	margin-bottom:2px;
 	margin-left:5px;
+	cursor: pointer;
 }
 .dialogue-info-progress
 {
