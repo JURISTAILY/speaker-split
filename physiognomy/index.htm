@@ -1,15 +1,18 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
+	<meta charset="UTF-8">
 	<script type="text/javascript" src="lib/jquery-3.1.1.min.js"></script>
-	<link rel="stylesheet" href="lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
-	<script src="lib/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="lib/tether-1.3.3/js/tether.min.js"></script>
+	<link rel="stylesheet" href="lib/bootstrap-4/css/bootstrap.min.css">
+	<script src="lib/bootstrap-4/js/bootstrap.min.js"></script>
 	<script src="lib/d3.min.js"></script>
 	<script src="lib/d3.parcoords.js"></script>
 	<link rel="stylesheet" type="text/css" href="lib/d3.parcoords.css">
 	<link rel="stylesheet" href="css.css">
 	<link rel="stylesheet" href="dialogue-details.css">
 	<link rel="stylesheet" href="dialogue-view.css">
+	<link rel="stylesheet" href="dialogue-other.css">
 	<title></title>
 	<style type="text/css">
     .label {
@@ -21,7 +24,7 @@
 	<nav>
 		<a href="#"><img src="img/consolidated.png" alt="consolidated return">Сводный отчет</a>
 		<a href="#"><img src="img/kpi.png" alt="operators KPI analysis">Оценка операторов<img src="img/nav-open.png" alt="close submeny" /></a>
-		<a href="#">Мастер отчетов</a>
+		<a href="#" class="nav-active">Мастер отчетов</a>
 		<a href="#">Настройки</a>
 		<a href="#"><img src="img/loyalty.png" alt="clients loyalty">Лояльность клиентов<img src="img/nav-close.png" alt="open submeny" /></a>
 		<a href="#"><img src="img/audiometry.png" alt="speech audiometry">Речевая аналитика</a>
@@ -31,10 +34,57 @@
 		<a href="#"><img src="img/settings.png" alt="settings">Настройки</a>
 		<a href="#"><img src="img/exit.png" alt="exit">Выход</a>
 	</nav>
+
 	<main>
+		<div class="navbar dialogue-nav">
+			<ul class="navbar-nav">
+				<li>Мастер отчетов</li>
+				<li>Настройки</li>
+			</ul>
+			<div>
+				<span class="date-range">11 ноя 2018 длинное тире 11 янв 2017</span>
+				<ul>
+					<li>Сегодня</li><li>Вчера</li><li>Неделя</li><li>Месяц</li><li>Квартал</li><li>Год</li>
+				</ul>
+			</div>
+		</div>
+		<div class="dialogue-face-list">
+			<img src="img/settings_white.png" alt="settings">
+			<h2>Сохраненные отчеты</h2>
+			<span>По статусам</span>
+			<span>По тегам</span>
+			<span>Отчеты по дням недели</span>
+			<span>Звонки по часам</span>
+			<span class="dialogue-face-list-active">Сейчас открыт</span>
+			<span>Ещё срез</span>
+			<span>Звонки по часам</span>
+			<span>По статусам</span>
+			<span>По тегам</span>
+			<span>Отчеты по дням недели</span>
+			<span>Звонки по часам</span>
+			<span>По статусам</span>
+			<span>По тегам</span>
+			<span>Отчеты по дням недели</span>
+			<span>Звонки по часам</span>
+			<span>По статусам</span>
+			<span>По тегам</span>
+			<span>Отчеты по дням недели</span>
+			<span>Звонки по часам</span>
+			<span>По статусам</span>
+			<span>По тегам</span>
+			<span>Отчеты по дням недели</span>
+			<span>Звонки по часам</span>
+			<span>По статусам</span>
+			<span>По тегам</span>
+			<span>Отчеты по дням недели</span>
+			<span>Звонки по часам</span>
+			<span>По статусам</span>
+			<span>По тегам</span>
+			<span>Отчеты по дням недели</span>
+			<span>Звонки по часам</span>
+		</div>
 		<div>
-		Иллюстрационный элемент называется "параллельные координаты". Не стал пока разбираться с наложением подписей на осях и с изменением размера в целом (это не так просто). Просто показал базовую функциональность. Каждая линия описывает одного оператора. На первом графике показано, как это может смотреться при небольшом (9) количестве операторов, на втором - при 1000 операторов. На каждой из осей можно выделить фильтрующее окно, выделяя из общей массы интересующих операторов. Можно менять порядок осей просто перетаскивая их. Посмотреть, как может выглядеть законченный инструмент на основе параллельных координат можно <a href="http://bl.ocks.org/syntagmatic/3150059">тут</a>. Завтра дорисую то, как я вижу гистограммы. 
-			<div id="parcord" class="parcoords"></div>
+			<img src="img/speech_chart_demos_temp_solution.png" alt="speech chart demos" style="width:100%" />
 		</div>
 
 		<div class="dialogue-view">
@@ -90,7 +140,7 @@
 						<td colspan="12">
 							<div class="dialogue-details container-fluid">
 								<div class="row">
-									<div class="col-xs-60">
+									<div class="col-sm">
 										<h3>Основные проблемы разговора</h3>
 										<div class = "dialogue-info">
 											<table>
@@ -205,9 +255,9 @@
 											</table>
 										</div>
 									</div>
-									<div class="col-xs-60">
+									<div class="col-sm">
 										<h3>Запись звонка</h3>
-										<div style="height:165px;"> 
+										<div style="height:187px;"> 
 										<audio controls preload>
 											<source src="#">
 										</audio>
@@ -269,40 +319,5 @@
 			тут скачаю .xls
 		</div>
 	</main>
-<script>
-var data = [ ];
-
-for (var i = 0; i < 9; ++i) {
-	data.push({
-		"Имя оператора": ["Зарина", "Джамиля", "Гюзель", "Саида", "Хафиза", "Зухра", "Лейла", "Зульфия", "Гюльчатай"][i],
-		"% молчания" : Math.min(100 * Math.random(), 1 / Math.random() / Math.random()),
-		"Среднее время разговора (мин)":(Math.random() + Math.random() + Math.random()), 
-		"% клиентов, совершивших покупку" : Math.min(100 * Math.random(), 1 / Math.random() / Math.random()), 
-		"Оценка разговора" : 1 - Math.random() * Math.random() * Math.random() * Math.random(), 
-		"Нецензурных слов в минуту" : Math.random() * Math.random() * Math.random() * Math.random()
-	});
-}
-
-
- d3.select("#parcord")
-   .style("height","500px")
-   .on('resize',function(){
-  	console.log(d3.select(this).style("width"));
-  	pc2.width(d3.select(this).style("width"));
-  });;
-var pc = d3.parcoords()("#parcord")
-  .data(data)
-  .createAxes()
-  .reorderable()
-  .interactive()
-  .mode("queue")
-  .composite("darken")
-  .color(function(d) { return colorgen(d["id оператора"]); })
-  .brushMode("1D-axes")
-  .render();
-
-var colorgen = d3.scale.linear()
-			.range(["steelblue", "brown", "#b15928"]).domain([0, 999]);
-</script>
 </body>
 </html>

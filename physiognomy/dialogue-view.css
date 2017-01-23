@@ -1,7 +1,13 @@
 .dialogue-view
 {
 	padding:0px;
-	background-color: #FFFFFF;
+	background-color: white;
+	overflow: visible;
+}
+
+.dialogue-view>table
+{
+	background-color: white;
 }
 
 .dialogue-view>table>thead>tr>td
@@ -39,10 +45,6 @@
 {
 	background-color: #f5f9ff;
 }
-.dialogue-view>table>thead>tr:hover
-{
-	background-color: #f5ffff;
-}
 
 .dialogue-view>table>tbody>tr
 {
@@ -77,9 +79,9 @@
 {
 	color: #fefefe;
 	border-radius: 4px;
-	text-align: center;
 	background-color: black;
 	margin-left: -15px;
+	padding-top: -50px;
 	width: 30px;
 	height: 20px;
 }

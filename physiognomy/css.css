@@ -1,4 +1,5 @@
-body, html {
+body, html
+{
 	margin:0px;
 	padding: 0px;
 	background: #f1f1f1;
@@ -9,6 +10,7 @@ body, html {
 a
 {
 	text-decoration:none;
+	color: inherit;
 }
 
 nav {
@@ -23,9 +25,12 @@ nav {
 	background: #262b3b url("img/logo.png") 0px 0px no-repeat;
 	color: #b5b7c1;
 	font-size: 10pt;
+	z-index: 2000;
 }
 
-nav>a:hover {
+nav>a:hover,
+.nav-active
+{
 	color: white;
 	cursor: pointer;
 	background: #202430;
@@ -51,40 +56,50 @@ nav>a>img:first-child
 	float: inherit;
 	margin-top: 0px;
 }
+
 nav>a>img
 {
 	background-color: #b5b7c1;
 	float: right;
-	margin-right: 13px;
-	margin-top: 5px;
+	margin: 7px 13px 0px -29px;
 }
 
-nav>a:hover>img
+nav>a:hover>img,
+.nav-active img
 {
 	background-color: white;
 }
 
-nav>a:visited>img
-{
-	background-color: #b5b7c1;
-	text-decoration: none;
-}
 
-nav>a:visited
+main>div
 {
-	color:#b5b7c1;
-}
-
-main>div {
-	margin: 20px 0px 20px 0px;
+	margin: 20px 20px 20px 20px;
 	padding: 25px 30px 25px 30px;
 	border: 1px solid #dcdcdc;
 	background: white;
 	border-radius: 2px;
 }
 
-main {
-	padding: 0px 20px 10px 20px;
+main
+{
+	padding: 0px 0px 10px 0px;
 	color: #525151;
 	margin-left:230px;
+	overflow-x: visible;
+	z-index: 1000;
+}
+/*=================toolbox==================*/
+.date-range
+{
+	background: url("img/calendar.png") no-repeat;
+	background-position: 10px 7px;
+	height: 29px;
+	font-size: 13px;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	margin: 0px 3px 9px 0px;
+	margin-bottom:200px;
+	padding: 8px 12px 8px 35px;
+	white-space: nowrap;
+	line-height: 40px;	
 }

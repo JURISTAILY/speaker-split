@@ -5,14 +5,16 @@
 	background: linear-gradient(#cecece, rgba(247,247,247,0) 7px),
 	 repeating-linear-gradient(90deg,#efefef,#efefef 1px,#f7f7f7 1px ,#f7f7f7 4px);
 	margin: 0px;
-	padding-bottom:32px;
+	padding-bottom:22px;
+	padding-top:32px;
 	color: #545454;
 	text-align: left;
 }
 
 .dialogue-details-bottom
 {
-	background: linear-gradient(rgba(247,247,247,0), #cecece);
+	background: linear-gradient(rgba(247,247,247,0), #cecece),
+	 repeating-linear-gradient(90deg,#efefef,#efefef 1px,#f7f7f7 1px ,#f7f7f7 4px);
 	height: 7px;
 }
 
