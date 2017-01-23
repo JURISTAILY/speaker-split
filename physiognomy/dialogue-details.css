@@ -51,6 +51,7 @@
 	padding-left:20px;
 	padding-right:20px;
 	height:40px;
+	font-size:14px;
 }
 
 .dialogue-info tr:hover td
@@ -70,6 +71,7 @@
 .dialogue-info-group
 {
 	font-weight: 600;
+	font-size:13px;
 }
 
 .dialogue-info td:first-child
@@ -93,7 +95,6 @@
 {
 	min-width:200px;
 	height:5px;
-	margin-top:20px;
 	padding-top:-3px;
 }
 
