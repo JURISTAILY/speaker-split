@@ -63,3 +63,27 @@ compiled app take json input file as an argument. Result shoult be appear in the
 
 
 # Angular 2 from scratch: detailed instructions
+
+## Install everything
+
+    sudo apt-get install nodejs
+    sudo apt-get install npm
+
+Create a symbolic link for `node`, as many Node.js tools use this name to execute.
+
+    sudo ln /usr/bin/nodejs /usr/bin/node
+
+Verify that you are running node `v4.x.x` or higher and npm `3.x.x` or higher. Older versions produce errors.
+
+    node -v
+    npm -v
+
+## Workflow
+
+This command install all dependencies from `package.json` to `node_modules` directory.
+
+    npm install
+
+To compile all Typescript files to Javascript, use this command.
+
+    npm run tsc
