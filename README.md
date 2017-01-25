@@ -59,3 +59,7 @@ deactivate
 # Working with core part
 
 compiled app take json input file as an argument. Result shoult be appear in the same folder and name with "out" suffix.
+
+
+
+# Angular 2 from scratch: detailed instructions
