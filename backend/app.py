@@ -1,13 +1,20 @@
-# from flask import Flask
-import flask
+from flask import Flask, request, jsonify
 
-app = flask.Flask(__name__)
+APPLICATION_ROOT = '/api'
+
+app = Flask(__name__)
+app.config.from_object(__name__)
 
 
-@app.route('/api/calls')
+@app.route('/calls')
 def show_calls():
     calls = []
-    return flask.jsonify(calls=calls)
+    return jsonify(calls=calls)
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return jsonify(info=str(request))
 
 
 if __name__ == '__main__':
