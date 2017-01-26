@@ -14,6 +14,11 @@ a
 	color: inherit;
 }
 
+td
+{
+	padding: 0px;
+}
+
 nav {
 	position: fixed;
 	display:block;
@@ -23,7 +28,7 @@ nav {
 	float:left;
 	margin:0px;
 	padding:70px 0px 0px 0px;
-	background: #262b3b url("img/logo.png") 0px 0px no-repeat;
+	background: #262b3b url("/img/logo.png") 0px 0px no-repeat;
 	color: #b5b7c1;
 	font-size: 10pt;
 	z-index: 2000;
@@ -92,7 +97,7 @@ main
 /*=================toolbox==================*/
 .date-range
 {
-	background: url("img/calendar.png") no-repeat;
+	background: url("/img/calendar.png") no-repeat;
 	background-position: 10px 7px;
 	height: 29px;
 	font-size: 13px;
