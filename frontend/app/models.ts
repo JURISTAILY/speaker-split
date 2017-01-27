@@ -1,13 +1,17 @@
-export class Transcript
-{
-
-}
-
-export class Info {
+export class CallDetail {
 	isGroup : boolean;
 	title : string;
-	value : number;
+	value : string;
 	grade : number;	
+}
+
+export class CallTranscript {
+	isOperator: boolean;
+	transcript: string;
+}
+
+export class CallSource {
+	source : string;
 }
 
 export class Call {
@@ -21,6 +25,8 @@ export class Call {
 	legibility : number;
 	isIncoming : boolean;
 	grade : number;
-	transcripts : Transcript[];
+	transcripts : CallTranscript[];
+	details : CallDetail[];
+	sources : CallSource[];
 }
 

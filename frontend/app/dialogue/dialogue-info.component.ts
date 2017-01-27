@@ -1,6 +1,6 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 
-import { Info } from '../models';
+import { Call } from '../models';
 
 @Component({
   selector: '[dialogue-info]',
@@ -29,5 +29,5 @@ import { Info } from '../models';
 `
 })
 export class DialogueInfoComponent  {
-	@Input() info: Info;
+	@Input() call: Call;
 }

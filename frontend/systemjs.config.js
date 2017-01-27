@@ -13,6 +13,8 @@
       // our app is within the app folder
       app: 'app',
 
+      d3: 'npm:d3',
+
       // angular bundles
       '@angular/core': 'npm:@angular/core/bundles/core.umd.js',
       '@angular/common': 'npm:@angular/common/bundles/common.umd.js',
@@ -35,6 +37,13 @@
       },
       rxjs: {
         defaultExtension: 'js'
+      },
+      d3: {
+        defaultExtension:'js',
+        main: 'npm:d3/index.js'/*,
+        map:{
+          'd3': 'npm:d3'
+        }*/
       }
     }
   });
