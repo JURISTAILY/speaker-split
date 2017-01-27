@@ -1,0 +1,24 @@
+[
+  {
+    "id": 288854,
+    "date": "2017-01-22H22:30:21+03:00",
+    "duration": 31.2,
+    "grade": 1.342e0,
+    "isIncoming": true,
+    "info": {
+      "quantitative_timing": {
+        "grade": 6.9,
+        "params": [
+          {"name": "", "value": 2.3, "grade": 4.9}
+        ]
+      },
+      "speech_activity": [],
+      "semantic": [],
+      "emotional": []
+    },
+    "transcript": [
+      {"speaker": "operator", "begin": 0.3, "end": 1.2, "phrase": "Здравствуйте! вы насчет работы торговым представителем?"},
+      {"speaker": "client", "begin": 0.3, "end": 1.2, "phrase": "Да, вот моё резюме."}
+    ]
+  }
+]
