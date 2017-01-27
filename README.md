@@ -80,10 +80,13 @@ Verify that you are running node `v4.x.x` or higher and npm `3.x.x` or higher. O
 
 ## Workflow
 
-This command install all dependencies from `package.json` to `node_modules` directory.
+Install `angular-cli`.
 
-    npm install
+Serving app for development.
 
-To compile all Typescript files to Javascript, use this command.
+    ng serve --host 0.0.0.0 --port 4201
 
-    npm run tsc
+Building bundles for production.
+
+    ng build --prod --aot
+
