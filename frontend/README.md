@@ -18,7 +18,15 @@ Install [angular-cli](https://github.com/angular/angular-cli) globally (using `-
 
     npm install -g angular-cli
 
-## Step 2. Understand the workflow
+## Step 2. Install dependencies
+
+The dependencies are specified in `package.json`. Install them.
+
+    npm install
+
+This action creates `node_modules/` directory.
+
+## Step 3. Understand the workflow
 
 Adding components. This command creates files and updates `app.module.ts`.
 
@@ -28,7 +36,7 @@ Serving app for development.
 
     ng serve --host 0.0.0.0 --port 4201
 
-Building bundles for production.
+Building bundles for production. This will produce `dist/` directory, ready for production server.
 
     ng build --prod --aot
 
