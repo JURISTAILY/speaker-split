@@ -20,7 +20,7 @@ Install [angular-cli](https://github.com/angular/angular-cli) globally (using `-
 
 ## Step 2. Install dependencies
 
-The dependencies are specified in `package.json`. Install them.
+Install the dependencies specified in `package.json`.
 
     npm install
 
