@@ -1,0 +1,259 @@
+/* You can add global styles to this file, and also import other style files */
+
+body, html
+{
+  margin:0px;
+  padding: 0px;
+  background: #f1f1f1;
+  width:100%;
+  font-family: "Arial Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-size:13px;
+}
+
+a
+{
+  text-decoration:none;
+  color: inherit;
+}
+
+td
+{
+  padding: 0px;
+}
+
+nav {
+  position: fixed;
+  display:block;
+  width: 230px;
+  bottom:0px;
+  top:0px;
+  float:left;
+  margin:0px;
+  padding:70px 0px 0px 0px;
+  background: #262b3b url("/assets/img/logo.png") 0px 0px no-repeat;
+  color: #b5b7c1;
+  font-size: 10pt;
+  z-index: 2000;
+}
+
+nav>a:hover,
+.nav-active
+{
+  color: white;
+  cursor: pointer;
+  background: #202430;
+  text-decoration:none;
+}
+
+nav>a
+{
+  color:#b5b7c1;
+  display: block;
+  border-bottom: 1px solid #202430;
+  border-top: 1px solid #2f3343;
+  margin:0px;
+  padding:11px 0px 11px 45px;
+  overflow-x: hidden;
+  white-space: nowrap;
+}
+
+nav>a>img:first-child
+{
+  margin-left: -30px;
+  margin-right: 14px;
+  float: inherit;
+  margin-top: 0px;
+}
+
+nav>a>img
+{
+  background-color: #b5b7c1;
+  float: right;
+  margin: 7px 13px 0px -29px;
+}
+
+nav>a:hover>img,
+.nav-active img
+{
+  background-color: white;
+}
+
+
+main>div
+{
+  margin: 20px 20px 20px 20px;
+  padding: 25px 30px 25px 30px;
+  border: 1px solid #dcdcdc;
+  background: white;
+  border-radius: 2px;
+}
+
+main
+{
+  padding: 0px 0px 10px 0px;
+  color: #525151;
+  margin-left:230px;
+  overflow-x: visible;
+  z-index: 1000;
+}
+/*=================toolbox==================*/
+.date-range
+{
+  background: url("/assets/img/calendar.png") no-repeat;
+  background-position: 10px 7px;
+  height: 29px;
+  font-size: 13px;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  margin: 0px 3px 9px 0px;
+  margin-bottom:200px;
+  padding: 8px 12px 8px 35px;
+  white-space: nowrap;
+  line-height: 40px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*=============list of faces (saved reports)============*/
+.dialogue-face-list h2
+{
+  font-size: 16pt;
+  margin-top: 0px;
+  padding: 0px;
+  font-weight: 600;
+}
+
+.dialogue-face-list span
+{
+  font-size: 13px;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  margin: 0px 3px 9px 0px;
+  margin-bottom:200px;
+  padding: 8px 12px 8px 12px;
+  white-space: nowrap;
+  line-height: 40px;
+}
+
+
+.dialogue-face-list span:hover,
+.dialogue-face-list-active
+{
+  background-color: #fff1bd;
+  border-color: #d4c790;
+  cursor:pointer;
+}
+
+.dialogue-face-list img
+{
+  margin-left: -16px;
+  float: right;
+  background-color: #d4d4d4;
+  cursor:pointer;
+}
+
+.dialogue-face-list img:hover
+{
+  background-color: #848484;
+}
+/*=============navbar=============*/
+.dialogue-nav
+{
+  margin: 0px;
+  padding: 0px;
+  border:none;
+  box-shadow: 0px 1px 7px 0px rgba(0,0,0,0.10);
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.dialogue-nav>ul
+{
+  display: block;
+  background-color: #383f56;
+  color: white;
+  padding-left: 5px;
+  height: 45px;
+  padding-top: 8px;
+}
+
+.dialogue-nav>ul>li
+{
+  font-size: 13px;
+  display: inline;
+  margin-left: 26px;
+  cursor: pointer;
+}
+
+.dialogue-nav div
+{
+  padding: 15px 23px 15px 15px;
+  border-top: 1px solid #d4d4d4;
+}
+
+.dialogue-nav>div>ul
+{
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  margin: 0px 0px 0px 22px;
+  padding: 0px;
+  list-style-type: none;
+  display: inline;
+  padding: 0px;
+  font-size: 13px;
+  height: 29px;
+  padding: 8px 0px 8px 0px;
+}
+
+.dialogue-nav>div>ul>li
+{
+  padding: 8px 12px 8px 12px;
+  display: inline;
+  border-right-width: 0px;
+  border-left: 1px solid #cccccc;
+}
+
+.dialogue-nav>div>ul>li:first-child
+{
+  border-left:none;
+}
+
+.dialogue-nav>div>ul>li:hover
+{
+  background-color: #fff1bd;
+  border-color: #d4c790;
+  cursor:pointer;
+}
+
+
+
+
+
+
+
+
+
+
+

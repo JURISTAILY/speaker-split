@@ -1,0 +1,26 @@
+<table class="dialogue-view">
+  <thead>
+    <tr>
+      <td>Название среза</td>
+      <td>Длительность разговора</td>
+      <td class="dialogue-sa">
+        SA<img src="assets/img/interrogatory.png" alt="interrogatory" title="Tooltip on right" />
+      </td>
+      <td>Доля речи оператора</td>
+      <td>Длительность речи оператора</td>
+      <td>Клиент перебивает оператора</td>
+      <td>Оператор перебивает клиента</td>
+      <td>Молчание оператора</td>
+      <td>Разборчивость речи оператора</td>
+      <td>Тип</td>
+      <td>Оценка разговора</td>
+      <td>Запись разговора</td>
+    </tr>
+  </thead>
+  <tbody app-dialogue-item *ngFor="let call of calls" [call]="call">
+  </tbody>
+</table>
+<script>
+  d3.select("*").style("background", "#000000");
+</script>
+тут скачаю .xls

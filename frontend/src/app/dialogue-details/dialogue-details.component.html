@@ -1,0 +1,12 @@
+<div class="dialogue-details container-fluid">
+  <div class="row">
+    <div class="col-sm">
+      <app-dialogue-details-table [details]="call.details"></app-dialogue-details-table>
+    </div>
+    <div class="col-sm">
+      <app-dialogue-details-player [sources]="call.sources"></app-dialogue-details-player>
+      <app-dialogue-details-transcript [transcripts]="call.transcripts"></app-dialogue-details-transcript>
+    </div>
+  </div>
+</div>
+<div class="dialogue-details-bottom"></div>
