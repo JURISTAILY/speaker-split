@@ -11,7 +11,7 @@
 
   <td><div [class.incoming]="call.isIncoming" [class.outgoing]="!call.isIncoming"></div></td>
 
-  <td><div class="dialogue-tbl-progress"><div>{{ call.grade }}</div></div></td>
+  <td><div class="dialogue-tbl-progress"><div [style.background-color]="gradeToColor(call.grade)">{{ call.grade }}</div></div></td>
   <td><span class="dialogue-tbl-info-trigger" (click)="switchDetails()">{{ (open ? "Свернуть" : "Развернуть") }}</span></td>
 </tr>
 <tr *ngIf="open">

@@ -20,7 +20,7 @@ Verify that you are running node `v4.x.x` or higher and npm `3.x.x` or higher. O
 
 Install [angular-cli](https://github.com/angular/angular-cli) globally (using `-g` flag).
 
-    npm install -g angular-cli
+    sudo npm install -g angular-cli
 
 ## Step 2. Install dependencies
 
@@ -43,4 +43,3 @@ Serving app for development.
 Building bundles for production. This will produce `dist/` directory, ready for production server.
 
     ng build --prod --aot
-

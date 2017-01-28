@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 import { Call } from '../models';
-
+import { gradeToColor } from '../utils';
 
 @Component({
   selector: '[app-dialogue-item]',
@@ -15,5 +15,7 @@ export class DialogueItemComponent  {
     this.open = !this.open;
   }
 
+  // Static proxy method.
+  gradeToColor = gradeToColor;
 
 }

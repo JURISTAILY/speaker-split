@@ -29,4 +29,3 @@ export class Call {
     details : CallDetail[];
     sources : CallSource[];
 }
-

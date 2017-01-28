@@ -68,11 +68,3 @@
       <app-dialogue-view></app-dialogue-view>
     </div>
   </main>
-
-
-
-<script type="text/javascript">
-  var progressScale = d3.scale.linear().range(["#63be7b", "#ffd963","#fc5456"]).domain([10,6,1]);
-  d3.selectAll(".progress-bar").style("background-color", function() { return progressScale(this.style.width.slice(0,-2)); });
-  d3.selectAll(".dialogue-tbl-progress>div").style("background-color", function() { return progressScale(d3.select(this).html()); });
-</script>

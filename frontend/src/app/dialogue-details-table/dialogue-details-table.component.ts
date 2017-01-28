@@ -2,6 +2,8 @@ import { Component, Input } from '@angular/core';
 
 import { CallDetail } from '../models';
 
+import { gradeToColor } from '../utils';
+
 @Component({
   selector: 'app-dialogue-details-table',
   templateUrl: './dialogue-details-table.component.html',
@@ -9,5 +11,8 @@ import { CallDetail } from '../models';
 })
 export class DialogueDetailsTableComponent  {
   @Input() details : CallDetail[];
-}
 
+  // Static proxy method.
+  gradeToColor = gradeToColor;
+
+}
