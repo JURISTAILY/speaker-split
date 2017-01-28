@@ -16,10 +16,15 @@
       "tsconfig": "tsconfig.json",
       "prefix": "app",
       "mobile": false,
+
       "styles": [
         "styles.css"
       ],
-      "scripts": [],
+
+      "scripts": [
+        "./assets/libs/d3.min.js"
+      ],
+
       "environments": {
         "source": "environments/environment.ts",
         "dev": "environments/environment.ts",
