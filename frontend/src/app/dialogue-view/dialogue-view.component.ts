@@ -8,7 +8,6 @@ import { CallService } from '../call.service';
   templateUrl: './dialogue-view.component.html',
   styleUrls: ['./dialogue-view.component.css'],
   encapsulation : ViewEncapsulation.None,
-  providers: [CallService, ],
 })
 export class DialogueViewComponent implements OnInit {
   calls: Call[];

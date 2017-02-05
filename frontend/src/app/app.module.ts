@@ -10,6 +10,7 @@ import { DialogueDetailsComponent } from './dialogue-details/dialogue-details.co
 import { DialogueDetailsTableComponent } from './dialogue-details-table/dialogue-details-table.component';
 import { DialogueDetailsTranscriptComponent } from './dialogue-details-transcript/dialogue-details-transcript.component';
 import { DialogueDetailsPlayerComponent } from './dialogue-details-player/dialogue-details-player.component';
+import { CallService } from './call.service';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,7 @@ import { DialogueDetailsPlayerComponent } from './dialogue-details-player/dialog
     FormsModule,
     HttpModule
   ],
-  providers: [],
+  providers: [CallService, ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
