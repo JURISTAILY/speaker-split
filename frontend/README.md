@@ -22,13 +22,15 @@ Install [angular-cli](https://github.com/angular/angular-cli) globally (using `-
 
     sudo npm install -g angular-cli
 
+This gives access to the `ng` command for rapid development with Angular 2.
+
 ## Step 2. Install dependencies
 
-Install the dependencies specified in `package.json`.
+Install the dependencies specified in `package.json`. This command must be run from the `frontend/` folder.
 
     npm install
 
-This action creates `node_modules/` directory.
+This action creates `frontend/node_modules/` directory that contains all required modules.
 
 ## Step 3. Understand the workflow
 
@@ -38,7 +40,11 @@ Adding components. This command creates files and updates `app.module.ts`.
 
 Serving app for development.
 
-    ng serve --host 0.0.0.0 --port 4201
+    ng serve
+
+This command launches the application, which is available on
+
+    http://localhost:4200
 
 Building bundles for production. This will produce `dist/` directory, ready for production server.
 
