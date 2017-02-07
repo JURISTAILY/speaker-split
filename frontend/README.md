@@ -15,8 +15,7 @@ sudo ln /usr/bin/nodejs /usr/bin/node
 
 Verify that you are running node `v4.x.x` or higher and npm `3.x.x` or higher. Older versions produce errors.
 
-    node -v
-    npm -v
+    node -v && npm -v
 
 Install [angular-cli](https://github.com/angular/angular-cli) globally (using `-g` flag).
 
@@ -38,7 +37,7 @@ Adding components. This command creates files and updates `app.module.ts`.
 
 Serving app for development.
 
-    ng serve --host 0.0.0.0 --port 4201
+    ng serve
 
 Building bundles for production. This will produce `dist/` directory, ready for production server.
 

@@ -1,5 +1,5 @@
 export class CallDetail {
-    isGroup : boolean;
+    children : Array<CallDetail>;
     title : string;
     value : string;
     grade : number;
@@ -8,6 +8,8 @@ export class CallDetail {
 export class CallTranscript {
     isOperator: boolean;
     transcript: string;
+    begin : number;
+    end : number;
 }
 
 export class CallSource {
@@ -28,4 +30,10 @@ export class Call {
     transcripts : CallTranscript[];
     details : CallDetail[];
     sources : CallSource[];
+
+    constructor(values : Object) {
+        for (let val in values) {
+            this[val] = values[val];
+        }
+    }
 }

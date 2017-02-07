@@ -15,4 +15,10 @@ export class DialogueDetailsTableComponent  {
   // Static proxy method.
   gradeToColor = gradeToColor;
 
+  open: boolean[] = [];
+
+  switchDetails(item): void {
+    this.open[item] = !this.open[item];
+  }
+
 }
