@@ -18,21 +18,6 @@ export class DialogueDetailsTableComponent  {
 
   open: { [ key : string ] : boolean } = {};
 
-  switchDetails(item): void {
-    if (!(item.title in this.open)) {
-      this.open[item] = false;
-    }
-    this.open[item.title] = !this.open[item.title];
-    console.log(item.title, "turned to", this.isOpen(item.title));
-  }
-
-  isOpen(item) : boolean {
-    if (!(item in this.open)) {
-      this.open[item] = false;
-    }
-    return this.open[item];
-  }
-
   gradeValueAndUnit(num : number) : string {
     if (typeof(num) !== 'undefined' && num === num) {
       return num + ' балл' + rusNumberTermination(num);
