@@ -1,26 +1,28 @@
 <h3>Основные проблемы разговора</h3>
 <div class = "dialogue-info">
   <table>
-    <tbody *ngFor="let detail of details">
-      <tr class="dialogue-info-group">
-        <td colspan="2"><img src="assets/img/close.png" alt="show" />{{ detail.title }}</td>
-        <td>
-          <div class="progress dialogue-info-progress">
-            <div [style.background-color]="gradeToColor(detail.grade)" class="progress-bar" role="progressbar" [attr.aria-valuenow]="detail.grade" aria-valuemin="0" aria-valuemax="10" [style.width]="(detail.grade * 10 + '%')"></div>
-          </div>
-        </td>
-        <td>{{ detail.grade }} балл{{ (detail.grade == 1 ? "" : (detail.grade > 1 && detail.grade < 5 ? "а" : "ов")) }}</td>
-      </tr>
-      <tr *ngFor="let item of detail.children">
-        <td>{{ item.title }}</td>
-        <td>{{ item.value }}</td>
-        <td>
-          <div class="progress dialogue-info-progress">
-            <div [style.background-color]="gradeToColor(item.grade)" class="progress-bar" role="progressbar" [attr.aria-valuenow]="item.grade" aria-valuemin="0" aria-valuemax="10" [style.width]="(item.grade * 10 + '%')"></div>
-          </div>
-        </td>
-        <td>{{ item.grade }} балл{{ (item.grade == 1 ? "" : (item.grade > 1 && item.grade < 5 ? "а" : "ов")) }}</td>
-      </tr>
+    <tbody class="dialogue-info-only-first">
+      <template ngFor let-detail [ngForOf]="details">
+        <tr class="dialogue-info-group">
+          <td colspan="2"><img src="assets/img/{{ (!open[detail.title] ? 'open' : 'close') }}.png" alt="show" (click)="open[detail.title] = !open[detail.title]" />{{ detail.title }}</td>
+          <td>
+            <div class="progress dialogue-info-progress">
+              <div [style.background-color]="gradeToColor(detail.grade)" class="progress-bar" role="progressbar" [attr.aria-valuenow]="detail.grade" aria-valuemin="0" aria-valuemax="10" [style.width.%]="gradeToPercent(detail.grade)"></div>
+            </div>
+          </td>
+          <td>{{ gradeValueAndUnit(detail.grade) }}</td>
+        </tr>
+        <tr *ngFor="let item of detail.children" [style.display]="open[detail.title] ? '' : 'none'">
+          <td>{{ item.title }}</td>
+          <td>{{ item.value }}</td>
+          <td>
+            <div class="progress dialogue-info-progress">
+              <div [style.background-color]="gradeToColor(item.grade)" class="progress-bar" role="progressbar" [attr.aria-valuenow]="item.grade" aria-valuemin="0" aria-valuemax="10" [style.width.%]="gradeToPercent(item.grade)"></div>
+            </div>
+          </td>
+          <td>{{ gradeValueAndUnit(item.grade) }}</td>
+        </tr>
+      </template>
     </tbody>
   </table>
 </div>
