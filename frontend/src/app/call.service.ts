@@ -42,10 +42,12 @@ export class CallService {
       return NaN;
     };
 
+    let independentFrontedId = 0;
     for (let id in arr) {
       let i = arr[id];
       adapted[id] = {
-        id: i.id,
+        id : independentFrontedId++,
+        name: i.id,
         duration : i.duration,
         sa : findParam("sa", i.info),
         operatorSpeechDuration : findParam("operatorSpeechDuration", i.info),

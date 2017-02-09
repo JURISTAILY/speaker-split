@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 import { Call } from '../models';
 import { gradeToColor } from '../utils';
@@ -10,12 +10,12 @@ import { gradeToColor } from '../utils';
 })
 export class DialogueItemComponent  {
   @Input() call: Call;
-  open: boolean = false;
+  @Output() onToggled : EventEmitter<any> = new EventEmitter<any>();
+  @Input() isOpen : boolean;
+  
   switchDetails(): void {
-    this.open = !this.open;
+    this.onToggled.emit(null);
   }
 
-  // Static proxy method.
   gradeToColor = gradeToColor;
-
 }

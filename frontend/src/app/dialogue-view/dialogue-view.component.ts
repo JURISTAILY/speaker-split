@@ -11,6 +11,7 @@ import { CallService } from '../call.service';
 })
 export class DialogueViewComponent implements OnInit {
   calls: Call[];
+  private currentOpen : number = -1;
 
   constructor(private callService: CallService) { }
 
@@ -22,5 +23,11 @@ export class DialogueViewComponent implements OnInit {
     this.getCalls();
   }
 
+  closeOther(who : any) : void {
+    console.log(who);
+  }
 
+  xyu(who : number) {
+    this.currentOpen = this.currentOpen === who ? -1 : who;
+  }
 }

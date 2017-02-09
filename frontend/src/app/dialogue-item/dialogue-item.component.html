@@ -1,5 +1,5 @@
 <tr>
-  <td>{{ call.id }}</td>
+  <td>{{ call.name }}</td>
   <td>{{ call.duration }}</td>
   <td>{{ call.sa }}</td>
   <td>{{ (call.operatorSpeechDuration / call.duration * 1000) / 10 | number: '1.1-1' }}%</td>
@@ -12,9 +12,9 @@
   <td><div [class.incoming]="call.isIncoming" [class.outgoing]="!call.isIncoming"></div></td>
 
   <td><div class="dialogue-tbl-progress"><div [style.background-color]="gradeToColor(call.grade)">{{ call.grade }}</div></div></td>
-  <td><span class="dialogue-tbl-info-trigger" (click)="switchDetails()">{{ (open ? "Свернуть" : "Развернуть") }}</span></td>
+  <td><span class="dialogue-tbl-info-trigger" (click)="switchDetails()">{{ (isOpen ? "Свернуть" : "Развернуть") }}</span></td>
 </tr>
-<tr *ngIf="open">
+<tr *ngIf="isOpen">
   <td colspan="12">
     <app-dialogue-details [call]="call"></app-dialogue-details>
   </td>

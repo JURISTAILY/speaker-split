@@ -17,7 +17,8 @@ export class CallSource {
 }
 
 export class Call {
-    id: string;
+    id : number;
+    name: string;
     duration : number;
     sa : number;
     operatorSpeechDuration : number;
