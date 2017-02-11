@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 import { Call } from '../models';
-import { gradeToColor } from '../utils';
+import { DialogueViewComponent } from '../dialogue-view/dialogue-view.component'
 
 @Component({
   selector: '[app-dialogue-item]',
@@ -9,6 +9,7 @@ import { gradeToColor } from '../utils';
   styleUrls: ['./dialogue-item.component.css']
 })
 export class DialogueItemComponent  {
+  columns = DialogueViewComponent.COLUMNS;
   @Input() call: Call;
   @Output() onToggled : EventEmitter<any> = new EventEmitter<any>();
   @Input() isOpen : boolean;
@@ -16,6 +17,4 @@ export class DialogueItemComponent  {
   switchDetails(): void {
     this.onToggled.emit(null);
   }
-
-  gradeToColor = gradeToColor;
 }

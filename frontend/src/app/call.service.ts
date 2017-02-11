@@ -4,6 +4,7 @@ import 'rxjs/add/operator/toPromise';
 
 import { Call, CallTranscript, CallDetail, CallSource } from './models';
 import { PARAMS_KEY_RESOLVE } from './speech-resolve'
+import { DialogueViewComponent } from './dialogue-view/dialogue-view.component'
 
 @Injectable()
 export class CallService {
@@ -18,43 +19,88 @@ export class CallService {
                     .catch(this.handleError);
   }
 
-  private convertCalls(arr: any[]): Call[] {
-    let adapted : Array<Call> = new Array<Call>(arr.length);
+  private static fromDataForMainTable(datum : any)
+  {
+    let arr = DialogueViewComponent.COLUMNS;
+    let result = Array<any>(arr.length)
+    for (let id in arr) {
+      result[id] = arr[id].pipe.transform(CallService.findParam(arr[id].jsonKey, datum));
+    }
+    return result;
+  }
 
-    let findParam = function (key : string, data : any) : any {
-      const TO_JSON_KEY = {
-        sa : "sa",
-        operatorSpeechDuration : "operator_speech_duration",
-        clientInterruptions : "client_interruptions",
-        operatorSilenceDuration : "operator_silence_duration",
-        legibility : "legibility"
-      };
-      let sought = key in TO_JSON_KEY ? TO_JSON_KEY[key] : key;
-      for (let key in data) {
-        if (typeof(data[key]) === "object" && !Array.isArray(data[key])) {
-          for (let param of data[key].params) {
-            if (param.name === sought) {
-              return param.value;
-            }
+  private static findParam(sought : string, data : any) : any {
+    if (sought in data) {
+      return data[sought];
+    }
+    for (let key in data.info) {
+      if (typeof(data.info[key]) === "object" && !Array.isArray(data.info[key])) {
+        for (let param of data.info[key].params) {
+          if (param.name === sought) {
+            return param.value;
           }
         }
       }
-      return NaN;
+    }
+    return NaN;
+  }
+
+  private static infoToDetails(info : any) : Array<CallDetail> {
+    let paramToDatail = function(sublist : Array<any>) : Array<CallDetail> {
+      if (typeof(sublist) === "undefined") {
+        return new Array<CallDetail>();
+      }
+      let result : Array<CallDetail> = new Array<CallDetail>(sublist.length);
+      for (let id in sublist) {
+        result[id] = {
+          children : [],
+          title : PARAMS_KEY_RESOLVE(sublist[id].name),
+          value : sublist[id].value,
+          grade : sublist[id].grade
+        }
+      }
+      return result;
     };
+
+    if (Array.isArray(info)) {
+      let result : Array<CallDetail> = new Array<CallDetail>(info.length);
+      for (let i in info) {
+        result[i] = {
+          children : paramToDatail(info[i].params),
+          title : PARAMS_KEY_RESOLVE(info[i].name),
+          value : null,
+          grade : info[i].grade
+        }
+      }
+      return result;
+    } else if (typeof(info) === "object") {
+      let result : Array<CallDetail> = new Array<CallDetail>(Object.keys(info).length);
+      let i = 0;
+      for (let key in info) {
+        result[i++] = {
+          children : paramToDatail(info[key].params),
+          title : PARAMS_KEY_RESOLVE(key),
+          value : null,
+          grade : info[key].grade
+        }
+      }
+      return result;
+    } else {
+      return new Array<CallDetail>();
+    }
+  }
+
+  private convertCalls(arr: any[]): Call[] {
+    let adapted : Array<Call> = new Array<Call>(arr.length);
+
 
     let independentFrontedId = 0;
     for (let id in arr) {
       let i = arr[id];
       adapted[id] = {
         id : independentFrontedId++,
+        tableValues : CallService.fromDataForMainTable(i),
         name: i.id,
-        duration : i.duration,
-        sa : findParam("sa", i.info),
-        operatorSpeechDuration : findParam("operatorSpeechDuration", i.info),
-        clientInterruptions : findParam("clientInterruptions", i.info),
-        operatorInterruptions : findParam("operatorInterruptions", i.info),
-        operatorSilenceDuration : findParam("operatorSilenceDuration", i.info),
-        legibility : findParam("legibility", i.info),
         isIncoming : i.isIncoming,
         grade : i.grade,
         transcripts : (function(transcripts : Array<any>) : CallTranscript[] {
@@ -73,50 +119,7 @@ export class CallService {
           }
           return res;
         })(i.transcript),
-        details : (function(info : any) : Array<CallDetail> {
-          let paramToDatail = function(sublist : Array<any>) : Array<CallDetail> {
-            if (typeof(sublist) === "undefined") {
-              return new Array<CallDetail>();
-            }
-            let result : Array<CallDetail> = new Array<CallDetail>(sublist.length);
-            for (let id in sublist) {
-              result[id] = {
-                children : [],
-                title : PARAMS_KEY_RESOLVE(sublist[id].name),
-                value : sublist[id].value,
-                grade : sublist[id].grade
-              }
-            }
-            return result;
-          };
-
-          if (Array.isArray(info)) {
-            let result : Array<CallDetail> = new Array<CallDetail>(info.length);
-            for (let i in info) {
-              result[i] = {
-                children : paramToDatail(info[i].params),
-                title : PARAMS_KEY_RESOLVE(info[i].name),
-                value : null,
-                grade : info[i].grade
-              }
-            }
-            return result;
-          } else if (typeof(info) === "object") {
-            let result : Array<CallDetail> = new Array<CallDetail>(Object.keys(info).length);
-            let i = 0;
-            for (let key in info) {
-              result[i++] = {
-                children : paramToDatail(info[key].params),
-                title : PARAMS_KEY_RESOLVE(key),
-                value : null,
-                grade : info[key].grade
-              }
-            }
-            return result;
-          } else {
-            return new Array<CallDetail>();
-          }
-        })(i.info),
+        details : CallService.infoToDetails(i.info),
         sources : (function(sources : Array<any>) : CallSource[] {
           if (typeof(sources) === "undefined") {
             return new Array<CallSource>();

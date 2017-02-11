@@ -1,0 +1,15 @@
+.dialogue-tbl-progress
+{
+  padding-left: 50%;
+}
+
+.dialogue-tbl-progress div
+{
+  color: #fefefe;
+  border-radius: 4px;
+  background-color: black;
+  margin-left: -15px;
+  padding-top: -50px;
+  width: 30px;
+  height: 20px;
+}

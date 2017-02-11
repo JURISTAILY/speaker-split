@@ -1,0 +1,18 @@
+.incoming,
+.outgoing
+{
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 16px;
+    width: 100%;
+}
+
+.incoming
+{
+    background-image: url('/assets/img/in.png');
+}
+
+.outgoing
+{
+    background-image: url('/assets/img/out.png');
+}

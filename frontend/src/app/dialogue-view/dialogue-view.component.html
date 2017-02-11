@@ -2,22 +2,15 @@
   <thead>
     <tr>
       <td>Название среза</td>
-      <td>Длительность разговора</td>
-      <td class="dialogue-sa">
-        SA<img src="assets/img/interrogatory.png" alt="interrogatory" title="Tooltip on right" />
-      </td>
-      <td>Доля речи оператора</td>
-      <td>Длительность речи оператора</td>
-      <td>Клиент перебивает оператора</td>
-      <td>Оператор перебивает клиента</td>
-      <td>Молчание оператора</td>
-      <td>Разборчивость речи оператора</td>
+      <template ngFor let-col [ngForOf]="columns">
+        <td [innerHTML]="col.title"></td>
+      </template>
       <td>Тип</td>
       <td>Оценка разговора</td>
       <td>Запись разговора</td>
     </tr>
   </thead>
-  <tbody app-dialogue-item *ngFor="let call of calls" [call]="call" [isOpen]="currentOpen === call.id" (onToggled)="xyu(call.id)">
+  <tbody app-dialogue-item *ngFor="let call of calls" [call]="call" [isOpen]="currentOpen === call.id" (onToggled)="toggleItem(call.id)">
   </tbody>
 </table>
 тут скачаю .xls

@@ -11,6 +11,9 @@ import { DialogueDetailsTableComponent } from './dialogue-details-table/dialogue
 import { DialogueDetailsTranscriptComponent } from './dialogue-details-transcript/dialogue-details-transcript.component';
 import { DialogueDetailsPlayerComponent } from './dialogue-details-player/dialogue-details-player.component';
 import { CallService } from './call.service';
+import { LabelCallDircetionComponent } from './toolbox/label-call-direction/label-call-direction.component';
+import { LabelGradeComponent } from './toolbox/label-grade/label-grade.component';
+import { TimeNumberPipe } from './toolbox/time-number.pipe'
 
 @NgModule({
   declarations: [
@@ -20,14 +23,17 @@ import { CallService } from './call.service';
     DialogueDetailsComponent,
     DialogueDetailsTableComponent,
     DialogueDetailsTranscriptComponent,
-    DialogueDetailsPlayerComponent
+    DialogueDetailsPlayerComponent,
+    LabelCallDircetionComponent,
+    LabelGradeComponent,
+    TimeNumberPipe
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule
   ],
-  providers: [CallService, ],
+  providers: [CallService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
