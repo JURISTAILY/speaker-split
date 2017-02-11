@@ -14,6 +14,8 @@ import { CallService } from './call.service';
 import { LabelCallDircetionComponent } from './toolbox/label-call-direction/label-call-direction.component';
 import { LabelGradeComponent } from './toolbox/label-grade/label-grade.component';
 import { TimeNumberPipe } from './toolbox/time-number.pipe'
+import { GradePercentPipe } from './toolbox/grade-percent.pipe'
+import { GradeColorPipe } from './toolbox/grade-color.pipe'
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { TimeNumberPipe } from './toolbox/time-number.pipe'
     DialogueDetailsPlayerComponent,
     LabelCallDircetionComponent,
     LabelGradeComponent,
-    TimeNumberPipe
+    TimeNumberPipe,
+    GradeColorPipe,
+    GradePercentPipe
   ],
   imports: [
     BrowserModule,

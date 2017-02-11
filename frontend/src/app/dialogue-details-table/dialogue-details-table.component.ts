@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 
 import { CallDetail } from '../models';
 
-import { gradeToColor, rusNumberTermination, gradeToPercent } from '../utils';
+import { rusNumberTermination } from '../utils';
 
 @Component({
   selector: 'app-dialogue-details-table',
@@ -11,10 +11,6 @@ import { gradeToColor, rusNumberTermination, gradeToPercent } from '../utils';
 })
 export class DialogueDetailsTableComponent  {
   @Input() details : CallDetail[];
-
-  // Static proxy method.
-  gradeToColor = gradeToColor;
-  gradeToPercent = gradeToPercent;
 
   open: { [ key : string ] : boolean } = {};
 

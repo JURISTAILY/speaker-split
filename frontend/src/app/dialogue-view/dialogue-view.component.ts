@@ -3,12 +3,6 @@ import { DecimalPipe, PercentPipe } from '@angular/common'
 
 import { Call } from '../models';
 import { CallService } from '../call.service';
-import {  
-  numberToString, 
-  picesToString, 
-  numberToPercentsString, 
-  boolToCallDirectionLabel, 
-  gradeToGradeLabel } from "../utils";
 
 import {
   TimeNumberPipe

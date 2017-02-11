@@ -7,7 +7,7 @@
           <td colspan="2"><img src="assets/img/{{ (!open[detail.title] ? 'open' : 'close') }}.png" alt="show" (click)="open[detail.title] = !open[detail.title]" />{{ detail.title }}</td>
           <td>
             <div class="progress dialogue-info-progress">
-              <div [style.background-color]="gradeToColor(detail.grade)" class="progress-bar" role="progressbar" [attr.aria-valuenow]="detail.grade" aria-valuemin="0" aria-valuemax="10" [style.width.%]="gradeToPercent(detail.grade)"></div>
+              <div [style.background-color]="detail.grade | gradeToColor" class="progress-bar" role="progressbar" [attr.aria-valuenow]="detail.grade" aria-valuemin="0" aria-valuemax="10" [style.width.%]="detail.grade | gradeToPercent"></div>
             </div>
           </td>
           <td style="width:140px;">{{ gradeValueAndUnit(detail.grade) }}</td>
@@ -18,7 +18,7 @@
             <td>{{ item.value }}</td>
             <td>
               <div class="progress dialogue-info-progress">
-                <div [style.background-color]="gradeToColor(item.grade)" class="progress-bar" role="progressbar" [attr.aria-valuenow]="item.grade" aria-valuemin="0" aria-valuemax="10" [style.width.%]="gradeToPercent(item.grade)"></div>
+                <div [style.background-color]="item.grade | gradeToColor" class="progress-bar" role="progressbar" [attr.aria-valuenow]="item.grade" aria-valuemin="0" aria-valuemax="10" [style.width.%]="item.grade | gradeToPercent"></div>
               </div>
             </td>
             <td>{{ gradeValueAndUnit(item.grade) }}</td>
