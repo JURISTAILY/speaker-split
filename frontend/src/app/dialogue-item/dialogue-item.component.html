@@ -1,21 +1,14 @@
 <tr>
-  <td>{{ call.id }}</td>
-  <td>{{ call.duration }}</td>
-  <td>{{ call.sa }}</td>
-  <td>{{ (call.operatorSpeechDuration / call.duration * 1000) / 10 | number: '1.1-1' }}%</td>
-  <td>{{ call.operatorSpeechDuration }}</td>
-  <td>{{ call.clientInterruptions }}</td>
-  <td>{{ call.operatorInterruptions }}</td>
-  <td>{{ call.operatorSilenceDuration }}</td>
-  <td>{{ call.legibility }}%</td>
-
-  <td><div [class.incoming]="call.isIncoming" [class.outgoing]="!call.isIncoming"></div></td>
-
-  <td><div class="dialogue-tbl-progress"><div [style.background-color]="gradeToColor(call.grade)">{{ call.grade }}</div></div></td>
-  <td><span class="dialogue-tbl-info-trigger" (click)="switchDetails()">{{ (open ? "Свернуть" : "Развернуть") }}</span></td>
+  <td>{{ call.name }}</td>
+  <template ngFor let-colValue [ngForOf]="call.tableValues">
+    <td [innerHTML]="colValue"></td>
+  </template>
+  <td><label-call-direction [isIncoming]="call.isIncoming"></label-call-direction></td>
+  <td><label-grade [grade]="call.grade"></label-grade></td>
+  <td><span class="dialogue-tbl-info-trigger" (click)="switchDetails()">{{ (isOpen ? "Свернуть" : "Развернуть") }}</span></td>
 </tr>
-<tr *ngIf="open">
-  <td colspan="12">
+<tr *ngIf="isOpen">
+  <td [attr.colspan]="call.tableValues.length + 4">
     <app-dialogue-details [call]="call"></app-dialogue-details>
   </td>
 </tr>

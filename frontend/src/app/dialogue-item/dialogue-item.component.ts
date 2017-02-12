@@ -1,7 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 import { Call } from '../models';
-import { gradeToColor } from '../utils';
+import { DialogueViewComponent } from '../dialogue-view/dialogue-view.component'
 
 @Component({
   selector: '[app-dialogue-item]',
@@ -9,13 +9,12 @@ import { gradeToColor } from '../utils';
   styleUrls: ['./dialogue-item.component.css']
 })
 export class DialogueItemComponent  {
+  columns = DialogueViewComponent.COLUMNS;
   @Input() call: Call;
-  open: boolean = false;
+  @Output() onToggled : EventEmitter<any> = new EventEmitter<any>();
+  @Input() isOpen : boolean;
+  
   switchDetails(): void {
-    this.open = !this.open;
+    this.onToggled.emit(null);
   }
-
-  // Static proxy method.
-  gradeToColor = gradeToColor;
-
 }

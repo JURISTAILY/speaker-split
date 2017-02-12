@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 
 import { CallDetail } from '../models';
 
-import { gradeToColor } from '../utils';
+import { rusNumberTermination } from '../utils';
 
 @Component({
   selector: 'app-dialogue-details-table',
@@ -12,13 +12,14 @@ import { gradeToColor } from '../utils';
 export class DialogueDetailsTableComponent  {
   @Input() details : CallDetail[];
 
-  // Static proxy method.
-  gradeToColor = gradeToColor;
+  open: { [ key : string ] : boolean } = {};
 
-  open: boolean[] = [];
-
-  switchDetails(item): void {
-    this.open[item] = !this.open[item];
+  gradeValueAndUnit(num : number) : string {
+    if (typeof(num) !== 'undefined' && num === num) {
+      return num + ' балл' + rusNumberTermination(num);
+    }
+    return 'нет оценки'
   }
+
 
 }

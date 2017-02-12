@@ -29,25 +29,6 @@
   text-align: center;
 }
 
-.dialogue-view .incoming,
-.dialogue-view .outgoing
-{
-    background-repeat: no-repeat;
-    background-position: center;
-    height: 16px;
-    width: 100%;
-}
-
-.dialogue-view .incoming
-{
-    background-image: url('/assets/img/in.png');
-}
-
-.dialogue-view .outgoing
-{
-    background-image: url('/assets/img/out.png');
-}
-
 .dialogue-view
 {
   width:100%;
@@ -81,23 +62,6 @@
   border-bottom: 1px dashed #545454;
   cursor: pointer;
 }
-
-.dialogue-tbl-progress
-{
-  padding-left: 50%;
-}
-
-.dialogue-tbl-progress div
-{
-  color: #fefefe;
-  border-radius: 4px;
-  background-color: black;
-  margin-left: -15px;
-  padding-top: -50px;
-  width: 30px;
-  height: 20px;
-}
-
 
 .tooltip {
     position: relative;

@@ -1,9 +1,10 @@
-declare var d3: any;
-
-const COLORS = ["#63be7b", "#ffd963", "#fc5456"];
-const COLOR_GRADIENT_LINEAR_NODES = [10, 6, 1];
-const progressScale = d3.scale.linear().range(COLORS).domain(COLOR_GRADIENT_LINEAR_NODES);
-
-export function gradeToColor(grade: number): string {
-  return progressScale(grade);
+export function rusNumberTermination(num : number) : string {
+	//Балл['a'|'ов'|''] termination pick
+	if (!isFinite(num)) {
+		return 'ов';
+	}
+	if (num == Math.floor(num)) {
+		return (num == 1 ? '' : (num > 1 && num < 5 ? 'а' : 'ов'));
+	}
+	return 'a';
 }

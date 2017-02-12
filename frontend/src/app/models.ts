@@ -17,23 +17,12 @@ export class CallSource {
 }
 
 export class Call {
-    id: string;
-    duration : number;
-    sa : number;
-    operatorSpeechDuration : number;
-    clientInterruptions : number;
-    operatorInterruptions : number;
-    operatorSilenceDuration : number;
-    legibility : number;
+    id : number;
+    name : string;
+    tableValues : any;
     isIncoming : boolean;
     grade : number;
     transcripts : CallTranscript[];
     details : CallDetail[];
     sources : CallSource[];
-
-    constructor(values : Object) {
-        for (let val in values) {
-            this[val] = values[val];
-        }
-    }
 }
