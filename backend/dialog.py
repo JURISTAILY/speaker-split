@@ -26,6 +26,7 @@ def _split(x, n, trim=False):
 
 class Mask:
     def __init__(self, *, mask, frame_duration):
+        #mask true when the frame is silance
         self.mask = mask
         self.frame_duration = frame_duration
         self.delta = self.frame_duration / 1000
@@ -34,28 +35,39 @@ class Mask:
         return str(self.mask)
 
     @functools.lru_cache()
-    def _count_events(self):
+    def _count_silence_frames(self):
         return self.mask.count(True)
 
-    @property
-    def total_duration(self):
-        return self._count_events() * self.delta
+    def _count_speech_frames(self):
+        return len(self.mask) - self._count_silence_frames();
 
     @property
-    def total_ratio(self):
-        return self._count_events() / len(self.mask)
+    def silence_duration(self):
+        return self._count_silence_frames() * self.delta
 
     @property
-    def longest_segment_duration(self):
-        count = max(
-            len(list(group)) for value, group in itertools.groupby(self.mask) if value
-        )
+    def silence_to_total_ratio(self):
+        return self._count_silence_frames() / len(self.mask)
+
+    @functools.lru_cache()
+    def count_segments(self):
+        return [(value, len(list(group))) for value, group in itertools.groupby(self.mask)]
+
+    @property
+    def longest_silence_segment_duration(self):
+        count = max(v[1] for v in self.count_segments() if v[0])
+        return count * self.delta
+
+    @property
+    def longest_speech_segment_duration(self):
+        count = max(v[1] for v in self.count_segments() if not v[0])
         return count * self.delta
 
     @property
     def segments_amount(self):
         return len([_ for value, group in itertools.groupby(self.mask) if value])
 
+    # boolean and for mask vectors for argument
     @classmethod
     def intersect(cls, first, second):
         assert first.frame_duration == second.frame_duration
@@ -63,6 +75,14 @@ class Mask:
 
         return cls(mask=[a and b for a, b in zip(first.mask, second.mask)],
                    frame_duration=first.frame_duration)
+
+    @property
+    def speech_duration(self):
+        return self._count_speech_frames() * self.delta
+
+    @property
+    def speech_to_total_ratio(self):
+        return self._count_speech_frames() / len(self.mask)
 
 
 class Track:
@@ -131,6 +151,10 @@ class Track:
     def same_format(cls, first, second):
         return (first.framerate, first.sampwidth) == (second.framerate, second.sampwidth)
 
+class Interruption:
+    def __init__(self, from_operator, duration):
+        self.from_operator = from_operator
+        self.duration = duration
 
 class Dialog:
 
@@ -158,12 +182,19 @@ class Dialog:
         for name, mask in zip(('client', 'operator', 'both'),
                               (mask_client, mask_operator, mask_both)):
             data[name] = {
-                'total_duration': mask.total_duration,
-                'total_ratio': mask.total_ratio,
-                'longest_segment_duration': mask.longest_segment_duration,
+                'silence_duration': mask.silence_duration,
+                'silence_to_total_ratio': mask.silence_to_total_ratio,
+                'longest_silence_segment_duration': mask.longest_silence_segment_duration,
+                'longest_speech_segment_duration' : mask.longest_speech_segment_duration,
+                'speech_to_total_ratio' : mask.speech_to_total_ratio,
+                'speech_duration' : mask.speech_duration
             }
-
+        data['operator_to_client_speech_ratio'] = data['operator']['speech_duration'] / data['client']['speech_duration']
         return data
+
+    def get_interruptions(self):
+        pass
+
 
 
 if __name__ == '__main__':
@@ -177,6 +208,13 @@ if __name__ == '__main__':
     # pprint.pprint(info)
 
     result = (
+        'Речь оператора, %                             {9:>6.1f}\n'
+        'Речь клиента, %                               {10:>6.1f}\n'
+        'Речь оператора, сек                           {11:>6.1f}\n'
+        'Речь клиента, сек                             {12:>6.1f}\n'
+        'Отношение речи оператора к речи клиента       {13:>6.1f}\n'
+        'Максимальный участок речи клиента, сек        {14:>6.1f}\n'
+        'Максимальный участок речи оператора, сек      {15:>6.1f}\n\n'
         'Общая продолжительность молчания, %:          {0:>6.1f}\n'
         'Общая продолжительность молчания, сек:        {1:>6.1f}\n'
         'Максимальный участок молчания, сек:           {2:>6.1f}\n\n'
@@ -187,15 +225,22 @@ if __name__ == '__main__':
         'Продолжительность молчания клиента, сек:      {7:>6.1f}\n'
         'Максимальный участок молчания клиента, сек:   {8:>6.1f}\n'
     ).format(
-        info['both']['total_ratio'] * 100,
-        info['both']['total_duration'],
-        info['both']['longest_segment_duration'],
-        info['operator']['total_ratio'] * 100,
-        info['operator']['total_duration'],
-        info['operator']['longest_segment_duration'],
-        info['client']['total_ratio'] * 100,
-        info['client']['total_duration'],
-        info['client']['longest_segment_duration'],
+        info['both']['silence_to_total_ratio'] * 100,
+        info['both']['silence_duration'],
+        info['both']['longest_silence_segment_duration'],
+        info['operator']['silence_to_total_ratio'] * 100,
+        info['operator']['silence_duration'],
+        info['operator']['longest_silence_segment_duration'],
+        info['client']['silence_to_total_ratio'] * 100,
+        info['client']['silence_duration'],
+        info['client']['longest_silence_segment_duration'],
+        info['client']  ['speech_to_total_ratio'] * 100,
+        info['operator']['speech_to_total_ratio'] * 100,
+        info['client']  ['speech_duration'],
+        info['operator']['speech_duration'],
+        info['operator_to_client_speech_ratio'],
+        info['client']  ['longest_speech_segment_duration'],
+        info['operator']['longest_speech_segment_duration'],
     )
 
     print()
