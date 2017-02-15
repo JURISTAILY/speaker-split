@@ -1,0 +1,16 @@
+.dialogue-info-progress
+{
+  height:5px;
+  padding-top:-3px;
+  float: right;
+  width:100%;
+  min-width: 50px;
+}
+
+grade-progress {
+	width:100%;
+}
+
+grade-progress {
+	height: 5px;
+}

@@ -15,7 +15,8 @@ import { LabelCallDircetionComponent } from './toolbox/label-call-direction/labe
 import { LabelGradeComponent } from './toolbox/label-grade/label-grade.component';
 import { TimeNumberPipe } from './toolbox/time-number.pipe'
 import { GradePercentPipe } from './toolbox/grade-percent.pipe'
-import { GradeColorPipe } from './toolbox/grade-color.pipe'
+import { GradeColorPipe } from './toolbox/grade-color.pipe';
+import { GradeProgressComponent } from './toolbox/grade-progress/grade-progress.component'
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { GradeColorPipe } from './toolbox/grade-color.pipe'
     LabelGradeComponent,
     TimeNumberPipe,
     GradeColorPipe,
-    GradePercentPipe
+    GradePercentPipe,
+    GradeProgressComponent
   ],
   imports: [
     BrowserModule,

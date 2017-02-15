@@ -65,11 +65,3 @@
   margin-left:5px;
   cursor: pointer;
 }
-.dialogue-info-progress
-{
-  min-width:100px;
-  height:5px;
-  padding-top:-3px;
-  float: right;
-  width: 200px;
-}
