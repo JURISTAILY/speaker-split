@@ -1,9 +1,10 @@
-<h3>Расшифровка диалога</h3>
+<h3 i18n>Dialog transcript</h3>
 <div class="dialogue-script">
   <table>
     <tbody>
-      <tr *ngFor="let transcript of transcripts">
-        <td [class.dialogue-script-op]="transcript.isOperator" [class.dialogue-script-cl]="!transcript.isOperator">{{ (transcript.isOperator ? "Оператор" : "Клиент") }}:</td>
+      <tr *ngFor="let transcript of transcripts" [ngSwitch]="transcript.isOperator">
+    	<td class="dialogue-script-op" *ngSwitchCase="true" i18n>operator:</td>
+    	<td class="dialogue-script-cl" *ngSwitchCase="false" i18n>client:</td>
         <td>{{ transcript.transcript }}</td>
       </tr>
     </tbody>

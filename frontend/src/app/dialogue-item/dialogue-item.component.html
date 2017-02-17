@@ -5,7 +5,7 @@
   </template>
   <td><label-call-direction [isIncoming]="call.isIncoming"></label-call-direction></td>
   <td><label-grade [grade]="call.grade"></label-grade></td>
-  <td><span class="dialogue-tbl-info-trigger" (click)="switchDetails()">{{ (isOpen ? "Свернуть" : "Развернуть") }}</span></td>
+  <td><span class="dialogue-tbl-info-trigger" (click)="switchDetails()" i18n>{{ (isOpen ? "Hide" : "Show") }}</span></td>
 </tr>
 <tr *ngIf="isOpen">
   <td [attr.colspan]="call.tableValues.length + 4">

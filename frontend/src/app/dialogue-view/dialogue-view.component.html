@@ -1,16 +1,16 @@
 <table class="dialogue-view">
   <thead>
     <tr>
-      <td>Название среза</td>
+      <td i18n="|main dialog list table header">slice name</td>
       <template ngFor let-col [ngForOf]="columns">
         <td [innerHTML]="col.title"></td>
       </template>
-      <td>Тип</td>
-      <td>Оценка разговора</td>
-      <td>Запись разговора</td>
+      <td i18n="|main dialog list table header">type</td>
+      <td i18n="|main dialog list table header">call value</td>
+      <td i18n="|main dialog list table header">call record</td>
     </tr>
   </thead>
   <tbody app-dialogue-item *ngFor="let call of calls" [call]="call" [isOpen]="currentOpen === call.id" (onToggled)="toggleItem(call.id)">
   </tbody>
 </table>
-тут скачаю .xls
+<!--i18n:|download button under main table-->download .xls<!--/i18n-->
