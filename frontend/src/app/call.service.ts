@@ -8,7 +8,7 @@ import { DialogueViewComponent } from './dialogue-view/dialogue-view.component'
 
 @Injectable()
 export class CallService {
-  private API_URL = 'http://demo.avto-podborka.ru/api/calls';
+  private API_URL = 'http://localhost:8001/calls';
 
   constructor(private http: Http) { }
 
@@ -19,8 +19,7 @@ export class CallService {
                     .catch(this.handleError);
   }
 
-  private static fromDataForMainTable(datum : any)
-  {
+  private static fromDataForMainTable(datum : any) {
     let arr = DialogueViewComponent.COLUMNS;
     let result = Array<any>(arr.length)
     for (let id in arr) {
