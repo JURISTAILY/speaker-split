@@ -57,12 +57,6 @@
   border-left: none;
 }
 
-.dialogue-tbl-info-trigger
-{
-  border-bottom: 1px dashed #545454;
-  cursor: pointer;
-}
-
 .tooltip {
     position: relative;
     display: inline-block;

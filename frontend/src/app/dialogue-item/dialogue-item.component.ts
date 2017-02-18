@@ -13,7 +13,7 @@ export class DialogueItemComponent  {
   @Input() call: Call;
   @Output() onToggled : EventEmitter<any> = new EventEmitter<any>();
   @Input() isOpen : boolean;
-  
+
   switchDetails(): void {
     this.onToggled.emit(null);
   }
