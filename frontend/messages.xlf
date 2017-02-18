@@ -1,51 +1,59 @@
-<?xml version='1.0' encoding='utf-8'?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en" datatype="plaintext" original="ng2.template">
     <body>
-      <trans-unit id="43901a7fee6c77eeb504ea629505b4567b5bbd7c" datatype="html" approved="yes">
-        <source>slice name</source> 
-        <target state="translated">Название среза</target> 
+      <trans-unit id="43901a7fee6c77eeb504ea629505b4567b5bbd7c" datatype="html">
+        <source>slice name</source>
+        <target/>
         <note priority="1" from="description">main dialog list table header</note>
       </trans-unit>
-      <trans-unit id="240c9c1e96dc38814922a83ad041dc815b084f32" datatype="html" approved="yes">
-        <source>type</source> 
-        <target state="translated">Тип</target> 
+      <trans-unit id="240c9c1e96dc38814922a83ad041dc815b084f32" datatype="html">
+        <source>type</source>
+        <target/>
         <note priority="1" from="description">main dialog list table header</note>
       </trans-unit>
-      <trans-unit id="d1b6d5e11c4ced3f776a74b8e55e8d2ed672160a" datatype="html" approved="yes">
-        <source>call value</source> 
-        <target state="translated">Оценка разговора</target> 
+      <trans-unit id="d1b6d5e11c4ced3f776a74b8e55e8d2ed672160a" datatype="html">
+        <source>call value</source>
+        <target/>
         <note priority="1" from="description">main dialog list table header</note>
       </trans-unit>
-      <trans-unit id="e73f8b8a934115e2542ef4c2b756f1d99330e348" datatype="html" approved="yes">
-        <source>call record</source> 
-        <target state="translated">Запись разговора</target> 
+      <trans-unit id="e73f8b8a934115e2542ef4c2b756f1d99330e348" datatype="html">
+        <source>call record</source>
+        <target/>
         <note priority="1" from="description">main dialog list table header</note>
       </trans-unit>
-      <trans-unit id="23b557a1cc82f1fc0a7b4a10643ce37cc03be3af" datatype="html" approved="yes">
-        <source>download .xls</source> 
-        <target state="translated">Загрузить в виде XL таблицы</target> 
+      <trans-unit id="23b557a1cc82f1fc0a7b4a10643ce37cc03be3af" datatype="html">
+        <source>download .xls</source>
+        <target/>
         <note priority="1" from="description">download button under main table</note>
       </trans-unit>
-      <trans-unit id="0b780c753cac2f07cd2f5e50e363242a31059861" datatype="html">
-        <source><x id="INTERPOLATION"/></source> 
-        <target>хуй <x id="INTERPOLATION"/></target> 
+      <trans-unit id="1eede69e18c5ac9c0b0295b72cabb7e64e029e74" datatype="html">
+        <source>Hide</source>
+        <target/>
       </trans-unit>
-      <trans-unit id="3e526ffa570da27bbdde188efcfb6c38a339d1f6" datatype="html" approved="yes">
-        <source>Dialog transcript</source> 
-        <target state="translated">Расшифровка диалога</target> 
+      <trans-unit id="2aba1e87039819aca3b70faa9aa848c12bf139ca" datatype="html">
+        <source>Show</source>
+        <target/>
       </trans-unit>
-      <trans-unit id="b46dcfcce48caffb63c137b44c424b29d9979683" datatype="html" approved="yes">
-        <source>operator:</source> 
-        <target state="translated">Оператор:</target> 
+      <trans-unit id="3bb5768e1d7464c461b4d9853e03805859d08ab5" datatype="html">
+        <source>Dialog data</source>
+        <target/>
       </trans-unit>
-      <trans-unit id="b77187ee04ce6d44d3da3c39d5d4abbce3f6d8e1" datatype="html" approved="yes">
-        <source>client:</source> 
-        <target state="translated">Клиент:</target> 
+      <trans-unit id="3e526ffa570da27bbdde188efcfb6c38a339d1f6" datatype="html">
+        <source>Dialog transcript</source>
+        <target/>
       </trans-unit>
-      <trans-unit id="25ab2f97134cd9e461e9d148588e2b04704d0bba" datatype="html" approved="yes">
-        <source>Call record</source> 
-        <target state="translated">Запись звонка</target> 
+      <trans-unit id="667c3eecf32238f5222df4d4f2b657d718826e4a" datatype="html">
+        <source>operator</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="890fef5f000dc7d81c4e63ca494ac86b85bdd9b5" datatype="html">
+        <source>client</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="25ab2f97134cd9e461e9d148588e2b04704d0bba" datatype="html">
+        <source>Call record</source>
+        <target/>
         <note priority="1" from="description">details header</note>
       </trans-unit>
     </body>

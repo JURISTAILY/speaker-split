@@ -3,8 +3,8 @@
   <table>
     <tbody>
       <tr *ngFor="let transcript of transcripts" [ngSwitch]="transcript.isOperator">
-    	<td class="dialogue-script-op" *ngSwitchCase="true" i18n>operator:</td>
-    	<td class="dialogue-script-cl" *ngSwitchCase="false" i18n>client:</td>
+    	<td class="dialogue-script-op" *ngSwitchCase="true"><!--i18n-->operator<!--/i18n-->:</td>
+    	<td class="dialogue-script-cl" *ngSwitchCase="false"><!--i18n-->client<!--/i18n-->:</td>
         <td>{{ transcript.transcript }}</td>
       </tr>
     </tbody>
