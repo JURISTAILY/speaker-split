@@ -1,19 +1,20 @@
 import functools
 import itertools
 
-from flask import Flask, request, jsonify
-from flask_cors import CORS as Cors
-from flask_restful import Api, Resource
-
 from sqlalchemy import (
     Column as BaseColumn, Unicode,
     Integer, ForeignKey, Float, Boolean, UnicodeText,
 )
-from sqlalchemy_utils import ArrowType
 from sqlalchemy.orm import relationship
+from sqlalchemy_utils import ArrowType
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-
+from flask_restful import Api, Resource
+import flask_cors
 import arrow
+
+Column = functools.partial(BaseColumn, nullable=False)
+
 
 APPLICATION_ROOT = '/api'
 RESTFUL_JSON = {
@@ -23,17 +24,7 @@ RESTFUL_JSON = {
 }
 SQLALCHEMY_DATABASE_URI = 'postgresql://speaker:deQucRawR27U@194.58.103.124/speaker-db'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-app = Flask(__name__)
-app.config.from_object(__name__)
-api = Api(app)
-cors = Cors(app, resources={
-    '/*': {'origins': '*'},
-})
-
-db = SQLAlchemy(app)
-
-Column = functools.partial(BaseColumn, nullable=False)
+SQLALCHEMY_ECHO = True
 
 DEFAULT_TRANSCRIPT = [
     {"speaker": "operator", "begin": 0.3, "end": 1.2, "phrase": "Здравствуйте! вы насчет работы торговым представителем?"},
@@ -44,32 +35,29 @@ DEFAULT_TRANSCRIPT = [
 ]
 
 
-class WithId:
+app = Flask(__name__)
+app.config.from_object(__name__)
+db = SQLAlchemy(app)
+rest_api = Api(app)
+cors = flask_cors.CORS(app, resources={'/*': {'origins': '*'}})
+
+
+class PrimaryKeyMixin:
     id = Column(Integer, primary_key=True)
 
 
-class Call(db.Model, WithId):
+class Call(db.Model, PrimaryKeyMixin):
     __tablename__ = 'calls'
 
     date = Column(ArrowType(timezone=True), default=arrow.now)
     duration = Column(Float)
     is_incoming = Column(Boolean)
 
-    parameters = relationship('Parameter', back_populates='call')
+    parameters = relationship('Parameter', lazy='joined', order_by='Parameter.id')
 
     def json(self):
-        categories = db.session.query(Category).order_by(Category.id).all()
 
-        data = {
-            'id': self.id,
-            'date': str(self.date),
-            'duration': self.duration,
-            'isIncoming': True,
-            'transcript': DEFAULT_TRANSCRIPT,
-            'info': [],
-        }
-
-        def key(p):
+        def gen_key(p):
             return p.meta.category.name
 
         items = [
@@ -79,32 +67,44 @@ class Call(db.Model, WithId):
                 'params': [p.json() for p in group],
             }
             for key, group in itertools.groupby(
-                sorted(self.parameters, key=key), key=key)
+                sorted(self.parameters, key=gen_key), key=gen_key)
         ]
 
-        for c in categories:
-            piece = {'name': c.name, 'name_rus': c.name_rus, 'grade': 0.0, 'params': []}
-            for item in items:
-                if item['name'] == c.name:
-                    piece.update(item)
-                    break
-            data['info'].append(piece)
+        def generate_info():
+            for c in Category.get_all():
+                piece = {'name': c.name, 'name_rus': c.name_rus, 'grade': 0.0, 'params': []}
+                for item in items:
+                    if item['name'] == piece['name']:
+                        piece.update(item)
+                        break
+                yield piece
 
-        return data
-
+        return {
+            'id': self.id,
+            'date': str(self.date),
+            'duration': self.duration,
+            'isIncoming': True,
+            'transcript': DEFAULT_TRANSCRIPT,
+            'info': list(generate_info()),
+        }
 
     def __repr__(self):
-        return '<Call id={}, duration={}, date={}>'.format(self.id, self.duration, self.date)
+        return '<Call (id={}, duration={}, date="{}")>'.format(
+            self.id, self.duration, self.date)
 
 
-class Category(db.Model, WithId):
+class Category(db.Model, PrimaryKeyMixin):
     __tablename__ = 'categories'
 
     name = Column(Unicode, unique=True)
     name_rus = Column(Unicode, unique=True)
 
+    @classmethod
+    def get_all(cls):
+        return db.session.query(cls).order_by(cls.id).all()
 
-class ParameterMeta(db.Model, WithId):
+
+class ParameterMeta(db.Model, PrimaryKeyMixin):
     __tablename__ = 'parameters_meta'
 
     name = Column(Unicode, unique=True)
@@ -112,18 +112,17 @@ class ParameterMeta(db.Model, WithId):
     description = Column(UnicodeText, default='')
     category_id = Column(Integer, ForeignKey('categories.id'))
 
-    category = relationship('Category')
+    category = relationship('Category', lazy='joined')
 
 
-class Parameter(db.Model, WithId):
+class Parameter(db.Model, PrimaryKeyMixin):
     __tablename__ = 'parameters'
 
     parameter_meta_id = Column(Integer, ForeignKey('parameters_meta.id'))
     value = Column(Float)
     call_id = Column(Integer, ForeignKey('calls.id'))
 
-    call = relationship('Call', back_populates='parameters')
-    meta = relationship('ParameterMeta')
+    meta = relationship('ParameterMeta', lazy='joined')
 
     def json(self):
         return {
@@ -133,6 +132,8 @@ class Parameter(db.Model, WithId):
             'grade': 0.0,
         }
 
+    def __repr__(self):
+        return "<Parameter ('{}', {})>".format(self.meta.name_rus, self.value)
 
 
 # def _init_db():
@@ -251,11 +252,16 @@ class Parameter(db.Model, WithId):
 
 class CallResource(Resource):
     def get(self):
-        calls = db.session.query(Call).order_by(Call.date.desc()).all()
-        return {'data': [call.json() for call in calls]}
+        return {
+            'data': [
+                call.json() for call in db.session.query(Call)
+                                                  .order_by(Call.date.desc())
+                                                  .all()
+            ]
+        }
 
 
-api.add_resource(CallResource, '/calls')
+rest_api.add_resource(CallResource, '/calls')
 
 
 @app.errorhandler(404)
