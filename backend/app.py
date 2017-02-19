@@ -1,11 +1,13 @@
+import functools
+import itertools
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS as Cors
 from flask_restful import Api, Resource
-import functools
 
 from sqlalchemy import (
     Column as BaseColumn, Unicode,
-    Integer, ForeignKey, Float, Boolean,
+    Integer, ForeignKey, Float, Boolean, UnicodeText,
 )
 from sqlalchemy_utils import ArrowType
 from sqlalchemy.orm import relationship
@@ -31,8 +33,15 @@ cors = Cors(app, resources={
 
 db = SQLAlchemy(app)
 
-
 Column = functools.partial(BaseColumn, nullable=False)
+
+DEFAULT_TRANSCRIPT = [
+    {"speaker": "operator", "begin": 0.3, "end": 1.2, "phrase": "Здравствуйте! вы насчет работы торговым представителем?"},
+    {"speaker": "client", "begin": 1.7, "end": 2.9, "phrase": "Да, вот моё резюме."},
+    {"speaker": "operator", "begin": 4.3, "end": 7.2, "phrase": "В нашей компании ассортимент товаров, с которыми вам придется работать, будет намного шире. Это кондитерские изделия: торты, пирожные, рулетики, конфеты. На какую зарплату вы рассчитываете?"},
+    {"speaker": "client", "begin": 8.3, "end": 11.2, "phrase": "На пятьсот долларов, как указано в вашем объявлении. Еще я рассчитываю, что если буду хорошо справляться со своими обязанностями, моя зарплата вырастет."},
+    {"speaker": "operator", "begin": 12.3, "end": 14.2, "phrase": "Наша компания всегда поощряет сотрудников за успехи в труде. Скажите, почему вы выбрали для работы именно нашу компанию?"},
+]
 
 
 class WithId:
@@ -46,10 +55,43 @@ class Call(db.Model, WithId):
     duration = Column(Float)
     is_incoming = Column(Boolean)
 
-    parameter_values = relationship('ParameterValue')
+    parameters = relationship('Parameter', back_populates='call')
 
-    def as_json(self):
-        return {}
+    def json(self):
+        categories = db.session.query(Category).order_by(Category.id).all()
+
+        data = {
+            'id': self.id,
+            'date': str(self.date),
+            'duration': self.duration,
+            'isIncoming': True,
+            'transcript': DEFAULT_TRANSCRIPT,
+            'info': [],
+        }
+
+        def key(p):
+            return p.meta.category.name
+
+        items = [
+            {
+                'name': key,
+                'grade': 0.0,
+                'params': [p.json() for p in group],
+            }
+            for key, group in itertools.groupby(
+                sorted(self.parameters, key=key), key=key)
+        ]
+
+        for c in categories:
+            piece = {'name': c.name, 'name_rus': c.name_rus, 'grade': 0.0, 'params': []}
+            for item in items:
+                if item['name'] == c.name:
+                    piece.update(item)
+                    break
+            data['info'].append(piece)
+
+        return data
+
 
     def __repr__(self):
         return '<Call id={}, duration={}, date={}>'.format(self.id, self.duration, self.date)
@@ -59,97 +101,158 @@ class Category(db.Model, WithId):
     __tablename__ = 'categories'
 
     name = Column(Unicode, unique=True)
-    parameters = relationship('Parameter', back_populates='category')
+    name_rus = Column(Unicode, unique=True)
+
+
+class ParameterMeta(db.Model, WithId):
+    __tablename__ = 'parameters_meta'
+
+    name = Column(Unicode, unique=True)
+    name_rus = Column(Unicode)
+    description = Column(UnicodeText, default='')
+    category_id = Column(Integer, ForeignKey('categories.id'))
+
+    category = relationship('Category')
 
 
 class Parameter(db.Model, WithId):
     __tablename__ = 'parameters'
 
-    name = Column(Unicode, unique=True)
-    category_id = Column(Integer, ForeignKey('categories.id'))
-    category = relationship('Category', back_populates='parameters')
-
-
-class ParameterValue(db.Model, WithId):
-    parameter_id = Column(Integer, ForeignKey('parameters.id'))
+    parameter_meta_id = Column(Integer, ForeignKey('parameters_meta.id'))
     value = Column(Float)
     call_id = Column(Integer, ForeignKey('calls.id'))
 
+    call = relationship('Call', back_populates='parameters')
+    meta = relationship('ParameterMeta')
 
-def init_db():
-
-    try:
-        c = db.session.query(Category).filter_by(name='quantitive_timing').one()
-
-        db.session.add(Parameter(name="operator_speech_ratio", category=c))
-        db.session.add(Parameter(name="operator_speech_duration", category=c))
-        db.session.add(Parameter(name="operator_interruptions", category=c))
-
-        db.session.commit()
-
-        call = Call(duration=12.4, is_incoming=True)
-        db.session.add(call)
-        db.session.flush()
-
-        db.session.add(ParameterValue(call_id=call.id, parameter_id=1, value=0.7))
-        db.session.add(ParameterValue(call_id=call.id, parameter_id=2, value=24.0))
-        db.session.add(ParameterValue(call_id=call.id, parameter_id=3, value=4.0))
-
-        db.session.flush()
-
-        db.session.commit()
-
-    except Exception:
-        db.session.rollback()
-        raise
-
-
-
-CALL = {
-    "id": 157,
-    "date": "2017-01-22H22:30:21+03:00",
-    "duration": 31.2,
-    "grade": 7.2,
-    "isIncoming": True,
-    "info": [
-        {
-            "name" : "quantitative_timing",
-            "grade": 6.9,
-            "params": [
-                {"name": "operator_speech_ratio", "value": 0.7, "grade": 4.9},
-                {"name": "operator_speech_duration", "value": 24.0, "grade": 9.1},
-                {"name": "operator_interruptions", "value": 4, "grade": 2},
-            ],
-        },
-        {
-            "name" : "speech_activity"
-        },
-        {
-            "name" : "semantic"
-        },
-        {
-            "name" : "emotional"
+    def json(self):
+        return {
+            'name': self.meta.name,
+            'name_rus': self.meta.name_rus,
+            'value': self.value,
+            'grade': 0.0,
         }
-    ],
-    "transcript": [
-        {"speaker": "operator", "begin": 0.3, "end": 1.2, "phrase": "Здравствуйте! вы насчет работы торговым представителем?"},
-        {"speaker": "client", "begin": 1.7, "end": 2.9, "phrase": "Да, вот моё резюме."},
-        {"speaker": "operator", "begin": 4.3, "end": 7.2, "phrase": "В нашей компании ассортимент товаров, с которыми вам придется работать, будет намного шире. Это кондитерские изделия: торты, пирожные, рулетики, конфеты. На какую зарплату вы рассчитываете?"},
-        {"speaker": "client", "begin": 8.3, "end": 11.2, "phrase": "На пятьсот долларов, как указано в вашем объявлении. Еще я рассчитываю, что если буду хорошо справляться со своими обязанностями, моя зарплата вырастет."},
-        {"speaker": "operator", "begin": 12.3, "end": 14.2, "phrase": "Наша компания всегда поощряет сотрудников за успехи в труде. Скажите, почему вы выбрали для работы именно нашу компанию?"},
-    ],
-}
 
+
+
+# def _init_db():
+
+#     try:
+#         db.metadata.create_all(db.engine)
+
+#         db.session.add(Category(name='quantitative_timing', name_rus='Количественно-временные параметры'))
+#         db.session.add(Category(name='speech_activity', name_rus='Параметры речевой активности'))
+#         db.session.add(Category(name='semantic', name_rus='Лексико-семантический анализ'))
+#         db.session.add(Category(name='emotional', name_rus='Анализ эмоционального состояния'))
+
+#         db.session.flush()
+
+#         default_category = db.session.query(Category).filter_by(name='speech_activity').one()
+
+#         listed = [
+#             ("Речь оператора, %",                            "operator_speech_ratio"),
+#             ("Речь клиента, %",                              "client_speech_ratio"),
+#             ("Речь оператора, сек",                          "operator_speech_duration"),
+#             ("Речь клиента, сек",                            "client_speech_duration"),
+#             ("Отношение речи оператора к речи клиента, %",   "operator_to_client_speech_ratio"),
+#             ("Максимальный участок речи оператора, сек",     "operator_longest_speech_segment_duration"),
+#             ("Максимальный участок речи клиента, сек",       "client_longest_speech_segment_duration"),
+
+#             ("Перебивания, %",                            "both_interruptions_ratio"),
+#             ("Перебивания, шт",                           "both_interruptions_count"),
+#             ("Перебивания, сек",                          "both_interruptions_duration"),
+#             ("Перебивания клиента оператором, %",         "operator_interruptions_ratio"),
+#             ("Перебивания клиента оператором, шт",        "operator_interruptions_count"),
+#             ("Перебивания клиента оператором, сек",       "operator_interruptions_duration"),
+#             ("Перебивания оператора клиентом, %",         "client_interruptions_ratio"),
+#             ("Перебивания оператора клиентом, шт",        "client_interruptions_count"),
+#             ("Перебивания оператора клиентом, сек",       "client_interruptions_duration"),
+
+#             ("Общая продолжительность молчания, %",                                        "both_silence_ratio"),
+#             ("Общая продолжительность молчания, сек",                                      "both_silence_duration"),
+#             ("Максимальный участок молчания, сек",                                         "both_longest_silence_segment_duration"),
+#             ("Продолжительность молчания оператора, %",                                    "operator_silence_ratio"),
+#             ("Продолжительность молчания оператора, сек",                                  "operator_silence_duration"),
+#             ("Максимальный участок молчания оператора, сек",                               "operator_longest_silence_segment_duration"),
+#             ("Продолжительность молчания клиента, %",                                      "client_silence_ratio"),
+#             ("Продолжительность молчания клиента, сек",                                    "client_silence_duration"),
+#             ("Максимальный участок молчания клиента,  сек",                                "client_longest_silence_segment_duration"),
+#             ("Залипания оператора (паузы более 5-10 секунд после реплики клиента), сек",   "operator_freezing"),
+#             ("Залипания клиента (паузы более 5-10 секунд после реплики оператора), сек",   "client_freezing"),
+#         ]
+
+#         for name_rus, name in listed:
+#             db.session.add(ParameterMeta(name=name,
+#                                          name_rus=name_rus,
+#                                          category=default_category))
+
+#         db.session.commit()
+
+#     except Exception:
+#         db.session.rollback()
+#         raise
+
+
+# def _add_call():
+#     try:
+#         call = Call(duration=12.4, is_incoming=True)
+
+#         db.session.add(call)
+#         db.session.flush()
+
+#         values = [
+#             ("operator_speech_ratio", 30.05),
+#             ("client_speech_ratio", 40.66),
+#             ("operator_speech_duration", 14.10),
+#             ("client_speech_duration", 19.08),
+
+#             ("operator_to_client_speech_ratio",  1.35),
+#             ("client_longest_speech_segment_duration",  6.15),
+#             ("operator_longest_speech_segment_duration",  4.53),
+
+
+#             ("both_interruptions_ratio",  9.08),
+#             ("both_interruptions_count",    13),
+#             ("both_interruptions_duration",  0.09),
+
+#             ("operator_interruptions_ratio",  3.01),
+#             ("operator_interruptions_count",     7),
+#             ("operator_interruptions_duration",  0.03),
+
+#             ("client_interruptions_ratio",  5.88),
+#             ("client_interruptions_count",     5),
+#             ("client_interruptions_duration",  0.06),
+
+
+#             ("both_silence_ratio", 38.36),
+#             ("both_silence_duration", 18.00),
+#             ("both_longest_silence_segment_duration",  5.22),
+
+#             ("operator_silence_ratio", 59.34),
+#             ("operator_silence_duration", 27.84),
+#             ("operator_longest_silence_segment_duration",  4.74),
+
+#             ("client_silence_ratio", 69.95),
+#             ("client_silence_duration", 32.82),
+#             ("client_longest_silence_segment_duration",  2.49),
+#         ]
+
+#         for name, value in values:
+#             print(name, value)
+#             meta = db.session.query(ParameterMeta).filter_by(name=name).one()
+#             db.session.add(Parameter(call=call, parameter_meta_id=meta.id, value=value))
+
+#         db.session.commit()
+
+#     except Exception:
+#         db.session.rollback()
+#         raise
 
 
 class CallResource(Resource):
     def get(self):
-        # calls = db.session.query(Call).order_by(Call.date.desc()).all()
-        # return {'data': [call.as_json() for call in calls]}
-        calls = [CALL.copy() for _ in range(3)]
-        for n, _ in enumerate(calls):
-            calls[n]['id'] = 157 + n
-        return dict(data=calls)
+        calls = db.session.query(Call).order_by(Call.date.desc()).all()
+        return {'data': [call.json() for call in calls]}
 
 
 api.add_resource(CallResource, '/calls')
