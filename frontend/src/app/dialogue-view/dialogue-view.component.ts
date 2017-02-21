@@ -37,7 +37,7 @@ export class DialogueViewComponent implements OnInit {
     {
       title : "Доля речи оператора",
       pipe : new PercentPipe('rus'),
-      jsonKey : "operator_speech_percent"
+      jsonKey : "operator_speech_ratio"
     },
     {
       title : "Длительность речи оператора",
@@ -47,12 +47,12 @@ export class DialogueViewComponent implements OnInit {
     {
       title : "Клиент перебивает оператора",
       pipe : new DecimalPipe('rus'),
-      jsonKey : "client_interruptions"
+      jsonKey : "client_interruptions_count"
     },
     {
       title : "Оператор перебивает клиента",
       pipe : new DecimalPipe('rus'),
-      jsonKey : "operatorInterruptions"
+      jsonKey : "operator_interruptions_count"
     },
     {
       title : "Молчание оператора",

@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { DecimalPipe, PercentPipe } from '@angular/common'
 
 import { CallDetail } from '../models';
 
@@ -16,7 +17,7 @@ export class DialogueDetailsTableComponent  {
 
   gradeValueAndUnit(num : number) : string {
     if (typeof(num) !== 'undefined' && num === num) {
-      return num + ' балл' + rusNumberTermination(num);
+      return new DecimalPipe('rus').transform(num) + ' балл' + rusNumberTermination(num);
     }
     return 'нет оценки'
   }

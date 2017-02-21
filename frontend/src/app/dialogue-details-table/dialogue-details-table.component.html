@@ -6,17 +6,17 @@
         <tr class="dialogue-info-group">
           <td style="width:420px;"><img src="assets/img/{{ (!open[detail.title] ? 'open' : 'close') }}.png" alt="show" (click)="open[detail.title] = !open[detail.title]" />{{ detail.title }}</td>
           <td>
-            <grade-progress [grade]="detail.grade"></grade-progress>
+            <grade-progress [grade]="detail.value"></grade-progress>
           </td>
-          <td style="width:140px;">{{ gradeValueAndUnit(detail.grade) }}</td>
+          <td style="width:140px;">{{ gradeValueAndUnit(detail | grade) }}</td>
         </tr>
         <template ngFor let-item [ngForOf]="detail.children">
           <tr *ngIf="open[detail.title]">
-            <td>{{ item.title }}<span style="float:right; width:30px;">{{ item.value }}</span></td>
+            <td>{{ item.title }}<span style="float:right; width:30px;">{{ item.pipe(item.value) }}</span></td>
             <td>
-              <grade-progress [grade]="item.grade"></grade-progress>
+              <grade-progress [grade]="item.value | grade:item.name"></grade-progress>
             </td>
-            <td>{{ gradeValueAndUnit(item.grade) }}</td>
+            <td>{{ gradeValueAndUnit(item.value | grade:item.name) }}</td>
           </tr>
         </template>
       </template>

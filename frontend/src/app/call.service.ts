@@ -3,7 +3,6 @@ import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
 import { Call, CallTranscript, CallDetail, CallSource } from './models';
-import { PARAMS_KEY_RESOLVE } from './speech-resolve'
 import { DialogueViewComponent } from './dialogue-view/dialogue-view.component'
 
 @Injectable()
@@ -52,11 +51,12 @@ export class CallService {
       let result : Array<CallDetail> = new Array<CallDetail>(sublist.length);
       for (let id in sublist) {
         result[id] = {
+          name : sublist[id].name,
           children : [],
-          title : PARAMS_KEY_RESOLVE(sublist[id].name),
+          title : sublist[id].name_rus,
           value : sublist[id].value,
-          grade : sublist[id].grade
-        }
+          pipe : function() { return arguments[0]; }
+        } as CallDetail
       }
       return result;
     };
@@ -66,22 +66,10 @@ export class CallService {
       for (let i in info) {
         result[i] = {
           children : paramToDatail(info[i].params),
-          title : PARAMS_KEY_RESOLVE(info[i].name),
-          value : null,
-          grade : info[i].grade
-        }
-      }
-      return result;
-    } else if (typeof(info) === "object") {
-      let result : Array<CallDetail> = new Array<CallDetail>(Object.keys(info).length);
-      let i = 0;
-      for (let key in info) {
-        result[i++] = {
-          children : paramToDatail(info[key].params),
-          title : PARAMS_KEY_RESOLVE(key),
-          value : null,
-          grade : info[key].grade
-        }
+          title : info[i].name_rus,
+          name : info[i].name,
+          value : null
+        } as CallDetail
       }
       return result;
     } else {
@@ -101,7 +89,6 @@ export class CallService {
         tableValues : CallService.fromDataForMainTable(i),
         name: i.id,
         isIncoming : i.isIncoming,
-        grade : i.grade,
         transcripts : (function(transcripts : Array<any>) : CallTranscript[] {
           if (typeof(transcripts) === "undefined") {
             return new Array<CallTranscript>();
@@ -129,7 +116,7 @@ export class CallService {
           }
           return src;
         })(i.sources),
-      };
+      } as Call;
     }
 
     return adapted;

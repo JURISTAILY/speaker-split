@@ -1,8 +1,8 @@
 export class CallDetail {
     children : Array<CallDetail>;
     title : string;
-    value : string;
-    grade : number;
+    value : number;
+    name : string;
 }
 
 export class CallTranscript {
@@ -21,7 +21,6 @@ export class Call {
     name : string;
     tableValues : any;
     isIncoming : boolean;
-    grade : number;
     transcripts : CallTranscript[];
     details : CallDetail[];
     sources : CallSource[];

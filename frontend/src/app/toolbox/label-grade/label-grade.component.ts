@@ -4,7 +4,7 @@ import { Component, Input } from '@angular/core';
   selector: 'label-grade',
   template: `
   <div class="dialogue-tbl-progress">
-  	<div [style.background-color]="grade | gradeToColor">{{ grade | number }}</div>
+  	<div [style.background-color]="grade | gradeToColor">{{ grade | number:'1.0-1' }}</div>
   </div>`,
   styleUrls: ['./label-grade.component.css']
 })

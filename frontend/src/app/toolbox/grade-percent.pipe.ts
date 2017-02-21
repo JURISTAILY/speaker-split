@@ -9,4 +9,3 @@ export class GradePercentPipe implements PipeTransform {
     return GRADE_TO_PERCENT_SCALE(grade);
   }
 }
-

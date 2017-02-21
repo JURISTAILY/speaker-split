@@ -4,7 +4,7 @@
     <td [innerHTML]="colValue"></td>
   </template>
   <td><label-call-direction [isIncoming]="call.isIncoming"></label-call-direction></td>
-  <td><label-grade [grade]="call.grade"></label-grade></td>
+  <td><label-grade [grade]="call | grade"></label-grade></td>
   <td>
     <span [ngSwitch]="isOpen" class="dialogue-tbl-info-trigger" (click)="switchDetails()">
       <ng-container *ngSwitchCase="true">Свернуть</ng-container>
