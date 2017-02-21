@@ -7,7 +7,7 @@ import { DialogueViewComponent } from './dialogue-view/dialogue-view.component'
 
 @Injectable()
 export class CallService {
-  private API_URL = 'http://localhost:8001/calls';
+  private API_URL = 'http://demo.avto-podborka.ru/api/calls';
 
   constructor(private http: Http) { }
 

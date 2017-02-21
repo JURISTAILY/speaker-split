@@ -17,7 +17,7 @@ export class DialogueDetailsTableComponent  {
 
   gradeValueAndUnit(num : number) : string {
     if (typeof(num) !== 'undefined' && num === num) {
-      return new DecimalPipe('rus').transform(num) + ' балл' + rusNumberTermination(num);
+      return new DecimalPipe('rus').transform(num,'1.0-1') + ' балл' + rusNumberTermination(num);
     }
     return 'нет оценки'
   }
