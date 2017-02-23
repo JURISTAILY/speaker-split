@@ -23,7 +23,7 @@
   background-color: white;
   margin-top:1px;
   padding-left:20px;
-  padding-right:20px;
+  /*padding-right:20px;*/
   height:40px;
   font-size:14px;
 }
@@ -50,7 +50,7 @@
 
 .dialogue-info td:first-child
 {
-  padding-left: 90px;
+  padding-left: 45px;
 }
 
 .dialogue-info-group td:first-child
