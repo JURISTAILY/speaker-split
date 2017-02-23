@@ -8,6 +8,7 @@ import sys
 
 import webrtcvad
 import numpy as np
+from app import Call, db, ParameterMeta, Parameter
 
 def _normalize(signal):
     scale = np.absolute(signal).max()
@@ -174,14 +175,14 @@ class Dialog:
         track_1, track_2 = track_client, track_operator
         assert Track.same_format(track_1, track_2)
 
-        common_length = min(len(track_1.bytes), len(track_2.bytes))
+        self.common_length = min(len(track_1.bytes), len(track_2.bytes))
 
         factory = functools.partial(Track,
                                     sampwidth=track_1.sampwidth,
                                     framerate=track_1.framerate)
 
-        self.track_client = factory(track_1.bytes[:common_length])
-        self.track_operator = factory(track_2.bytes[:common_length])
+        self.track_client = factory(track_1.bytes[:self.common_length])
+        self.track_operator = factory(track_2.bytes[:self.common_length])
 
         self.mask_client = self.track_client.get_mask(vad_agressiviness_level, frame_duration)
         self.mask_operator = self.track_operator.get_mask(vad_agressiviness_level, frame_duration)
@@ -210,19 +211,32 @@ class Dialog:
                 duration += 1
 
     def get_silence_info(self):
-        data = {}
-        for name, mask in zip(('client', 'operator', 'both'),
-                              (self.mask_client, self.mask_operator, self.mask_both)):
-            data[name] = {
-                'silence_duration': mask.silence_duration,
-                'silence_to_total_ratio': mask.silence_to_total_ratio,
-                'longest_silence_segment_duration': mask.longest_silence_segment_duration,
-                'longest_speech_segment_duration' : mask.longest_speech_segment_duration,
-                'speech_to_total_ratio' : mask.speech_to_total_ratio,
-                'speech_duration' : mask.speech_duration
-            }
-        data['operator_to_client_speech_ratio'] = data['operator']['speech_duration'] / data['client']['speech_duration']
-        return data
+        return {
+            'operator_speech_ratio' : self.mask_operator.speech_to_total_ratio,
+              'client_speech_ratio' : self.mask_client  .speech_to_total_ratio,
+            'operator_speech_duration' : self.mask_operator.speech_duration,
+              'client_speech_duration' : self.mask_client  .speech_duration,
+
+            'operator_to_client_speech_ratio' : self.mask_operator.speech_duration / self.mask_client.speech_duration,
+
+            'operator_longest_speech_segment_duration' : self.mask_operator.longest_speech_segment_duration,
+              'client_longest_speech_segment_duration' : self.mask_client  .longest_speech_segment_duration,
+
+            'operator_silence_ratio' : self.mask_operator.silence_to_total_ratio,
+              'client_silence_ratio' : self.mask_client  .silence_to_total_ratio,
+                'both_silence_ratio' : self.mask_both    .silence_to_total_ratio,
+
+            'operator_silence_duration' : self.mask_operator.silence_duration,
+              'client_silence_duration' : self.mask_client  .silence_duration,
+                'both_silence_duration' : self.mask_both    .silence_duration,
+
+            'operator_longest_silence_segment_duration' : self.mask_operator.longest_silence_segment_duration,
+              'client_longest_silence_segment_duration' : self.mask_client  .longest_silence_segment_duration,
+                'both_longest_silence_segment_duration' : self.mask_both    .longest_silence_segment_duration
+        }
+
+    def duration(self):
+        return self.common_length * self.mask_client.frame_duration
 
     def get_interruptions_info(self) :
         client = 0
@@ -251,32 +265,28 @@ class Dialog:
                 if interruption[1] is SpeechState.OPERATOR or interruption[1] is SpeechState.INTERRUPTION:
                     if dur > self.freezingLimit:
                         clientFreezing += dur
-
+                        
         return {
-            'client' : {
-                'count' : client,
-                'duration' : self.frames_to_duration(clientFrames),
-                'ratio' : self.frames_to_ratio(clientFrames),
-                'freezing' : clientFreezing
-            },
-            'operator' : {
-                'count' : operator,
-                'duration' : self.frames_to_duration(operatorFrames),
-                'ratio' : self.frames_to_ratio(operatorFrames),
-                'freezing' : operatorFreezing
-            },
-            'both' : {
-                'count' : both,
-                'duration' : self.frames_to_duration(bothFrames),
-                'ratio' : self.frames_to_ratio(bothFrames)
-            }
+#            'operator_freezing' : operatorFreezing,
+#              'client_freezing' : clientFreezing,
+                
+            'operator_interruptions_ratio' : self.frames_to_ratio(operatorFrames),
+              'client_interruptions_ratio' : self.frames_to_ratio(clientFrames),
+                'both_interruptions_ratio' : self.frames_to_ratio(bothFrames),
+
+            'operator_interruptions_duration' : self.frames_to_duration(operatorFrames),
+              'client_interruptions_duration' : self.frames_to_duration(clientFrames),
+                'both_interruptions_duration' : self.frames_to_duration(bothFrames),
+
+            'operator_interruptions_count' : operator,
+              'client_interruptions_count' : client,
+                'both_interruptions_count' : both
         }
-
-
 
 if __name__ == '__main__':
 
     filename = './audio_samples/Dialog_1/dialog.wav'
+    is_incoming = True
     tr_1 = Track.from_file(filename, channel=0)
     tr_2 = Track.from_file(filename, channel=1)
     dialog = Dialog(track_client=tr_1, track_operator=tr_2)
@@ -285,63 +295,17 @@ if __name__ == '__main__':
     interruptions_info = dialog.get_interruptions_info()
     # pprint.pprint(info)
 
-    result = (
-        'Речь оператора, %                             {9:>6.2f}\n'
-        'Речь клиента, %                               {10:>6.2f}\n'
-        'Речь оператора, сек                           {11:>6.2f}\n'
-        'Речь клиента, сек                             {12:>6.2f}\n\n'
-        'Отношение речи оператора к речи клиента       {13:>6.2f}\n'
-        'Максимальный участок речи клиента, сек        {14:>6.2f}\n'
-        'Максимальный участок речи оператора, сек      {15:>6.2f}\n\n\n'
-        'Перебивания, %                                {16:>6.2f}\n'
-        'Перебивания, шт                               {17:>6d}\n'
-        'Перебивания, сек                              {18:>6.2f}\n\n'
-        'Перебивания клиента оператором, %             {19:>6.2f}\n'
-        'Перебивания клиента оператором, шт            {20:>6d}\n'
-        'Перебивания клиента оператором, сек           {21:>6.2f}\n\n'
-        'Перебивания оператора клиентом, %             {22:>6.2f}\n'
-        'Перебивания оператора клиентом, шт            {23:>6d}\n'
-        'Перебивания оператора клиентом, сек           {24:>6.2f}\n\n\n'
-        'Общая продолжительность молчания, %:          {0:>6.2f}\n'
-        'Общая продолжительность молчания, сек:        {1:>6.2f}\n'
-        'Максимальный участок молчания, сек:           {2:>6.2f}\n\n'
-        'Продолжительность молчания оператора, %:      {3:>6.2f}\n'
-        'Продолжительность молчания оператора, сек:    {4:>6.2f}\n'
-        'Максимальный участок молчания оператора, сек: {5:>6.2f}\n\n'
-        'Продолжительность молчания клиента, %:        {6:>6.2f}\n'
-        'Продолжительность молчания клиента, сек:      {7:>6.2f}\n'
-        'Максимальный участок молчания клиента, сек:   {8:>6.2f}\n'
-        'Залипания оператора (паузы более 5-10 секунд после реплики клиента), сек\t{25:>6.7f}\n'
-        'Залипания клиента (паузы более 5-10 секунд после реплики оператора), сек\t{26:>6.7f}\n'
-    ).format(
-        silence_info['both']['silence_to_total_ratio'] * 100,
-        silence_info['both']['silence_duration'],
-        silence_info['both']['longest_silence_segment_duration'],
-        silence_info['operator']['silence_to_total_ratio'] * 100,
-        silence_info['operator']['silence_duration'],
-        silence_info['operator']['longest_silence_segment_duration'],
-        silence_info['client']['silence_to_total_ratio'] * 100,
-        silence_info['client']['silence_duration'],
-        silence_info['client']['longest_silence_segment_duration'],
-        silence_info['client']  ['speech_to_total_ratio'] * 100,
-        silence_info['operator']['speech_to_total_ratio'] * 100,
-        silence_info['client']  ['speech_duration'],
-        silence_info['operator']['speech_duration'],
-        silence_info['operator_to_client_speech_ratio'],
-        silence_info['client']  ['longest_speech_segment_duration'],
-        silence_info['operator']['longest_speech_segment_duration'],
-        interruptions_info['both']['ratio'] * 100,
-        interruptions_info['both']['count'],
-        interruptions_info['both']['duration'],  
-        interruptions_info['client']['ratio'] * 100,
-        interruptions_info['client']['count'],
-        interruptions_info['client']['duration'],  
-        interruptions_info['operator']['ratio'] * 100,
-        interruptions_info['operator']['count'],
-        interruptions_info['operator']['duration'],
-        interruptions_info['client']['freezing'], 
-        interruptions_info['operator']['freezing'],        
-    )
+    call = Call(duration=dialog.duration(), is_incoming=is_incoming)
+
+    db.session.add(call)
+
+    silence_info.update(interruptions_info)
+
+    for name, value in silence_info.items():
+        meta = db.session.query(ParameterMeta).filter_by(name=name).one()
+        db.session.add(Parameter(call=call, parameter_meta_id=meta.id, value=value))
+
+    db.session.commit()
 
     print()
     print(result)
