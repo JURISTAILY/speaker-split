@@ -194,7 +194,7 @@ class Dialog:
         return self.mask_client.frames_to_ratio(frames_count)
 
     def frames_to_duration(self, frames_count):
-        return self.mask_client.frames_to_ratio(frames_count)
+        return self.mask_client.frames_to_duration(frames_count)
 
     def influence_iterator(self):
         cur = SpeechState.fromMasks(self.mask_client.mask[0], self.mask_operator.mask[0])
@@ -236,7 +236,7 @@ class Dialog:
         }
 
     def duration(self):
-        return self.common_length * self.mask_client.frame_duration
+        return self.track_client.duration
 
     def get_interruptions_info(self) :
         client = 0
@@ -291,21 +291,18 @@ if __name__ == '__main__':
     tr_2 = Track.from_file(filename, channel=1)
     dialog = Dialog(track_client=tr_1, track_operator=tr_2)
 
-    silence_info = dialog.get_silence_info()
-    interruptions_info = dialog.get_interruptions_info()
-    # pprint.pprint(info)
+    info = dialog.get_silence_info()
+    info.update(dialog.get_interruptions_info())
 
     call = Call(duration=dialog.duration(), is_incoming=is_incoming)
 
     db.session.add(call)
+    db.session.commit()
 
-    silence_info.update(interruptions_info)
-
-    for name, value in silence_info.items():
+    for name, value in info.items():
         meta = db.session.query(ParameterMeta).filter_by(name=name).one()
-        db.session.add(Parameter(call=call, parameter_meta_id=meta.id, value=value))
+        db.session.add(Parameter(call_id=call.id, parameter_meta_id=meta.id, value=value))
 
     db.session.commit()
 
     print()
-    print(result)
