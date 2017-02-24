@@ -1,14 +1,13 @@
 import wave
 import functools
 import itertools
-from enum import Enum
 from enum import IntEnum
-import pprint
-import sys
 
 import webrtcvad
 import numpy as np
-from app import Call, db, ParameterMeta, Parameter
+
+import app
+
 
 def _normalize(signal):
     scale = np.absolute(signal).max()
@@ -265,11 +264,11 @@ class Dialog:
                 if interruption[1] is SpeechState.OPERATOR or interruption[1] is SpeechState.INTERRUPTION:
                     if dur > self.freezingLimit:
                         clientFreezing += dur
-                        
+
         return {
 #            'operator_freezing' : operatorFreezing,
 #              'client_freezing' : clientFreezing,
-                
+
             'operator_interruptions_ratio' : self.frames_to_ratio(operatorFrames),
               'client_interruptions_ratio' : self.frames_to_ratio(clientFrames),
                 'both_interruptions_ratio' : self.frames_to_ratio(bothFrames),
@@ -287,6 +286,7 @@ if __name__ == '__main__':
 
     filename = './audio_samples/Dialog_1/dialog.wav'
     is_incoming = True
+
     tr_1 = Track.from_file(filename, channel=0)
     tr_2 = Track.from_file(filename, channel=1)
     dialog = Dialog(track_client=tr_1, track_operator=tr_2)
@@ -294,15 +294,10 @@ if __name__ == '__main__':
     info = dialog.get_silence_info()
     info.update(dialog.get_interruptions_info())
 
-    call = Call(duration=dialog.duration(), is_incoming=is_incoming)
+    app.Call.add({
+        'duration': dialog.duration(),
+        'is_incoming': is_incoming,
+        'info': info,
+    })
 
-    db.session.add(call)
-    db.session.commit()
-
-    for name, value in info.items():
-        meta = db.session.query(ParameterMeta).filter_by(name=name).one()
-        db.session.add(Parameter(call_id=call.id, parameter_meta_id=meta.id, value=value))
-
-    db.session.commit()
-
-    print()
+    print('Successfully added new call to DB.')

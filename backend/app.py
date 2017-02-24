@@ -55,6 +55,24 @@ class Call(db.Model, PrimaryKeyMixin):
 
     parameters = relationship('Parameter', lazy='joined', order_by='Parameter.id')
 
+    @classmethod
+    def add(cls, data):
+        try:
+            call = cls(duration=data['duration'], is_incoming=data['is_incoming'])
+
+            db.session.add(call)
+            db.session.flush()
+
+            for name, value in data['info'].items():
+                meta = db.session.query(ParameterMeta).filter_by(name=name).one()
+                db.session.add(Parameter(call_id=call.id,
+                                         parameter_meta_id=meta.id,
+                                         value=value))
+            db.sesison.commit()
+        except Exception:
+            db.session.rollback()
+            raise
+
     def json(self):
 
         def gen_key(p):
