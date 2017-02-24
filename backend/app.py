@@ -24,7 +24,7 @@ RESTFUL_JSON = {
 }
 SQLALCHEMY_DATABASE_URI = 'postgresql://speaker:deQucRawR27U@194.58.103.124/speaker-db'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
-SQLALCHEMY_ECHO = True
+SQLALCHEMY_ECHO = False
 
 DEFAULT_TRANSCRIPT = [
     {"speaker": "operator", "begin": 0.3, "end": 1.2, "phrase": "Здравствуйте! вы насчет работы торговым представителем?"},
