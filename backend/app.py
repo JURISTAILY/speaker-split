@@ -52,6 +52,7 @@ class Call(db.Model, PrimaryKeyMixin):
     date = Column(ArrowType(timezone=True), default=arrow.now)
     duration = Column(Float)
     is_incoming = Column(Boolean)
+    recording_filename = Column(Unicode)
 
     parameters = relationship('Parameter', lazy='joined', order_by='Parameter.id')
 

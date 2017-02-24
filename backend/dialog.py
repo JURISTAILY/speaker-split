@@ -282,6 +282,7 @@ class Dialog:
                 'both_interruptions_count' : both
         }
 
+
 if __name__ == '__main__':
 
     filename = './audio_samples/Dialog_1/dialog.wav'
