@@ -6,8 +6,6 @@ from enum import IntEnum
 import webrtcvad
 import numpy as np
 
-import app
-
 
 def _normalize(signal):
     scale = np.absolute(signal).max()
@@ -281,24 +279,3 @@ class Dialog:
               'client_interruptions_count' : client,
                 'both_interruptions_count' : both
         }
-
-
-if __name__ == '__main__':
-
-    filename = './audio_samples/Dialog_1/dialog.wav'
-    is_incoming = True
-
-    tr_1 = Track.from_file(filename, channel=0)
-    tr_2 = Track.from_file(filename, channel=1)
-    dialog = Dialog(track_client=tr_1, track_operator=tr_2)
-
-    info = dialog.get_silence_info()
-    info.update(dialog.get_interruptions_info())
-
-    app.Call.add({
-        'duration': dialog.duration(),
-        'is_incoming': is_incoming,
-        'info': info,
-    })
-
-    print('Successfully added new call to DB.')

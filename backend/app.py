@@ -57,9 +57,13 @@ class Call(db.Model, PrimaryKeyMixin):
     parameters = relationship('Parameter', lazy='joined', order_by='Parameter.id')
 
     @classmethod
-    def add(cls, data):
+    def add_new(cls, data):
         try:
-            call = cls(duration=data['duration'], is_incoming=data['is_incoming'])
+            call = cls(
+                duration=data['duration'],
+                is_incoming=data['is_incoming'],
+                recording_filename=data['filename'],
+            )
 
             db.session.add(call)
             db.session.flush()
@@ -69,7 +73,7 @@ class Call(db.Model, PrimaryKeyMixin):
                 db.session.add(Parameter(call_id=call.id,
                                          parameter_meta_id=meta.id,
                                          value=value))
-            db.sesison.commit()
+            db.session.commit()
         except Exception:
             db.session.rollback()
             raise
@@ -137,9 +141,14 @@ class ParameterMeta(db.Model, PrimaryKeyMixin):
 class Parameter(db.Model, PrimaryKeyMixin):
     __tablename__ = 'parameters'
 
-    parameter_meta_id = Column(Integer, ForeignKey('parameters_meta.id'))
+    parameter_meta_id = Column(Integer, ForeignKey('parameters_meta.id', ondelete='CASCADE'))
     value = Column(Float)
-    call_id = Column(Integer, ForeignKey('calls.id'))
+
+    # If corresponding call is deleted,
+    # all associated parameters will also be deleted
+    # by PostgreSQL following the `ON DELETE CASCADE`
+    # DDL instruction, defined at table creation time.
+    call_id = Column(Integer, ForeignKey('calls.id', ondelete='CASCADE'))
 
     meta = relationship('ParameterMeta', lazy='joined')
 
@@ -156,13 +165,15 @@ class Parameter(db.Model, PrimaryKeyMixin):
 
 class CallResource(Resource):
     def get(self):
-        return {
+        data = {
             'data': [
                 call.json() for call in db.session.query(Call)
                                                   .order_by(Call.date.desc())
                                                   .all()
             ]
         }
+        headers = {'Cache-Control': 'no-cache, must-revalidate'}
+        return data, 200, headers
 
 
 rest_api.add_resource(CallResource, '/calls')
