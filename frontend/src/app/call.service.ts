@@ -22,7 +22,7 @@ export class CallService {
     let arr = DialogueViewComponent.COLUMNS;
     let result = Array<any>(arr.length)
     for (let id in arr) {
-      result[id] = arr[id].pipe.transform(CallService.findParam(arr[id].jsonKey, datum));
+      result[id] = arr[id].pipe.transform(CallService.findParam(arr[id].jsonKey, datum), '1.0-1');
     }
     return result;
   }
