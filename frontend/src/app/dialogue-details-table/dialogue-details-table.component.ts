@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { DecimalPipe, PercentPipe } from '@angular/common'
+import { GradePipe } from '../toolbox/grade.pipe'
 
 import { CallDetail } from '../models';
 
@@ -22,5 +23,9 @@ export class DialogueDetailsTableComponent  {
     return 'нет оценки'
   }
 
-
+  orderByGrade(prop : Array<CallDetail>) : Array<CallDetail> {
+    var grade = new GradePipe();
+    prop.sort((a, b) => grade.transform(a) - grade.transform(b));
+    return prop;
+  }
 }

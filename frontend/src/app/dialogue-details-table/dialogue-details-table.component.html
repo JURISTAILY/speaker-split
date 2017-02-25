@@ -10,7 +10,7 @@
           </td>
           <td style="width:140px;">{{ gradeValueAndUnit(detail | grade) }}</td>
         </tr>
-        <template ngFor let-item [ngForOf]="detail.children">
+        <template ngFor let-item [ngForOf]="orderByGrade(detail.children)">
           <tr *ngIf="open[detail.title]">
             <td>{{ item.title }}<span style="float:right; width:30px;">{{ item.pipe(item.value) | number:'1.0-1' }}</span></td>
             <td>

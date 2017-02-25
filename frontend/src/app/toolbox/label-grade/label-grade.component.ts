@@ -11,7 +11,7 @@ declare var isNaN: any;
   styleUrls: ['./label-grade.component.css']
 })
 export class LabelGradeComponent  {
-  isNaN() : boolean { return isNaN(arguments[0]); }
+  isNaN = isNaN;
 
   @Input() grade : number;
 }
