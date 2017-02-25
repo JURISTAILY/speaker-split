@@ -6,3 +6,6 @@ click >= 6.6             # Python 2.7 and 3.5
 numpy >= 1.11.3
 
 futures >= 3.0.5 ; python_version == '2.7'  # ONLY Python 2.7, on >= 3.2 part of stdlib
+
+pydub==0.18.0
+

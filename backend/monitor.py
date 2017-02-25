@@ -9,8 +9,6 @@ import app
 
 parser = argparse.ArgumentParser(description='Calc parameters for new recordings.')
 parser.add_argument('recordings_dir',
-                    nargs='?',
-                    default='.',
                     help='directory containing the recordings')
 
 

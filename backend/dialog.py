@@ -97,11 +97,21 @@ class Track:
 
         self.signal = _normalize(np.fromstring(self.bytes, dtype=np.int16))
 
+    @staticmethod
+    def _read(f):
+        meta = f.getparams()
+        binary = f.readframes(meta.nframes)  # Read the whole file
+        return meta, binary
+
     @classmethod
     def from_file(cls, filename, channel=None):
-        with wave.open(filename, 'rb') as container:
-            meta = container.getparams()
-            bytes_ = container.readframes(meta.nframes)  # Read the whole file
+
+        if isinstance(filename, str):
+            with wave.open(filename, 'rb') as container:
+                meta, bytes_ = cls._read(container)
+        else:
+            container = filename
+            meta, bytes_ = cls._read(container)
 
         assert meta.nchannels in [1, 2]
         assert meta.comptype == 'NONE'  # No compression
