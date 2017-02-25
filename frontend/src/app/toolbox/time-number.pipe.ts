@@ -13,7 +13,7 @@ export class TimeNumberPipe implements PipeTransform {
     let ms = s - Math.floor(s);
     s = Math.floor(s);
     if (ms) {
-        ms *= 1000;
+        ms *= 10;
         ms = Math.round(ms);
         while (ms !== 0 && ms / 10 === Math.floor(ms / 10)) {
             ms /= 10;
