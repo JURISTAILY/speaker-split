@@ -21,7 +21,7 @@ class Monitor:
         return [
             f for f in os.listdir(self.path)
             if os.path.isfile(os.path.join(self.path, f))
-            and f.endswith('.wav')
+            and (f.endswith('.wav') or f.endswith('.mp3'))
         ]
 
     def do(self):
@@ -51,7 +51,8 @@ class Monitor:
 
 if __name__ == '__main__':
 
-    logging.basicConfig(level=logging.DEBUG, format='%(message)s')
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(levelname)s (%(name)s) %(message)s')
 
     args = parser.parse_args()
     monitor = Monitor(os.path.abspath(args.recordings_dir))
