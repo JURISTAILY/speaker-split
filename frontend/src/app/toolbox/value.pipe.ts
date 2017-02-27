@@ -32,9 +32,10 @@ export class ValuePipe implements PipeTransform {
       return (new TimeNumberPipe).transform(value.value);
     case 'ratio':
       return (new PercentPipe('rus')).transform(value.value, '1.0-1');
-    case 'count': default:
+    case 'count':
       return (new DecimalPipe('rus')).transform(value.value, '1.0-0');
   	}
+    return (new DecimalPipe('rus')).transform(value.value, '1.0-1');
   }
 
 }
