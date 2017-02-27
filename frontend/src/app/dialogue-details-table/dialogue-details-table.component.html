@@ -12,7 +12,7 @@
         </tr>
         <template ngFor let-item [ngForOf]="orderByGrade(detail.children)">
           <tr *ngIf="open[detail.title]">
-            <td>{{ item.title }}<span style="float:right; width:30px;">{{ item.pipe(item.value) | number:'1.0-1' }}</span></td>
+            <td>{{ item.title }}<span style="float:right; width:30px; margin-right: 10px;">{{ item | value }}</span></td>
             <td>
               <grade-progress [grade]="item.value | grade:item.name"></grade-progress>
             </td>

@@ -54,8 +54,7 @@ export class CallService {
           name : sublist[id].name,
           children : [],
           title : sublist[id].name_rus,
-          value : sublist[id].value,
-          pipe : function() { return arguments[0]; }
+          value : sublist[id].value
         } as CallDetail
       }
       return result;

@@ -265,8 +265,8 @@ class Dialog:
                         clientFreezing += dur
 
         return {
-#            'operator_freezing' : operatorFreezing,
-#              'client_freezing' : clientFreezing,
+            'operator_freezing_duration' : operatorFreezing,
+              'client_freezing_duration' : clientFreezing,
 
             'operator_interruptions_ratio' : self.frames_to_ratio(operatorFrames),
               'client_interruptions_ratio' : self.frames_to_ratio(clientFrames),

@@ -18,6 +18,7 @@ import { GradePercentPipe } from './toolbox/grade-percent.pipe'
 import { GradeColorPipe } from './toolbox/grade-color.pipe';
 import { GradeProgressComponent } from './toolbox/grade-progress/grade-progress.component';
 import { GradePipe } from './toolbox/grade.pipe';
+import { ValuePipe } from './toolbox/value.pipe';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { GradePipe } from './toolbox/grade.pipe';
     GradeColorPipe,
     GradePercentPipe,
     GradeProgressComponent,
-    GradePipe
+    GradePipe,
+    ValuePipe
   ],
   imports: [
     BrowserModule,
