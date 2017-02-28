@@ -35,7 +35,10 @@ DEFAULT_TRANSCRIPT = [
 ]
 
 RECORDINGS_DIR = 'audio_samples'
-MP3_MIMETYPE = 'audio/mpeg'
+MIMETYPES = {
+    'wav': 'audio/wav',
+    'mp3': 'audio/mpeg',
+}
 
 
 app = Flask(__name__)
@@ -187,11 +190,21 @@ rest_api.add_resource(CallResource, '/calls')
 def serve_recording(call_id):
     call = db.session.query(Call.recording_filename).filter_by(id=call_id).first()
 
-    if call is None or not call.recording_filename.endswith('.mp3'):
+    if call is None:
         abort(404)
 
+    if call.recording_filename.endswith('.mp3'):
+        mimetype = MIMETYPES['mp3']
+    elif call.recording_filename.endswith('.wav'):
+        mimetype = MIMETYPES['wav']
+    else:
+        raise RuntimeError(
+            'Unsupported recording file extension ({}) (call_id={}).'
+            .format(call.recording_filename, call_id)
+        )
+
     return send_from_directory(RECORDINGS_DIR, call.recording_filename,
-                               mimetype=MP3_MIMETYPE)
+                               mimetype=mimetype)
 
 
 if __name__ == '__main__':
