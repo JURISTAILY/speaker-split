@@ -36,8 +36,8 @@ DEFAULT_TRANSCRIPT = [
 
 RECORDINGS_DIR = 'audio_samples'
 MIMETYPES = {
-    'wav': 'audio/wav',
-    'mp3': 'audio/mpeg',
+    '.wav': 'audio/wav',
+    '.mp3': 'audio/mpeg',
 }
 
 
@@ -193,11 +193,10 @@ def serve_recording(call_id):
     if call is None:
         abort(404)
 
-    if call.recording_filename.endswith('.mp3'):
-        mimetype = MIMETYPES['mp3']
-    elif call.recording_filename.endswith('.wav'):
-        mimetype = MIMETYPES['wav']
-    else:
+    extension = call.recording_filename[-4:]
+    try:
+        mimetype = MIMETYPES[extension]
+    except KeyError:
         raise RuntimeError(
             'Unsupported recording file extension ({}) (call_id={}).'
             .format(call.recording_filename, call_id)
