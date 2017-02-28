@@ -7,7 +7,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 import flask_cors
@@ -24,7 +24,7 @@ RESTFUL_JSON = {
 }
 SQLALCHEMY_DATABASE_URI = 'postgresql://speaker:deQucRawR27U@194.58.103.124/speaker-db'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
-SQLALCHEMY_ECHO = False
+SQLALCHEMY_ECHO = True
 
 DEFAULT_TRANSCRIPT = [
     {"speaker": "operator", "begin": 0.3, "end": 1.2, "phrase": "Здравствуйте! вы насчет работы торговым представителем?"},
@@ -33,6 +33,9 @@ DEFAULT_TRANSCRIPT = [
     {"speaker": "client", "begin": 8.3, "end": 11.2, "phrase": "На пятьсот долларов, как указано в вашем объявлении. Еще я рассчитываю, что если буду хорошо справляться со своими обязанностями, моя зарплата вырастет."},
     {"speaker": "operator", "begin": 12.3, "end": 14.2, "phrase": "Наша компания всегда поощряет сотрудников за успехи в труде. Скажите, почему вы выбрали для работы именно нашу компанию?"},
 ]
+
+RECORDINGS_DIR = 'audio_samples'
+MP3_MIMETYPE = 'audio/mpeg'
 
 
 app = Flask(__name__)
@@ -154,7 +157,7 @@ class Parameter(db.Model, PrimaryKeyMixin):
 
     def json(self):
         return {
-            'id' : self.meta.id,
+            'id': self.meta.id,
             'name': self.meta.name,
             'name_rus': self.meta.name_rus,
             'value': self.value
@@ -162,6 +165,7 @@ class Parameter(db.Model, PrimaryKeyMixin):
 
     def __repr__(self):
         return "<Parameter ('{}', {})>".format(self.meta.name_rus, self.value)
+
 
 class CallResource(Resource):
     def get(self):
@@ -179,9 +183,15 @@ class CallResource(Resource):
 rest_api.add_resource(CallResource, '/calls')
 
 
-@app.errorhandler(404)
-def page_not_found(e):
-    return jsonify(info=str(request))
+@app.route('/recordings/<int:call_id>')
+def serve_recording(call_id):
+    call = db.session.query(Call.recording_filename).filter_by(id=call_id).first()
+
+    if call is None or not call.recording_filename.endswith('.mp3'):
+        abort(404)
+
+    return send_from_directory(RECORDINGS_DIR, call.recording_filename,
+                               mimetype=MP3_MIMETYPE)
 
 
 if __name__ == '__main__':
