@@ -138,7 +138,7 @@ class ParameterMeta(db.Model, PrimaryKeyMixin):
 
     name = Column(Unicode, unique=True)
     name_rus = Column(Unicode)
-    description = Column(UnicodeText, default='')
+    description = Column(UnicodeText, server_default='')
     category_id = Column(Integer, ForeignKey('categories.id'))
 
     category = relationship('Category', lazy='joined')
