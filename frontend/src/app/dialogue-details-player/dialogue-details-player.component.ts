@@ -8,5 +8,5 @@ import { CallSource } from '../models';
   styleUrls: ['./dialogue-details-player.component.css']
 })
 export class DialogueDetailsPlayerComponent  {
-  @Input() sources : CallSource[];
+  @Input() id : number;
 }
