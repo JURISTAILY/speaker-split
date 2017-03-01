@@ -4,12 +4,6 @@ import itertools
 from enum import IntEnum
 
 import webrtcvad
-import numpy as np
-
-
-def _normalize(signal):
-    scale = np.absolute(signal).max()
-    return (1/scale) * signal
 
 
 def _split(x, n, trim=False):
@@ -94,8 +88,6 @@ class Track:
 
         assert self.sampwidth == 2  # only 2 bytes (16 bits) per sample
         assert self.framerate in [8000, 16000]
-
-        self.signal = _normalize(np.fromstring(self.bytes, dtype=np.int16))
 
     @classmethod
     def from_file(cls, filename, channel=None):
