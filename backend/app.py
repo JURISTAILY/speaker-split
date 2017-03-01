@@ -13,6 +13,7 @@ from flask_restful import Api, Resource
 import flask_cors
 import arrow
 from core import Engine
+import os.path
 
 Column = functools.partial(BaseColumn, nullable=False)
 
@@ -26,7 +27,7 @@ RESTFUL_JSON = {
 SQLALCHEMY_DATABASE_URI = 'postgresql://speaker:deQucRawR27U@194.58.103.124/speaker-db'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ECHO = True
-
+DEBUG = True
 DEFAULT_TRANSCRIPT = [
     {"speaker": "operator", "begin": 0.3, "end": 1.2, "phrase": "Здравствуйте! вы насчет работы торговым представителем?"},
     {"speaker": "client", "begin": 1.7, "end": 2.9, "phrase": "Да, вот моё резюме."},
@@ -188,8 +189,11 @@ rest_api.add_resource(CallResource, '/calls')
 
 @app.route('/call/<string:call_ref>')
 def debug_analyse(call_ref):
-    return jsonify(Engine().process_recording_with_debug("audio_samples/" + call_ref))
-
+    fname = "audio_samples/" + call_ref
+    if os.path.isfile(fname):
+        return jsonify(Engine().process_recording_with_debug("audio_samples/" + call_ref))
+    else :
+        return "file {} doesn't exist".format(fname)
 
 @app.route('/recordings/<int:call_id>')
 def serve_recording(call_id):
