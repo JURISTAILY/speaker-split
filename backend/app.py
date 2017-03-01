@@ -12,6 +12,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 import flask_cors
 import arrow
+from core import Engine
 
 Column = functools.partial(BaseColumn, nullable=False)
 
@@ -184,6 +185,10 @@ class CallResource(Resource):
 
 
 rest_api.add_resource(CallResource, '/calls')
+
+@app.route('/call/<string:call_ref>')
+def debug_analyse(call_ref):
+    return jsonify(Engine().process_recording_with_debug("audio_samples/" + call_ref))
 
 
 @app.route('/recordings/<int:call_id>')

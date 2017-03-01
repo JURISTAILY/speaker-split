@@ -17,14 +17,10 @@ def _mp3_to_wav(f1, f2):
 
     mp3.export(f2, format='wav')
 
-
-class Engine:
-    def process_new_recording(self, filename):
-        temporary = False
-        log = logging.getLogger(__name__)
-
+def wav_input(to_decorate):
+    def decorated(self, filename, is_incoming = True) :
         if filename.endswith('.mp3'):
-            log.debug(
+            self.log.debug(
                 'Dealing with mp3 file ({}).'
                 .format(os.path.basename(filename))
             )
@@ -33,10 +29,22 @@ class Engine:
                 '.{}.temp.wav'.format(os.path.basename(filename)),
             )
             _mp3_to_wav(filename, wav_file)
-            temporary = True
-            log.debug('mp3 file converted to temporary wav-file "{}".'.format(wav_file))
+            self.log.debug('mp3 file converted to temporary wav-file "{}".'.format(wav_file))
+            result = to_decorate(self, filename, wav_file, is_incoming)
+            os.remove(wav_file)
+            self.log.debug('Temporary file "{}" deleted.'.format(wav_file))
+            return result
         else:
-            wav_file = filename
+            return to_decorate(self, filename, filename, is_incoming)
+    return decorated
+
+class Engine:
+    def __init__(self):
+        self.log = logging.getLogger(__name__)
+
+
+    @wav_input
+    def process_recording(self, filename, wav_file, is_incoming):
 
         tr_1 = Track.from_file(wav_file, channel=0)
         tr_2 = Track.from_file(wav_file, channel=1)
@@ -45,15 +53,26 @@ class Engine:
         info = dialog.get_silence_info()
         info.update(dialog.get_interruptions_info())
 
-        log.debug('Data from wav-file extracted.')
-
-        if temporary:
-            os.remove(wav_file)
-            log.debug('Temporary file "{}" deleted.'.format(wav_file))
+        self.log.debug('Data from wav-file extracted.')
 
         return {
             'duration': dialog.duration(),
-            'is_incoming': True,
+            'is_incoming': is_incoming,
             'info': info,
             'filename': os.path.basename(filename),
         }
+
+    @wav_input
+    def process_recording_with_debug(self, filename, wav_file, is_incoming):
+
+        tr_1 = Track.from_file(wav_file, channel=0)
+        tr_2 = Track.from_file(wav_file, channel=1)
+        dialog = Dialog(track_client=tr_1, track_operator=tr_2)
+
+        result = self.process_recording(filename, is_incoming)
+        result.update({'debug' : {
+            'interruptions' : dialog.get_influence_array(),
+            'client_mask' : dialog.mask_client.mask,
+            'operator_mask' : dialog.mask_operator.mask
+            }})
+        return result

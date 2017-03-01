@@ -194,20 +194,6 @@ class Dialog:
     def frames_to_duration(self, frames_count):
         return self.mask_client.frames_to_duration(frames_count)
 
-    def influence_iterator(self):
-        cur = SpeechState.fromMasks(self.mask_client.mask[0], self.mask_operator.mask[0])
-        prev = SpeechState.SILENCE
-        duration = 0
-        for cl, op in zip(self.mask_client.mask, self.mask_operator.mask):
-            if cur != SpeechState.fromMasks(cl, op):
-                if duration:
-                    yield (cur, prev, duration)
-                prev = cur
-                cur = SpeechState.fromMasks(cl, op)
-                duration = 1
-            else:
-                duration += 1
-
     def get_silence_info(self):
         return {
             'operator_speech_ratio' : self.mask_operator.speech_to_total_ratio,
@@ -235,6 +221,24 @@ class Dialog:
 
     def duration(self):
         return self.track_client.duration
+
+    def influence_iterator(self):
+        cur = SpeechState.fromMasks(self.mask_client.mask[0], self.mask_operator.mask[0])
+        prev = SpeechState.SILENCE
+        duration = 0
+        for cl, op in zip(self.mask_client.mask, self.mask_operator.mask):
+            if cur != SpeechState.fromMasks(cl, op):
+                if duration:
+                    yield (cur, prev, duration)
+                prev = cur
+                cur = SpeechState.fromMasks(cl, op)
+                duration = 1
+            else:
+                duration += 1
+        yield (cur, prev, duration)
+
+    def get_influence_array(self) :
+        return [(i[0], i[2]) for i in self.influence_iterator()]
 
     def get_interruptions_info(self) :
         client = 0

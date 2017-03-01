@@ -42,7 +42,7 @@ class Monitor:
                 continue
             log.debug('This recording is new. Processing it...')
             try:
-                data = self.engine.process_new_recording(os.path.join(self.path, rec))
+                data = self.engine.process_recording(os.path.join(self.path, rec))
                 Call.add_new(data)
                 log.debug('Recording successfully processed.')
             except Exception:
