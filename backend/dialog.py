@@ -21,7 +21,7 @@ def _split(x, n, trim=False):
 
 class Mask:
     def __init__(self, *, mask, frame_duration):
-        #mask true when the frame is speech
+        # mask true when the frame is speech
         self.mask = mask
         self.frame_duration = frame_duration
         self.delta = self.frame_duration / 1000
@@ -34,7 +34,7 @@ class Mask:
         return self.mask.count(False)
 
     def _count_speech_frames(self):
-        return len(self.mask) - self._count_silence_frames();
+        return len(self.mask) - self._count_silence_frames()
 
     @property
     def silence_duration(self):
@@ -60,7 +60,7 @@ class Mask:
 
     @property
     def segments_amount(self):
-        return len([_ for value, group in itertools.groupby(self.mask) if value])
+        return len([value for value, group in itertools.groupby(self.mask) if value])
 
     # boolean and for mask vectors for argument
     @classmethod
@@ -150,6 +150,7 @@ class Track:
     def same_format(cls, first, second):
         return (first.framerate, first.sampwidth) == (second.framerate, second.sampwidth)
 
+
 class SpeechState(IntEnum):
     OPERATOR = 1
     CLIENT = 2
@@ -165,6 +166,7 @@ class SpeechState(IntEnum):
         if cl:
             return SpeechState.CLIENT
         return SpeechState.SILENCE
+
 
 class Dialog:
 
@@ -237,10 +239,10 @@ class Dialog:
                 duration += 1
         yield (cur, prev, duration)
 
-    def get_influence_array(self) :
+    def get_influence_array(self):
         return [(i[0], i[2]) for i in self.influence_iterator()]
 
-    def get_interruptions_info(self) :
+    def get_interruptions_info(self):
         client = 0
         operator = 0
         both = 0

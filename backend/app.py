@@ -7,16 +7,15 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
-from flask import Flask, request, jsonify, send_from_directory, abort
+from flask import Flask, send_from_directory, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 import flask_cors
 import arrow
-from core import Engine
-import os.path
+
+import core
 
 Column = functools.partial(BaseColumn, nullable=False)
-
 
 APPLICATION_ROOT = '/api'
 RESTFUL_JSON = {
@@ -28,6 +27,7 @@ SQLALCHEMY_DATABASE_URI = 'postgresql://speaker:deQucRawR27U@194.58.103.124/spea
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ECHO = True
 DEBUG = True
+
 DEFAULT_TRANSCRIPT = [
     {"speaker": "operator", "begin": 0.3, "end": 1.2, "phrase": "Здравствуйте! вы насчет работы торговым представителем?"},
     {"speaker": "client", "begin": 1.7, "end": 2.9, "phrase": "Да, вот моё резюме."},
@@ -35,8 +35,6 @@ DEFAULT_TRANSCRIPT = [
     {"speaker": "client", "begin": 8.3, "end": 11.2, "phrase": "На пятьсот долларов, как указано в вашем объявлении. Еще я рассчитываю, что если буду хорошо справляться со своими обязанностями, моя зарплата вырастет."},
     {"speaker": "operator", "begin": 12.3, "end": 14.2, "phrase": "Наша компания всегда поощряет сотрудников за успехи в труде. Скажите, почему вы выбрали для работы именно нашу компанию?"},
 ]
-
-RECORDINGS_DIR = 'audio_samples'
 MIMETYPES = {
     '.wav': 'audio/wav',
     '.mp3': 'audio/mpeg',
@@ -185,15 +183,14 @@ class CallResource(Resource):
         return data, 200, headers
 
 
-rest_api.add_resource(CallResource, '/calls')
+class DevelopmentResource(Resource):
+    def get(self, filename):
+        return core.Engine().process_recording(filename, debug=True)
 
-@app.route('/call/<string:call_ref>')
-def debug_analyse(call_ref):
-    fname = "audio_samples/" + call_ref
-    if os.path.isfile(fname):
-        return jsonify(Engine().process_recording_with_debug("audio_samples/" + call_ref))
-    else :
-        return "file {} doesn't exist".format(fname)
+
+rest_api.add_resource(CallResource, '/calls')
+rest_api.add_resource(DevelopmentResource, '/calc/<string:filename>')
+
 
 @app.route('/recordings/<int:call_id>')
 def serve_recording(call_id):
@@ -211,7 +208,7 @@ def serve_recording(call_id):
             .format(call.recording_filename, call_id)
         )
 
-    return send_from_directory(RECORDINGS_DIR, call.recording_filename,
+    return send_from_directory(core.RECORDINGS_DIR, call.recording_filename,
                                mimetype=mimetype)
 
 

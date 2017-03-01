@@ -6,7 +6,6 @@ import logging
 import core
 import app
 
-
 parser = argparse.ArgumentParser(description='Calc parameters for new recordings.')
 parser.add_argument('recordings_dir',
                     help='directory containing the recordings')
@@ -14,8 +13,9 @@ parser.add_argument('recordings_dir',
 
 class Monitor:
     def __init__(self, path):
+        assert os.path.isdir(path)
         self.path = path
-        self.engine = core.Engine()
+        self.engine = core.Engine(recordings_dir=self.path)
 
     def _list_recordings(self):
         return [
@@ -42,7 +42,7 @@ class Monitor:
                 continue
             log.debug('This recording is new. Processing it...')
             try:
-                data = self.engine.process_recording(os.path.join(self.path, rec))
+                data = self.engine.process_recording(rec)
                 Call.add_new(data)
                 log.debug('Recording successfully processed.')
             except Exception:
