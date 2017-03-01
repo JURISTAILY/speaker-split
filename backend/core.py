@@ -52,11 +52,18 @@ class Engine:
         filename = os.path.join(self.recordings_dir, os.path.basename(filename))
         wav_file = self._get_wav_file(filename)
 
+        print('Init tracks...')
+
         tr_1 = Track.from_file(wav_file, channel=0)
         tr_2 = Track.from_file(wav_file, channel=1)
+        print('Tracks constructed')
         dialog = Dialog(track_client=tr_1, track_operator=tr_2)
 
+        print('Dialog constructed.')
+
         info = dialog.get_silence_info()
+
+        print('Silence info gotten.')
         info.update(dialog.get_interruptions_info())
 
         log.debug('Data from wav-file extracted.')

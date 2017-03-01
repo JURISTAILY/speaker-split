@@ -2,12 +2,21 @@ import wave
 import functools
 import itertools
 from enum import IntEnum
+import time
+import sys
 
 import webrtcvad
 
 
 def _split(x, n, trim=False):
+    print('Building chunks...')
+    print('Length:')
+    print(len(x))
+    print('Memory usage by array:')
+    print(sys.getsizeof(x))
+    # time.sleep(200)
     chunks = [x[i:i+n] for i in range(0, len(x), n)]
+    print('Chunks gotten...')
     if trim and len(chunks[-1]) < n:
         return chunks[:-1]
     return chunks
@@ -92,22 +101,33 @@ class Track:
     @classmethod
     def from_file(cls, filename, channel=None):
 
+        print('Opening file {}'.format(filename))
+
         with wave.open(filename, 'rb') as container:
             meta = container.getparams()
             bytes_ = container.readframes(meta.nframes)  # Read the whole file
 
+        print('File opened')
+
         assert meta.nchannels in [1, 2]
         assert meta.comptype == 'NONE'  # No compression
+
+        print('Assertions success.')
 
         if meta.nchannels == 1:
             binary = bytes_
         else:
             # Dealing with stereo format.
+            print('Stereo...')
             assert channel in [0, 1]
             chunks = _split(bytes_, meta.sampwidth)
+            print('chunks gotten.')
+
             assert len(chunks[-1]) == meta.sampwidth
             span = slice(channel, None, 2)  # equvivalent to [0::2] or [1::2]
             binary = b''.join(chunks[span])
+
+        print('binary constructed')
 
         return cls(binary, sampwidth=meta.sampwidth, framerate=meta.framerate)
 

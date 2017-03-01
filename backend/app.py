@@ -208,7 +208,7 @@ def serve_recording(call_id):
             .format(call.recording_filename, call_id)
         )
 
-    return send_from_directory(core.RECORDINGS_DIR, call.recording_filename,
+    return send_from_directory(core.DEFAULT_RECORDINGS_DIR, call.recording_filename,
                                mimetype=mimetype)
 
 
