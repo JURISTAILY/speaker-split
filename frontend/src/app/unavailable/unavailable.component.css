@@ -1,0 +1,12 @@
+h1 {
+	margin-top: 300px;
+	font-size: 400px;
+	cursor: default;
+	text-align:center;
+	display: block;
+	text-shadow: 20px 20px 20px rgba(22,22,44,0.5);
+}
+
+h1:hover {
+	color: #222222;
+}

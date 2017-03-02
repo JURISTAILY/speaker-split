@@ -10,7 +10,7 @@ export class GradePipe implements PipeTransform {
   static gradeFromJSON(scales : any) : any {
     let result = {};
     for (let key in scales) {
-      result[key] = d3.scale.linear().domain(scales[key].domain).range(scales[key].range);
+      result[key] = d3.scaleLinear().domain(scales[key].domain).range(scales[key].range);
     }
     return result;
   }
@@ -137,6 +137,16 @@ export class GradePipe implements PipeTransform {
       "width" : 1
     },
     "client_longest_silence_segment_duration" : {
+      "domain" : [ 0,     5, 10, 20, 30,     100],
+      "range"  : [10,    10,  5,  3,  1,       1],
+      "width" : 1
+    },
+    "operator_freezing_duration" : {
+      "domain" : [ 0,     5, 10, 20, 30,     100],
+      "range"  : [10,    10,  5,  3,  1,       1],
+      "width" : 1
+    },
+    "client_freezing_duration" : {
       "domain" : [ 0,     5, 10, 20, 30,     100],
       "range"  : [10,    10,  5,  3,  1,       1],
       "width" : 1

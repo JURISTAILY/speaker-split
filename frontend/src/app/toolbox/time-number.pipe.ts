@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class TimeNumberPipe implements PipeTransform {
   transform(s: number): string {
     if (!isFinite(s)) {
-        return "Нет данных";
+        return "—";
     }
     let h = Math.floor(s / 3600);
     s -= h * 3600;

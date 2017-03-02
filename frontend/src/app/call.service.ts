@@ -3,23 +3,30 @@ import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
 import { Call, CallTranscript, CallDetail, CallSource } from './models';
-import { DialogueViewComponent } from './dialogue-view/dialogue-view.component'
+import { ColumnDescription } from './dialogue-view/column-description'
 
 @Injectable()
 export class CallService {
-  private API_URL = 'http://demo.avto-podborka.ru/api/calls';
+  private API_URL = 'http://admin.avto-podborka.ru/api/calls';
 
   constructor(private http: Http) { }
 
-  private getRawCalls(): Promise<any[]> {
+  private getRawCalls() : Promise<any[]> {
     return this.http.get(this.API_URL)
                     .toPromise()
                     .then(response => response.json().data)
                     .catch(this.handleError);
   }
 
+  private getRawComputedCallDebug(callName): Promise<any[]> {
+    return this.http.get(`http://admin.avto-podborka.ru/api/calc/${callName}`)
+                    .toPromise()
+                    .then(response => response.json())
+                    .catch(this.handleError);
+  }
+
   private static fromDataForMainTable(datum : any) {
-    let arr = DialogueViewComponent.COLUMNS;
+    let arr = ColumnDescription.DIALOGUE_VIEW_COLUMNS;
     let result = Array<any>(arr.length)
     for (let id in arr) {
       result[id] = arr[id].pipe.transform(CallService.findParam(arr[id].jsonKey, datum), '1.0-1');
@@ -31,12 +38,10 @@ export class CallService {
     if (sought in data) {
       return data[sought];
     }
-    for (let key in data.info) {
-      if (typeof(data.info[key]) === "object" && !Array.isArray(data.info[key])) {
-        for (let param of data.info[key].params) {
-          if (param.name === sought) {
-            return param.value;
-          }
+    for (let itm of data.info) {
+      for (let param of itm.params) {
+        if (param.name === sought) {
+          return param.value;
         }
       }
     }
@@ -119,6 +124,52 @@ export class CallService {
     }
 
     return adapted;
+  }
+
+  getComputedCallDebug(callName : string) : Promise<Array<Call>> {
+    return this.getRawComputedCallDebug(callName).then(rawCall => {
+      return [
+        {
+          id : 0,
+          tableValues : (function(data) {
+            let arr = ColumnDescription.DIALOGUE_VIEW_COLUMNS;
+            let result = Array<any>(arr.length)
+            let info = data['info'];
+            for (let id in arr) {
+              if (arr[id].jsonKey in data) {
+                result[id] = data[arr[id].jsonKey];
+              } else if (arr[id].jsonKey in info) {
+                result[id] = info[arr[id].jsonKey];
+              }
+              result[id] = arr[id].pipe.transform(result[id]);
+            }
+            return result;
+          })(rawCall),
+          name: rawCall['filename'],
+          isIncoming : rawCall['is_incoming'],
+          transcripts : [],
+          details : [{
+            children : (data => {
+              let result = [];
+              for (let i in data) {
+                result.push({
+                  children : null,
+                  title : i,
+                  value : data[i],
+                  name : i
+                });
+              }
+              return result;
+            })(rawCall['info']),
+            title : "Все параметры сразу",
+            value : null,
+            name : ''
+          }],
+          sources : [],
+          debug : rawCall['debug']
+        } as Call
+      ];
+    });
   }
 
   private handleError(error: any): Promise<any> {

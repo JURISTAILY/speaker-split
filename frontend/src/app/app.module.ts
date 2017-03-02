@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
-import { AppComponent } from './app.component';
+import { AppComponent } from './app/app.component';
 import { DialogueViewComponent } from './dialogue-view/dialogue-view.component';
 import { DialogueItemComponent } from './dialogue-item/dialogue-item.component';
 import { DialogueDetailsComponent } from './dialogue-details/dialogue-details.component';
@@ -19,6 +19,27 @@ import { GradeColorPipe } from './toolbox/grade-color.pipe';
 import { GradeProgressComponent } from './toolbox/grade-progress/grade-progress.component';
 import { GradePipe } from './toolbox/grade.pipe';
 import { ValuePipe } from './toolbox/value.pipe';
+import { RouterModule, Routes } from '@angular/router';
+import { CallDebugComponent } from './call-debug/call-debug.component';
+import { MainMenuComponent } from './main-menu/main-menu.component';
+import { ReportComponent } from './report/report.component';
+import { UnavailableComponent } from './unavailable/unavailable.component';
+import { NaNUniformerPipe } from './toolbox/nanuniformer.pipe';
+import { DialogueMaskViewComponent } from './dialogue-mask-view/dialogue-mask-view.component';
+
+const appRoutes : Routes = [
+  { path: 'debug/:fileName', component: CallDebugComponent },
+  {
+    path: '',
+    redirectTo: '/report',
+    pathMatch: 'full'
+  },
+  {
+    path: 'report',
+    component: ReportComponent
+  },
+  { path: '**', component: UnavailableComponent }
+];
 
 @NgModule({
   declarations: [
@@ -36,9 +57,16 @@ import { ValuePipe } from './toolbox/value.pipe';
     GradePercentPipe,
     GradeProgressComponent,
     GradePipe,
-    ValuePipe
+    ValuePipe,
+    CallDebugComponent,
+    MainMenuComponent,
+    ReportComponent,
+    UnavailableComponent,
+    NaNUniformerPipe,
+    DialogueMaskViewComponent
   ],
   imports: [
+    RouterModule.forRoot(appRoutes),
     BrowserModule,
     FormsModule,
     HttpModule

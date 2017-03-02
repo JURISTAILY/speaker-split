@@ -1,4 +1,5 @@
-<table class="dialogue-view">
+<div *ngIf="!calls.length">загрузка данных</div>
+<table class="dialogue-view" *ngIf="calls.length">
   <thead>
     <tr>
       <td>Название среза</td>
@@ -10,7 +11,7 @@
       <td>Запись разговора</td>
     </tr>
   </thead>
-  <tbody app-dialogue-item *ngFor="let call of calls" [call]="call" [isOpen]="currentOpen === call.id" (onToggled)="toggleItem(call.id)">
+  <tbody dialogue-item *ngFor="let call of calls" [call]="call" [isOpen]="currentOpen === call.id" (onToggled)="toggleItem(call.id)">
   </tbody>
 </table>
-тут скачаю .xls
+Скачать в виде .xls таблицы

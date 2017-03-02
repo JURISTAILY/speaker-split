@@ -1,88 +1,53 @@
-import { Component, ViewEncapsulation, OnInit } from '@angular/core';
-import { DecimalPipe, PercentPipe } from '@angular/common'
+import { Component, ViewEncapsulation, OnInit, Input } from '@angular/core';
 
 import { Call } from '../models';
 import { CallService } from '../call.service';
 
-import {
-  TimeNumberPipe
-} from '../toolbox/time-number.pipe'
+import { TimeNumberPipe } from '../toolbox/time-number.pipe'
 
-export class ColumnDescription {
-  readonly title : string;
-  readonly pipe : any;
-  readonly jsonKey : string;
-}
+import { ColumnDescription } from './column-description'
 
 @Component({
-  selector: 'app-dialogue-view',
+  selector: 'dialogue-view',
   templateUrl: './dialogue-view.component.html',
   styleUrls: ['./dialogue-view.component.css'],
   encapsulation : ViewEncapsulation.None,
 })
 export class DialogueViewComponent implements OnInit {
-  calls: Call[];
-  private currentOpen : number = -1;
-  static readonly COLUMNS : Array<ColumnDescription> = [
-    {
-      title : "Длительность разговора",
-      pipe : new TimeNumberPipe(),
-      jsonKey : "duration"
-    },
-    {
-      title : '<span class="dialogue-sa">SA<img src="assets/img/interrogatory.png" alt="interrogatory" title="Tooltip on right" /></span>',
-      pipe : new DecimalPipe('rus'),
-      jsonKey : "sa"
-    },
-    {
-      title : "Доля речи оператора",
-      pipe : new PercentPipe('rus'),
-      jsonKey : "operator_speech_ratio"
-    },
-    {
-      title : "Длительность речи оператора",
-      pipe : new TimeNumberPipe(),
-      jsonKey : "operator_speech_duration"
-    },
-    {
-      title : "Клиент перебивает оператора",
-      pipe : new DecimalPipe('rus'),
-      jsonKey : "client_interruptions_count"
-    },
-    {
-      title : "Оператор перебивает клиента",
-      pipe : new DecimalPipe('rus'),
-      jsonKey : "operator_interruptions_count"
-    },
-    {
-      title : "Молчание оператора",
-      pipe : new TimeNumberPipe(),
-      jsonKey : "operator_silence_duration"
-    },
-    {
-      title : "Разборчивость речи оператора",
-      pipe : new PercentPipe('rus'),
-      jsonKey : "legibility"
-    }
-  ];
+  calls: Call[] = [];
+  private currentOpen : number;
 
-  columns = DialogueViewComponent.COLUMNS;
+  @Input() debugCall : string = '';
+  @Input() open : number = -1;
+
+  private columns = ColumnDescription.DIALOGUE_VIEW_COLUMNS;
 
   constructor(private callService: CallService) { }
 
   getCalls(): void {
-    this.callService.getCalls().then(calls => this.calls = calls);
+    var call;
+    if (this.debugCall) {
+      call = this.callService.getComputedCallDebug(this.debugCall);
+    } else {
+      call = this.callService.getCalls();
+    }
+    call.then(calls => this.takeData(calls));
+  }
+
+  private takeData(data : Array<Call>) {
+    this.calls = data;
   }
 
   ngOnInit(): void {
     this.getCalls();
-  }
-
-  closeOther(who : any) : void {
-    console.log(who);
+    this.toggleItem(this.open);
   }
 
   toggleItem(who : number) {
-    this.currentOpen = this.currentOpen === who ? -1 : who;
+    if (this.open >= 0) {
+      this.currentOpen = this.open;
+    } else {
+      this.currentOpen = this.currentOpen === who ? -1 : who;
+    }
   }
 }

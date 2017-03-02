@@ -1,15 +1,15 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 import { Call } from '../models';
-import { DialogueViewComponent } from '../dialogue-view/dialogue-view.component'
+import { ColumnDescription } from '../dialogue-view/column-description'
 
 @Component({
-  selector: '[app-dialogue-item]',
+  selector: '[dialogue-item]',
   templateUrl: './dialogue-item.component.html',
   styleUrls: ['./dialogue-item.component.css']
 })
 export class DialogueItemComponent  {
-  columns = DialogueViewComponent.COLUMNS;
+  columns = ColumnDescription.DIALOGUE_VIEW_COLUMNS;
   @Input() call: Call;
   @Output() onToggled : EventEmitter<any> = new EventEmitter<any>();
   @Input() isOpen : boolean;

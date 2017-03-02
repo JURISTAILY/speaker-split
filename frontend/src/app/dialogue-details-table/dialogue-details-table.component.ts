@@ -7,7 +7,7 @@ import { CallDetail } from '../models';
 import { rusNumberTermination } from '../utils';
 
 @Component({
-  selector: 'app-dialogue-details-table',
+  selector: 'dialogue-details-table',
   templateUrl: './dialogue-details-table.component.html',
   styleUrls: ['./dialogue-details-table.component.css']
 })

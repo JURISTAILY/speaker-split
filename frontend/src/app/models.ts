@@ -24,4 +24,5 @@ export class Call {
     transcripts : CallTranscript[];
     details : CallDetail[];
     sources : CallSource[];
+    debug : any;
 }

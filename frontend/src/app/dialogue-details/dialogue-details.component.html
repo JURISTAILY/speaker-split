@@ -1,12 +1,20 @@
 <div class="dialogue-details container-fluid">
   <div class="row">
     <div class="col-sm">
-      <app-dialogue-details-table [details]="call.details"></app-dialogue-details-table>
+      <dialogue-details-table [details]="call.details"></dialogue-details-table>
     </div>
     <div class="col-sm">
-      <app-dialogue-details-player [id]="call.name"></app-dialogue-details-player>
-      <app-dialogue-details-transcript [transcripts]="call.transcripts"></app-dialogue-details-transcript>
+      <dialogue-details-player [id]="call.name"></dialogue-details-player>
+      <dialogue-details-transcript [transcripts]="call.transcripts"></dialogue-details-transcript>
     </div>
+  </div>
+  <div *ngIf="haveDebug()">
+    <h4>Маска клиента</h4>
+    <dialogue-mask-view [data]="this.call.debug.client_mask" [role]="2"></dialogue-mask-view>
+    <h4>Маска оператора</h4>
+    <dialogue-mask-view [data]="this.call.debug.operator_mask" [role]="1"></dialogue-mask-view>
+    <h4>Маска, используемая для вычисления перебиваний</h4>
+    <dialogue-mask-view [data]="this.call.debug.interruptions"></dialogue-mask-view>
   </div>
 </div>
 <div class="dialogue-details-bottom"></div>
