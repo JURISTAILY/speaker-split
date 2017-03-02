@@ -1,5 +1,6 @@
 import functools
 import itertools
+import json
 
 from sqlalchemy import (
     Column as BaseColumn, Unicode, JSON,
@@ -23,7 +24,7 @@ RESTFUL_JSON = {
     'sort_keys': True,
     'indent': 4,
 }
-SQLALCHEMY_DATABASE_URI = 'postgresql://speaker:deQucRawR27U@194.58.103.124/speaker-db'
+SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://speaker:deQucRawR27U@194.58.103.124/speaker-db?client_encoding=utf8'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ECHO = True
 DEBUG = True
@@ -34,9 +35,20 @@ MIMETYPES = {
 }
 
 
+class SQLAlchemyCustomized(SQLAlchemy):
+    def apply_driver_hacks(self, app, info, options):
+        super().apply_driver_hacks(app, info, options)
+        print('=' * 80)
+        print('Applying custom json_serializer...')
+        options['json_serializer'] = functools.partial(json.dumps, **RESTFUL_JSON)
+        print('Done.')
+        print('=' * 80)
+
+
+
 app = Flask(__name__)
 app.config.from_object(__name__)
-db = SQLAlchemy(app)
+db = SQLAlchemyCustomized(app)
 rest_api = Api(app)
 cors = flask_cors.CORS(app, resources={'/*': {'origins': '*'}})
 
