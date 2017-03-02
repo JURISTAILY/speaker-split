@@ -2,7 +2,7 @@ import functools
 import itertools
 
 from sqlalchemy import (
-    Column as BaseColumn, Unicode,
+    Column as BaseColumn, Unicode, JSON,
     Integer, ForeignKey, Float, Boolean, UnicodeText,
 )
 from sqlalchemy.orm import relationship
@@ -28,13 +28,6 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ECHO = True
 DEBUG = True
 
-DEFAULT_TRANSCRIPT = [
-    {"speaker": "operator", "begin": 0.3, "end": 1.2, "phrase": "Здравствуйте! вы насчет работы торговым представителем?"},
-    {"speaker": "client", "begin": 1.7, "end": 2.9, "phrase": "Да, вот моё резюме."},
-    {"speaker": "operator", "begin": 4.3, "end": 7.2, "phrase": "В нашей компании ассортимент товаров, с которыми вам придется работать, будет намного шире. Это кондитерские изделия: торты, пирожные, рулетики, конфеты. На какую зарплату вы рассчитываете?"},
-    {"speaker": "client", "begin": 8.3, "end": 11.2, "phrase": "На пятьсот долларов, как указано в вашем объявлении. Еще я рассчитываю, что если буду хорошо справляться со своими обязанностями, моя зарплата вырастет."},
-    {"speaker": "operator", "begin": 12.3, "end": 14.2, "phrase": "Наша компания всегда поощряет сотрудников за успехи в труде. Скажите, почему вы выбрали для работы именно нашу компанию?"},
-]
 MIMETYPES = {
     '.wav': 'audio/wav',
     '.mp3': 'audio/mpeg',
@@ -59,6 +52,7 @@ class Call(db.Model, PrimaryKeyMixin):
     duration = Column(Float)
     is_incoming = Column(Boolean)
     recording_filename = Column(Unicode)
+    transcript = Column(JSON, server_default='[]')
 
     parameters = relationship('Parameter', lazy='joined', order_by='Parameter.id')
 
@@ -69,6 +63,7 @@ class Call(db.Model, PrimaryKeyMixin):
                 duration=data['duration'],
                 is_incoming=data['is_incoming'],
                 recording_filename=data['filename'],
+                transcript=data.get('transcript', []),
             )
 
             db.session.add(call)
@@ -113,7 +108,7 @@ class Call(db.Model, PrimaryKeyMixin):
             'date': str(self.date),
             'duration': self.duration,
             'isIncoming': True,
-            'transcript': DEFAULT_TRANSCRIPT,
+            'transcript': self.transcript,
             'info': list(generate_info()),
         }
 
