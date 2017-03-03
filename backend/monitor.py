@@ -24,7 +24,7 @@ class Monitor:
             and (f.endswith('.wav') or f.endswith('.mp3'))
         ]
 
-    def do(self):
+    def do(self, *, vad_agressiviness_level = 3):
         db = app.db
         Call = app.Call
         log = logging.getLogger(__name__)
@@ -42,7 +42,7 @@ class Monitor:
                 continue
             log.debug('This recording is new. Processing it...')
             try:
-                data = self.engine.process_recording(rec)
+                data = self.engine.process_recording(rec, vad_agressiviness_level = 3)
                 Call.add_new(data)
                 log.debug('Recording successfully processed.')
             except Exception:

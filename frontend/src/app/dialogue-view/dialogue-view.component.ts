@@ -3,9 +3,9 @@ import { Component, ViewEncapsulation, OnInit, Input } from '@angular/core';
 import { Call } from '../models';
 import { CallService } from '../call.service';
 
-import { TimeNumberPipe } from '../toolbox/time-number.pipe'
+import { TimeNumberPipe } from '../toolbox/time-number.pipe';
 
-import { ColumnDescription } from './column-description'
+import { ColumnDescription } from './column-description';
 
 @Component({
   selector: 'dialogue-view',

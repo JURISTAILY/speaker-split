@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, OnInit } from '@angular/core';
+import { Component, Input, ElementRef } from '@angular/core';
 
 declare var d3: any;
 
@@ -7,7 +7,7 @@ declare var d3: any;
   templateUrl: './dialogue-mask-view.component.html',
   styleUrls: ['./dialogue-mask-view.component.css']
 })
-export class DialogueMaskViewComponent implements OnInit {
+export class DialogueMaskViewComponent {
 
   constructor(
     private elementRef: ElementRef

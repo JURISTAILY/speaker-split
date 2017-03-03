@@ -47,7 +47,7 @@ class Engine:
 
         raise RuntimeError('Unsupported file format: {}'.format(basename))
 
-    def process_recording(self, filename, debug=False):
+    def process_recording(self, filename, debug=False, *, vad_agressiviness_level = 3):
 
         filename = os.path.join(self.recordings_dir, os.path.basename(filename))
         wav_file = self._get_wav_file(filename)
@@ -57,7 +57,7 @@ class Engine:
         tr_1 = Track.from_file(wav_file, channel=0)
         tr_2 = Track.from_file(wav_file, channel=1)
         print('Tracks constructed')
-        dialog = Dialog(track_client=tr_1, track_operator=tr_2)
+        dialog = Dialog(track_client=tr_1, track_operator=tr_2, vad_agressiviness_level = vad_agressiviness_level)
 
         print('Dialog constructed.')
 
