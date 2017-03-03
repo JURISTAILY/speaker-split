@@ -1,6 +1,7 @@
 import argparse
 import os
 import os.path
+import sys
 import logging
 
 import core
@@ -24,7 +25,7 @@ class Monitor:
             and (f.endswith('.wav') or f.endswith('.mp3'))
         ]
 
-    def do(self, *, vad_agressiviness_level = 3):
+    def do(self, *, vad_agressiviness_level=3):
         db = app.db
         Call = app.Call
         log = logging.getLogger(__name__)
@@ -42,7 +43,9 @@ class Monitor:
                 continue
             log.debug('This recording is new. Processing it...')
             try:
-                data = self.engine.process_recording(rec, vad_agressiviness_level = 3)
+                data = self.engine.process_recording(
+                    rec, vad_agressiviness_level=vad_agressiviness_level,
+                    )
                 Call.add_new(data)
                 log.debug('Recording successfully processed.')
             except Exception:
@@ -57,4 +60,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     monitor = Monitor(os.path.abspath(args.recordings_dir))
     monitor.do()
-    exit(0)
+    sys.exit()

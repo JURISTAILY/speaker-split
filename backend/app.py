@@ -24,7 +24,8 @@ RESTFUL_JSON = {
     'sort_keys': True,
     'indent': 4,
 }
-SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://speaker:deQucRawR27U@194.58.103.124/speaker-db?client_encoding=utf8'
+POSTGRESQL_JSON = {**RESTFUL_JSON, 'indent': 2}
+SQLALCHEMY_DATABASE_URI = 'postgresql://speaker:deQucRawR27U@194.58.103.124/speaker-db'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ECHO = True
 DEBUG = True
@@ -40,10 +41,11 @@ class SQLAlchemyCustomized(SQLAlchemy):
         super().apply_driver_hacks(app, info, options)
         print('=' * 80)
         print('Applying custom json_serializer...')
-        options['json_serializer'] = functools.partial(json.dumps, **RESTFUL_JSON)
+        # Relevant only for psycopg2 driver.
+        options['json_serializer'] = functools.partial(
+            json.dumps, **app.config.get('POSTGRESQL_JSON', {}))
         print('Done.')
         print('=' * 80)
-
 
 
 app = Flask(__name__)
@@ -108,7 +110,10 @@ class Call(db.Model, PrimaryKeyMixin):
 
         def generate_info():
             for c in Category.get_all():
-                piece = {'name': c.name, 'name_rus': c.name_rus, 'grade': 0.0, 'params': []}
+                piece = {
+                    'name': c.name, 'name_rus': c.name_rus,
+                    'grade': 0.0, 'params': [],
+                    }
                 for item in items:
                     if item['name'] == piece['name']:
                         piece.update(item)
@@ -154,7 +159,8 @@ class ParameterMeta(db.Model, PrimaryKeyMixin):
 class Parameter(db.Model, PrimaryKeyMixin):
     __tablename__ = 'parameters'
 
-    parameter_meta_id = Column(Integer, ForeignKey('parameters_meta.id', ondelete='CASCADE'))
+    parameter_meta_id = Column(Integer, ForeignKey('parameters_meta.id',
+                                                   ondelete='CASCADE'))
     value = Column(Float)
 
     # If corresponding call is deleted,

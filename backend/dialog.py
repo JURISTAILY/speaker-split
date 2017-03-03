@@ -2,7 +2,6 @@ import wave
 import functools
 import itertools
 from enum import IntEnum
-import time
 import sys
 
 import webrtcvad
@@ -49,7 +48,8 @@ class Mask:
 
     @functools.lru_cache()
     def count_segments(self):
-        return [(value, sum(1 for _ in group)) for value, group in itertools.groupby(self.mask)]
+        return [(value, sum(1 for _ in group))
+                for value, group in itertools.groupby(self.mask)]
 
     @property
     def longest_silence_segment_duration(self):
@@ -182,7 +182,8 @@ class SpeechState(IntEnum):
 
 class Dialog:
 
-    def __init__(self, track_client, track_operator, *, freezingLimit = 5, vad_agressiviness_level = 3, frame_duration = 30):
+    def __init__(self, track_client, track_operator, *, freezingLimit=5,
+                 vad_agressiviness_level=3, frame_duration=30):
 
         track_1, track_2 = track_client, track_operator
         assert Track.same_format(track_1, track_2)
@@ -196,8 +197,10 @@ class Dialog:
         self.track_client = factory(track_1.bytes[:self.common_length])
         self.track_operator = factory(track_2.bytes[:self.common_length])
 
-        self.mask_client = self.track_client.get_mask(vad_agressiviness_level, frame_duration)
-        self.mask_operator = self.track_operator.get_mask(vad_agressiviness_level, frame_duration)
+        self.mask_client = self.track_client.get_mask(vad_agressiviness_level,
+                                                      frame_duration)
+        self.mask_operator = self.track_operator.get_mask(vad_agressiviness_level,
+                                                          frame_duration)
 
         self.mask_both = Mask.intersect(self.mask_client, self.mask_operator)
         self.freezingLimit = freezingLimit
@@ -210,27 +213,33 @@ class Dialog:
 
     def get_silence_info(self):
         return {
-            'operator_speech_ratio' : self.mask_operator.speech_to_total_ratio,
-              'client_speech_ratio' : self.mask_client  .speech_to_total_ratio,
-            'operator_speech_duration' : self.mask_operator.speech_duration,
-              'client_speech_duration' : self.mask_client  .speech_duration,
+            'operator_speech_ratio': self.mask_operator.speech_to_total_ratio,
+            'client_speech_ratio': self.mask_client  .speech_to_total_ratio,
+            'operator_speech_duration': self.mask_operator.speech_duration,
+            'client_speech_duration': self.mask_client  .speech_duration,
 
-            'operator_to_client_speech_ratio' : self.mask_operator.speech_duration / self.mask_client.speech_duration,
+            'operator_to_client_speech_ratio':
+                self.mask_operator.speech_duration / self.mask_client.speech_duration,
 
-            'operator_longest_speech_segment_duration' : self.mask_operator.longest_speech_segment_duration,
-              'client_longest_speech_segment_duration' : self.mask_client  .longest_speech_segment_duration,
+            'operator_longest_speech_segment_duration':
+                self.mask_operator.longest_speech_segment_duration,
+            'client_longest_speech_segment_duration':
+                self.mask_client.longest_speech_segment_duration,
 
-            'operator_silence_ratio' : self.mask_operator.silence_to_total_ratio,
-              'client_silence_ratio' : self.mask_client  .silence_to_total_ratio,
-                'both_silence_ratio' : self.mask_both    .silence_to_total_ratio,
+            'operator_silence_ratio': self.mask_operator.silence_to_total_ratio,
+            'client_silence_ratio': self.mask_client.silence_to_total_ratio,
+            'both_silence_ratio': self.mask_both.silence_to_total_ratio,
 
-            'operator_silence_duration' : self.mask_operator.silence_duration,
-              'client_silence_duration' : self.mask_client  .silence_duration,
-                'both_silence_duration' : self.mask_both    .silence_duration,
+            'operator_silence_duration': self.mask_operator.silence_duration,
+            'client_silence_duration': self.mask_client.silence_duration,
+            'both_silence_duration': self.mask_both.silence_duration,
 
-            'operator_longest_silence_segment_duration' : self.mask_operator.longest_silence_segment_duration,
-              'client_longest_silence_segment_duration' : self.mask_client  .longest_silence_segment_duration,
-                'both_longest_silence_segment_duration' : self.mask_both    .longest_silence_segment_duration
+            'operator_longest_silence_segment_duration':
+                self.mask_operator.longest_silence_segment_duration,
+            'client_longest_silence_segment_duration':
+                self.mask_client.longest_silence_segment_duration,
+            'both_longest_silence_segment_duration':
+                self.mask_both.longest_silence_segment_duration,
         }
 
     def duration(self):
@@ -275,26 +284,28 @@ class Dialog:
                 bothFrames += interruption[2]
             elif interruption[0] is SpeechState.SILENCE:
                 dur = self.frames_to_duration(interruption[2])
-                if interruption[1] is SpeechState.CLIENT or interruption[1] is SpeechState.INTERRUPTION:
+                if interruption[1] is SpeechState.CLIENT \
+                        or interruption[1] is SpeechState.INTERRUPTION:
                     if dur > self.freezingLimit:
                         operatorFreezing += dur
-                if interruption[1] is SpeechState.OPERATOR or interruption[1] is SpeechState.INTERRUPTION:
+                if interruption[1] is SpeechState.OPERATOR \
+                        or interruption[1] is SpeechState.INTERRUPTION:
                     if dur > self.freezingLimit:
                         clientFreezing += dur
 
         return {
-            'operator_freezing_duration' : operatorFreezing,
-              'client_freezing_duration' : clientFreezing,
+            'operator_freezing_duration': operatorFreezing,
+            'client_freezing_duration': clientFreezing,
 
-            'operator_interruptions_ratio' : self.frames_to_ratio(operatorFrames),
-              'client_interruptions_ratio' : self.frames_to_ratio(clientFrames),
-                'both_interruptions_ratio' : self.frames_to_ratio(bothFrames),
+            'operator_interruptions_ratio': self.frames_to_ratio(operatorFrames),
+            'client_interruptions_ratio': self.frames_to_ratio(clientFrames),
+            'both_interruptions_ratio': self.frames_to_ratio(bothFrames),
 
-            'operator_interruptions_duration' : self.frames_to_duration(operatorFrames),
-              'client_interruptions_duration' : self.frames_to_duration(clientFrames),
-                'both_interruptions_duration' : self.frames_to_duration(bothFrames),
+            'operator_interruptions_duration': self.frames_to_duration(operatorFrames),
+            'client_interruptions_duration': self.frames_to_duration(clientFrames),
+            'both_interruptions_duration': self.frames_to_duration(bothFrames),
 
-            'operator_interruptions_count' : operator,
-              'client_interruptions_count' : client,
-                'both_interruptions_count' : both
+            'operator_interruptions_count': operator,
+            'client_interruptions_count': client,
+            'both_interruptions_count': both,
         }
