@@ -38,7 +38,7 @@ MIMETYPES = {
 
 class SQLAlchemyCustomized(SQLAlchemy):
     def apply_driver_hacks(self, app, info, options):
-        super().apply_driver_hacks(app, info, options)
+        SQLAlchemy.apply_driver_hacks(self, app, info, options)
         print('=' * 80)
         print('Applying custom json_serializer...')
         # Relevant only for psycopg2 driver.
