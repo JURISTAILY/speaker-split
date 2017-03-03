@@ -18,38 +18,18 @@ import core
 
 Column = functools.partial(BaseColumn, nullable=False)
 
-APPLICATION_ROOT = '/api'
-RESTFUL_JSON = {
-    'ensure_ascii': False,
-    'sort_keys': True,
-    'indent': 4,
-}
-POSTGRESQL_JSON = {**RESTFUL_JSON, 'indent': 2}
-SQLALCHEMY_DATABASE_URI = 'postgresql://speaker:deQucRawR27U@194.58.103.124/speaker-db'
-SQLALCHEMY_TRACK_MODIFICATIONS = False
-SQLALCHEMY_ECHO = True
-DEBUG = True
-
-MIMETYPES = {
-    '.wav': 'audio/wav',
-    '.mp3': 'audio/mpeg',
-}
-
 
 class SQLAlchemyCustomized(SQLAlchemy):
     def apply_driver_hacks(self, app, info, options):
         SQLAlchemy.apply_driver_hacks(self, app, info, options)
-        print('=' * 80)
-        print('Applying custom json_serializer...')
-        # Relevant only for psycopg2 driver.
+        # Option relevant only for psycopg2 driver.
+        # See SQLAlchemy docs on PostgreSQL support for reference.
         options['json_serializer'] = functools.partial(
             json.dumps, **app.config.get('POSTGRESQL_JSON', {}))
-        print('Done.')
-        print('=' * 80)
 
 
 app = Flask(__name__)
-app.config.from_object(__name__)
+app.config.from_object('settings')
 db = SQLAlchemyCustomized(app)
 rest_api = Api(app)
 cors = flask_cors.CORS(app, resources={'/*': {'origins': '*'}})
@@ -214,7 +194,7 @@ def serve_recording(call_id):
 
     extension = call.recording_filename[-4:]
     try:
-        mimetype = MIMETYPES[extension]
+        mimetype = app.config['MIMETYPES'][extension]
     except KeyError:
         raise RuntimeError(
             'Unsupported recording file extension ({}) (call_id={}).'
