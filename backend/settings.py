@@ -13,3 +13,6 @@ MIMETYPES = {
     '.wav': 'audio/wav',
     '.mp3': 'audio/mpeg',
 }
+# We better make this an absolute path
+# to avoid ambiguity during relative imports.
+RECORDINGS_DIR = 'audio_samples'

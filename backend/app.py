@@ -25,7 +25,8 @@ class CallResource(Resource):
 
 class DevelopmentResource(Resource):
     def get(self, filename):
-        return core.Engine().process_recording(filename, debug=True)
+        engine = core.Engine(app.config['RECORDINGS_DIR'])
+        return engine.process_recording(filename, debug=True)
 
 
 rest_api.add_resource(CallResource, '/calls')
@@ -48,7 +49,8 @@ def serve_recording(call_id):
             .format(call.recording_filename, call_id)
         )
 
-    return send_from_directory(core.DEFAULT_RECORDINGS_DIR, call.recording_filename,
+    return send_from_directory(app.config['RECORDINGS_DIR'],
+                               call.recording_filename,
                                mimetype=mimetype)
 
 

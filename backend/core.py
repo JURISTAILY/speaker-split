@@ -9,8 +9,6 @@ from dialog import Track, Dialog
 
 log = logging.getLogger(__name__)
 
-DEFAULT_RECORDINGS_DIR = 'audio_samples'
-
 
 def _mp3_to_wav(f1, f2):
     mp3 = pydub.AudioSegment.from_file(f1, format='mp3')
@@ -24,7 +22,7 @@ def _mp3_to_wav(f1, f2):
 
 class Engine:
 
-    def __init__(self, recordings_dir=DEFAULT_RECORDINGS_DIR):
+    def __init__(self, recordings_dir):
         self.recordings_dir = recordings_dir
 
     @staticmethod
