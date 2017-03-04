@@ -2,20 +2,13 @@ import wave
 import functools
 import itertools
 from enum import IntEnum
-import sys
 
 import webrtcvad
 
 
 def _split(x, n, trim=False):
-    print('Building chunks...')
-    print('Length:')
-    print(len(x))
-    print('Memory usage by array:')
-    print(sys.getsizeof(x))
-    # time.sleep(200)
+    # TODO: Refactor this shit. It eats memory like a pig.
     chunks = [x[i:i+n] for i in range(0, len(x), n)]
-    print('Chunks gotten...')
     if trim and len(chunks[-1]) < n:
         return chunks[:-1]
     return chunks
