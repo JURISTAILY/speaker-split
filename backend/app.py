@@ -6,8 +6,9 @@ import core
 
 app = Flask(__name__)
 app.config.from_object('settings')
-rest_api = Api(app)
-cors = flask_cors.CORS(app, resources={'/*': {'origins': '*'}})
+
+api = Api(app)
+flask_cors.CORS(app, resources={'/*': {'origins': '*'}})
 
 
 class CallResource(Resource):
@@ -29,8 +30,8 @@ class DevelopmentResource(Resource):
         return engine.process_recording(filename, debug=True)
 
 
-rest_api.add_resource(CallResource, '/calls')
-rest_api.add_resource(DevelopmentResource, '/calc/<string:filename>')
+api.add_resource(CallResource, '/calls')
+api.add_resource(DevelopmentResource, '/calc/<string:filename>')
 
 
 @app.route('/recordings/<int:call_id>')
