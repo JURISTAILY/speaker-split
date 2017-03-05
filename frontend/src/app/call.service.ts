@@ -7,7 +7,7 @@ import { ColumnDescription } from './dialogue-view/column-description'
 
 @Injectable()
 export class CallService {
-  private API_URL = 'http://admin.avto-podborka.ru/api/calls';
+  private API_URL = 'http://api.avto-podborka.ru/calls';
 
   constructor(private http: Http) { }
 
@@ -19,7 +19,7 @@ export class CallService {
   }
 
   private getRawComputedCallDebug(callName): Promise<any[]> {
-    return this.http.get(`http://admin.avto-podborka.ru/api/calc/${callName}`)
+    return this.http.get(`http://api.avto-podborka.ru/calc/${callName}`)
                     .toPromise()
                     .then(response => response.json())
                     .catch(this.handleError);

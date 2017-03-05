@@ -1,0 +1,14 @@
+server {
+
+    listen 80;
+    server_name demo.avto-podborka.ru d.avto-podborka.ru;
+
+    index index.html index.htm;
+    root /var/www/speech/frontend;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+}
+
