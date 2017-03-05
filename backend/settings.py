@@ -4,7 +4,7 @@ RESTFUL_JSON = {
     'indent': 4,
 }
 POSTGRESQL_JSON = RESTFUL_JSON.copy()
-POSTGRESQL_JSON['indend'] = 2
+POSTGRESQL_JSON['indent'] = 2
 SQLALCHEMY_DATABASE_URI = 'postgresql://speaker:deQucRawR27U@194.58.103.124/speaker-db'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ECHO = False
