@@ -1,7 +1,7 @@
 server {
 
     listen 80;
-    server_name demo.avto-podborka.ru d.avto-podborka.ru;
+    server_name demo.avto-podborka.ru;
     index index.html;
     root /var/www/speech/frontend;
 
