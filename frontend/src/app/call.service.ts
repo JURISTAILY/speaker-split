@@ -129,7 +129,6 @@ export class CallService {
   }
 
   getComputedCallDebug(callName : string) : Promise<Array<Call>> {
-    console.log(this.CALLS_URL);
     return this.getRawComputedCallDebug(callName).then(rawCall => {
       return [
         {

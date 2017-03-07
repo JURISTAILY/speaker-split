@@ -1,10 +1,4 @@
-from asrclient.voiceproxy_pb2 import AddDataResponse as AsrResponse
-
-"""
-use it like
-./asrclient-cli.py -k <your-key> --callback-module advanced_callback_example --silent <path-to-your-sound.wav>
-"""
-
+"""from asrclient.voiceproxy_pb2 import AddDataResponse as AsrResponse
 session_id = "not-set"
 
 def advanced_callback(asr_response, correction = 0):
@@ -28,4 +22,32 @@ def advanced_utterance_callback(asr_response, data_chunks):
         data_length += len(chunk) if chunk else 0
     print("Got complete utterance, for {0} data_chunks, session_id = {1}".format(len(data_chunks), session_id))
     print("Metainfo", asr_response.metainfo.minBeam, asr_response.metainfo.maxBeam)
-    print("Data length = {0}".format(data_length))
+    print("Data length = {0}".format(data_length))"""
+
+
+
+from asrclient.voiceproxy_pb2 import AddDataResponse as AsrResponse
+
+
+session_id = "not-set"
+
+wasPrint = False
+wasPrintUtterance = False
+
+def advanced_callback(asr_response, correction = 0):
+    """
+    r = asr_response.recognition[0]
+    print "\t{"
+    print(u"\t\tconfidence: {},".format(r.confidence))
+    print(u"\t\tvalue: {}".format(r.normalized))
+    print "\t},"
+    """
+
+
+def advanced_utterance_callback(asr_response, data_chunks):
+    recognition = asr_response.recognition[0]
+    print "{"
+    print(u"value:{}".format(recognition.normalized))
+    print(u"confidence:{}".format(recognition.confidence))
+    print(u"{}".format(recognition.align_info))
+    print "},"
