@@ -2,17 +2,18 @@
 # -*- coding: utf-8 -*-
 """Yandex ASR streaming client."""
 
+from __future__ import absolute_import
 import logging
 import click
-import exceptions
 import sys
 
-import asrclient.client as client
+import importlib
+from asrclient import client
 
 try:
     import pyaudio
     is_pyaudio = True
-except exceptions.ImportError:
+except ImportError:
     is_pyaudio = False
 
 
@@ -92,6 +93,9 @@ except exceptions.ImportError:
               default=0,
               type=int,
               help='How many digits should be in the answer? Special option, you don\'t need it!')
+@click.option('--biometry',
+              help='Enable biometry , "gender", "age", "group", "language" or combine with "," like "age,gender"',
+              default="")
 
 def main(chunk_size, start_with_chunk, max_chunks_count, record, files, silent, **kwars):
     if not silent:

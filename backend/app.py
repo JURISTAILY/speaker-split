@@ -4,12 +4,10 @@ import flask_cors
 
 import core
 
-app = Flask(__name__)
-app.config.from_object('settings')
+from models import Call, db, app
 
 api = Api(app)
 flask_cors.CORS(app, resources={'/*': {'origins': '*'}})
-
 
 class CallResource(Resource):
     def get(self):
@@ -41,7 +39,11 @@ def serve_recording(call_id):
     if call is None:
         abort(404)
 
-    extension = call.recording_filename[-4:]
+    return serve_recording_from_name(call.recording_filename)
+
+@app.route('/recordings/<string:recording_filename>')
+def serve_recording_from_name(recording_filename):
+    extension = recording_filename[-4:]
     try:
         mimetype = app.config['MIMETYPES'][extension]
     except KeyError:
@@ -49,14 +51,9 @@ def serve_recording(call_id):
             'Unsupported recording file extension ({}) (call_id={}).'
             .format(call.recording_filename, call_id)
         )
-
     return send_from_directory(app.config['RECORDINGS_DIR'],
-                               call.recording_filename,
+                               recording_filename,
                                mimetype=mimetype)
-
-
-from models import db, Call
-
 
 if __name__ == '__main__':
     app.run(port=8001, debug=True)

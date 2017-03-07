@@ -18,7 +18,6 @@ _sym_db = _symbol_database.Default()
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='basic.proto',
   package='BasicProtobuf',
-  syntax='proto2',
   serialized_pb=_b('\n\x0b\x62\x61sic.proto\x12\rBasicProtobuf\"\xc4\x02\n\x12\x43onnectionResponse\x12\x44\n\x0cresponseCode\x18\x01 \x02(\x0e\x32..BasicProtobuf.ConnectionResponse.ResponseCode\x12\x11\n\tsessionId\x18\x02 \x02(\t\x12\x0f\n\x07message\x18\x03 \x01(\t\"\xc3\x01\n\x0cResponseCode\x12\x07\n\x02OK\x10\xc8\x01\x12\x19\n\x14\x42\x61\x64MessageFormatting\x10\x90\x03\x12\x13\n\x0eUnknownService\x10\x94\x03\x12\x18\n\x13NotSupportedVersion\x10\x95\x03\x12\x0c\n\x07Timeout\x10\x98\x03\x12\x12\n\rProtocolError\x10\x9a\x03\x12\x12\n\rInternalError\x10\xf4\x03\x12\x0f\n\nInvalidKey\x10\xad\x03\x12\x19\n\x14InvalidRequestParams\x10\x96\x03')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -113,7 +112,6 @@ _CONNECTIONRESPONSE = _descriptor.Descriptor(
   ],
   options=None,
   is_extendable=False,
-  syntax='proto2',
   extension_ranges=[],
   oneofs=[
   ],

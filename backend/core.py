@@ -78,6 +78,8 @@ class Engine:
             data.update({
                 'debug': {
                     'interruptions': dialog.get_influence_array(),
+                    'client_raw_mask': dialog.mask_client.raw_mask,
+                    'operator_raw_mask': dialog.mask_operator.raw_mask,
                     'client_mask': dialog.mask_client.mask,
                     'operator_mask': dialog.mask_operator.mask,
                 },

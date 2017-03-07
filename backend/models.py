@@ -6,12 +6,14 @@ from sqlalchemy import (
     Column as BaseColumn, Unicode, JSON,
     Integer, ForeignKey, Float, Boolean, UnicodeText,
 )
+from flask import Flask
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
 from flask_sqlalchemy import SQLAlchemy
 import arrow
 
-from app import app
+app = Flask(__name__)
+app.config.from_object('settings')
 
 Column = functools.partial(BaseColumn, nullable=False)
 

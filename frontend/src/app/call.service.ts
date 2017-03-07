@@ -1,25 +1,27 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
+import { environment } from '../environments/environment';
 
 import { Call, CallTranscript, CallDetail, CallSource } from './models';
 import { ColumnDescription } from './dialogue-view/column-description'
 
 @Injectable()
 export class CallService {
-  private API_URL = 'http://api.avto-podborka.ru/calls';
+  private CALLS_URL = environment.apiUrl + environment.callsPath;
 
-  constructor(private http: Http) { }
+  constructor(private http: Http) {
+  }
 
   private getRawCalls() : Promise<any[]> {
-    return this.http.get(this.API_URL)
+    return this.http.get(this.CALLS_URL)
                     .toPromise()
                     .then(response => response.json().data)
                     .catch(this.handleError);
   }
 
   private getRawComputedCallDebug(callName): Promise<any[]> {
-    return this.http.get(`http://api.avto-podborka.ru/calc/${callName}`)
+    return this.http.get(environment.apiUrl + environment.calcPath + callName)
                     .toPromise()
                     .then(response => response.json())
                     .catch(this.handleError);
@@ -127,6 +129,7 @@ export class CallService {
   }
 
   getComputedCallDebug(callName : string) : Promise<Array<Call>> {
+    console.log(this.CALLS_URL);
     return this.getRawComputedCallDebug(callName).then(rawCall => {
       return [
         {

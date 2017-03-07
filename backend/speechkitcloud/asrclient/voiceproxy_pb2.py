@@ -13,16 +13,15 @@ from google.protobuf import descriptor_pb2
 _sym_db = _symbol_database.Default()
 
 
-import basic_pb2 as basic__pb2
+import basic_pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='voiceproxy.proto',
   package='VoiceProxyProtobuf',
-  syntax='proto2',
   serialized_pb=_b('\n\x10voiceproxy.proto\x12\x12VoiceProxyProtobuf\x1a\x0b\x62\x61sic.proto\"\xf9\x02\n\x12\x41\x64vancedASROptions\x12\x1d\n\x0fpartial_results\x18\x01 \x01(\x08:\x04true\x12\x10\n\x04\x62\x65\x61m\x18\x02 \x01(\x02:\x02-1\x12\x18\n\x0clattice_beam\x18\x03 \x01(\x02:\x02-1\x12\x19\n\rlattice_nbest\x18\x04 \x01(\x05:\x02-1\x12\x1e\n\x11utterance_silence\x18\x05 \x01(\x05:\x03\x31\x32\x30\x12\x1d\n\x0f\x61llow_multi_utt\x18\x10 \x01(\x08:\x04true\x12 \n\x13\x63hunk_process_limit\x18\x11 \x01(\x05:\x03\x31\x30\x30\x12\x17\n\ncmn_window\x18\x12 \x01(\x05:\x03\x36\x30\x30\x12\x18\n\x0b\x63mn_latency\x18\x13 \x01(\x05:\x03\x31\x35\x30\x12\x19\n\ncapitalize\x18\x14 \x01(\x08:\x05\x66\x61lse\x12\x1d\n\x12\x65xpected_num_count\x18\x15 \x01(\x05:\x01\x30\x12\x0f\n\x07grammar\x18\x16 \x03(\t\x12\x0c\n\x04srgs\x18\x17 \x01(\t\x12\x10\n\x08\x62iometry\x18\x18 \x01(\t\"\xc7\x03\n\x11\x43onnectionRequest\x12\x1a\n\x0fprotocolVersion\x18\x01 \x01(\x05:\x01\x31\x12\x18\n\x10speechkitVersion\x18\x02 \x02(\t\x12\x13\n\x0bserviceName\x18\x03 \x02(\t\x12\x0c\n\x04uuid\x18\x04 \x02(\t\x12\x0e\n\x06\x61piKey\x18\x05 \x02(\t\x12\x17\n\x0f\x61pplicationName\x18\x06 \x02(\t\x12\x0e\n\x06\x64\x65vice\x18\x07 \x02(\t\x12\x0e\n\x06\x63oords\x18\x08 \x02(\t\x12\r\n\x05topic\x18\t \x02(\t\x12\x0c\n\x04lang\x18\n \x02(\t\x12\x0e\n\x06\x66ormat\x18\x0b \x02(\t\x12\x19\n\x0bpunctuation\x18\x0c \x01(\x08:\x04true\x12\'\n\x18\x64isableAntimatNormalizer\x18\x12 \x01(\x08:\x05\x66\x61lse\x12\x42\n\x12\x61\x64vancedASROptions\x18\x13 \x01(\x0b\x32&.VoiceProxyProtobuf.AdvancedASROptions\x12#\n\x14skipAudioFromLogging\x18\x14 \x01(\x08:\x05\x66\x61lse\x12\x36\n\x0cmusicRequest\x18\x11 \x01(\x0b\x32 .VoiceProxyProtobuf.MusicRequest\"/\n\x07\x41\x64\x64\x44\x61ta\x12\x11\n\taudioData\x18\x01 \x01(\x0c\x12\x11\n\tlastChunk\x18\x02 \x02(\x08\"\x85\x01\n\tAlignInfo\x12\x12\n\nstart_time\x18\x01 \x01(\x02\x12\x10\n\x08\x65nd_time\x18\x02 \x01(\x02\x12\x16\n\x0e\x61\x63oustic_score\x18\x03 \x01(\x02\x12\x13\n\x0bgraph_score\x18\x04 \x01(\x02\x12\x10\n\x08lm_score\x18\x05 \x01(\x02\x12\x13\n\x0btotal_score\x18\x06 \x01(\x02\"\\\n\x04Word\x12\x12\n\nconfidence\x18\x01 \x02(\x02\x12\r\n\x05value\x18\x02 \x02(\t\x12\x31\n\nalign_info\x18\x03 \x01(\x0b\x32\x1d.VoiceProxyProtobuf.AlignInfo\"\x8c\x01\n\x06Result\x12\x12\n\nconfidence\x18\x01 \x02(\x02\x12\'\n\x05words\x18\x02 \x03(\x0b\x32\x18.VoiceProxyProtobuf.Word\x12\x12\n\nnormalized\x18\x03 \x01(\t\x12\x31\n\nalign_info\x18\x04 \x01(\x0b\x32\x1d.VoiceProxyProtobuf.AlignInfo\"D\n\x0e\x42iometryResult\x12\x11\n\tclassname\x18\x01 \x02(\t\x12\x12\n\nconfidence\x18\x02 \x02(\x02\x12\x0b\n\x03tag\x18\x03 \x01(\t\",\n\x08Metainfo\x12\x0f\n\x07minBeam\x18\x01 \x02(\x02\x12\x0f\n\x07maxBeam\x18\x02 \x02(\x02\"\xbe\x02\n\x0f\x41\x64\x64\x44\x61taResponse\x12\x44\n\x0cresponseCode\x18\x01 \x02(\x0e\x32..BasicProtobuf.ConnectionResponse.ResponseCode\x12/\n\x0brecognition\x18\x02 \x03(\x0b\x32\x1a.VoiceProxyProtobuf.Result\x12\x17\n\x08\x65ndOfUtt\x18\x03 \x01(\x08:\x05\x66\x61lse\x12\x18\n\rmessagesCount\x18\x04 \x01(\x05:\x01\x31\x12\x1a\n\x12musicProxyResponse\x18\x05 \x01(\t\x12\x35\n\tbioResult\x18\x06 \x03(\x0b\x32\".VoiceProxyProtobuf.BiometryResult\x12.\n\x08metainfo\x18\x07 \x01(\x0b\x32\x1c.VoiceProxyProtobuf.Metainfo\"\x81\x01\n\x0cMusicRequest\x12\x46\n\x11musicProxyOptions\x18\x01 \x03(\x0b\x32+.VoiceProxyProtobuf.MusicRequest.MusicParam\x1a)\n\nMusicParam\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\r\n\x05value\x18\x02 \x02(\t')
   ,
-  dependencies=[basic__pb2.DESCRIPTOR,])
+  dependencies=[basic_pb2.DESCRIPTOR,])
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 
@@ -45,14 +44,14 @@ _ADVANCEDASROPTIONS = _descriptor.Descriptor(
     _descriptor.FieldDescriptor(
       name='beam', full_name='VoiceProxyProtobuf.AdvancedASROptions.beam', index=1,
       number=2, type=2, cpp_type=6, label=1,
-      has_default_value=True, default_value=float(-1),
+      has_default_value=True, default_value=-1,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='lattice_beam', full_name='VoiceProxyProtobuf.AdvancedASROptions.lattice_beam', index=2,
       number=3, type=2, cpp_type=6, label=1,
-      has_default_value=True, default_value=float(-1),
+      has_default_value=True, default_value=-1,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -141,7 +140,6 @@ _ADVANCEDASROPTIONS = _descriptor.Descriptor(
   ],
   options=None,
   is_extendable=False,
-  syntax='proto2',
   extension_ranges=[],
   oneofs=[
   ],
@@ -277,7 +275,6 @@ _CONNECTIONREQUEST = _descriptor.Descriptor(
   ],
   options=None,
   is_extendable=False,
-  syntax='proto2',
   extension_ranges=[],
   oneofs=[
   ],
@@ -315,7 +312,6 @@ _ADDDATA = _descriptor.Descriptor(
   ],
   options=None,
   is_extendable=False,
-  syntax='proto2',
   extension_ranges=[],
   oneofs=[
   ],
@@ -334,42 +330,42 @@ _ALIGNINFO = _descriptor.Descriptor(
     _descriptor.FieldDescriptor(
       name='start_time', full_name='VoiceProxyProtobuf.AlignInfo.start_time', index=0,
       number=1, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='end_time', full_name='VoiceProxyProtobuf.AlignInfo.end_time', index=1,
       number=2, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='acoustic_score', full_name='VoiceProxyProtobuf.AlignInfo.acoustic_score', index=2,
       number=3, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='graph_score', full_name='VoiceProxyProtobuf.AlignInfo.graph_score', index=3,
       number=4, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='lm_score', full_name='VoiceProxyProtobuf.AlignInfo.lm_score', index=4,
       number=5, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='total_score', full_name='VoiceProxyProtobuf.AlignInfo.total_score', index=5,
       number=6, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -381,7 +377,6 @@ _ALIGNINFO = _descriptor.Descriptor(
   ],
   options=None,
   is_extendable=False,
-  syntax='proto2',
   extension_ranges=[],
   oneofs=[
   ],
@@ -400,7 +395,7 @@ _WORD = _descriptor.Descriptor(
     _descriptor.FieldDescriptor(
       name='confidence', full_name='VoiceProxyProtobuf.Word.confidence', index=0,
       number=1, type=2, cpp_type=6, label=2,
-      has_default_value=False, default_value=float(0),
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -426,7 +421,6 @@ _WORD = _descriptor.Descriptor(
   ],
   options=None,
   is_extendable=False,
-  syntax='proto2',
   extension_ranges=[],
   oneofs=[
   ],
@@ -445,7 +439,7 @@ _RESULT = _descriptor.Descriptor(
     _descriptor.FieldDescriptor(
       name='confidence', full_name='VoiceProxyProtobuf.Result.confidence', index=0,
       number=1, type=2, cpp_type=6, label=2,
-      has_default_value=False, default_value=float(0),
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -478,7 +472,6 @@ _RESULT = _descriptor.Descriptor(
   ],
   options=None,
   is_extendable=False,
-  syntax='proto2',
   extension_ranges=[],
   oneofs=[
   ],
@@ -504,7 +497,7 @@ _BIOMETRYRESULT = _descriptor.Descriptor(
     _descriptor.FieldDescriptor(
       name='confidence', full_name='VoiceProxyProtobuf.BiometryResult.confidence', index=1,
       number=2, type=2, cpp_type=6, label=2,
-      has_default_value=False, default_value=float(0),
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -523,7 +516,6 @@ _BIOMETRYRESULT = _descriptor.Descriptor(
   ],
   options=None,
   is_extendable=False,
-  syntax='proto2',
   extension_ranges=[],
   oneofs=[
   ],
@@ -542,14 +534,14 @@ _METAINFO = _descriptor.Descriptor(
     _descriptor.FieldDescriptor(
       name='minBeam', full_name='VoiceProxyProtobuf.Metainfo.minBeam', index=0,
       number=1, type=2, cpp_type=6, label=2,
-      has_default_value=False, default_value=float(0),
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='maxBeam', full_name='VoiceProxyProtobuf.Metainfo.maxBeam', index=1,
       number=2, type=2, cpp_type=6, label=2,
-      has_default_value=False, default_value=float(0),
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -561,7 +553,6 @@ _METAINFO = _descriptor.Descriptor(
   ],
   options=None,
   is_extendable=False,
-  syntax='proto2',
   extension_ranges=[],
   oneofs=[
   ],
@@ -634,7 +625,6 @@ _ADDDATARESPONSE = _descriptor.Descriptor(
   ],
   options=None,
   is_extendable=False,
-  syntax='proto2',
   extension_ranges=[],
   oneofs=[
   ],
@@ -672,7 +662,6 @@ _MUSICREQUEST_MUSICPARAM = _descriptor.Descriptor(
   ],
   options=None,
   is_extendable=False,
-  syntax='proto2',
   extension_ranges=[],
   oneofs=[
   ],
@@ -702,7 +691,6 @@ _MUSICREQUEST = _descriptor.Descriptor(
   ],
   options=None,
   is_extendable=False,
-  syntax='proto2',
   extension_ranges=[],
   oneofs=[
   ],
@@ -715,7 +703,7 @@ _CONNECTIONREQUEST.fields_by_name['musicRequest'].message_type = _MUSICREQUEST
 _WORD.fields_by_name['align_info'].message_type = _ALIGNINFO
 _RESULT.fields_by_name['words'].message_type = _WORD
 _RESULT.fields_by_name['align_info'].message_type = _ALIGNINFO
-_ADDDATARESPONSE.fields_by_name['responseCode'].enum_type = basic__pb2._CONNECTIONRESPONSE_RESPONSECODE
+_ADDDATARESPONSE.fields_by_name['responseCode'].enum_type = basic_pb2._CONNECTIONRESPONSE_RESPONSECODE
 _ADDDATARESPONSE.fields_by_name['recognition'].message_type = _RESULT
 _ADDDATARESPONSE.fields_by_name['bioResult'].message_type = _BIOMETRYRESULT
 _ADDDATARESPONSE.fields_by_name['metainfo'].message_type = _METAINFO

@@ -13,16 +13,75 @@ def _split(x, n, trim=False):
         return chunks[:-1]
     return chunks
 
-
 class Mask:
     def __init__(self, *, mask, frame_duration):
         # mask true when the frame is speech
-        self.mask = mask
+        self.raw_mask = mask
+        self.mask = Mask.__smoothing(mask)
+        assert len(self.mask) == len(self.raw_mask)
         self.frame_duration = frame_duration
         self.delta = self.frame_duration / 1000
 
     def __str__(self):
         return str(self.mask)
+
+
+    @staticmethod
+    def __compress(array):
+        current = False
+        counter = 0
+        result = []
+        for itm in array:
+            if itm != current:
+                result.append(counter)
+                counter = 1
+                current = itm
+            else:
+                counter += 1
+        result.append(counter)
+        return result
+
+    @staticmethod
+    def __uncompress(array):
+        result = []
+        cur = False
+        for i in array:
+            while i:
+                result.append(cur)
+                i -= 1
+            cur = not cur
+        return result
+
+    @staticmethod
+    def __smooth(array, radius = 10):
+        presum = 0
+        result = []
+        l = len(array)
+        i = 0
+        while i < l:
+            itm = array[i]
+            if itm < radius:
+                if len(result) > 1:
+                    result[-1] += itm
+                    i += 1
+                    if i < l:
+                        result[-1] += array[i]
+                else:
+                    presum += itm
+                    i += 1
+                    if i < l:
+                        presum += array[i]
+            else:
+                result.append(itm + presum)
+                presum = 0
+            i += 1
+        if presum:
+            result.append(presum)
+        return result
+
+    @staticmethod
+    def __smoothing(array):
+        return Mask.__uncompress(Mask.__smooth(Mask.__compress(array)))
 
     @functools.lru_cache()
     def _count_silence_frames(self):

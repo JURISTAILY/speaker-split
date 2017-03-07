@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 import { CallSource } from '../models';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'dialogue-details-player',
@@ -8,5 +9,7 @@ import { CallSource } from '../models';
   styleUrls: ['./dialogue-details-player.component.css']
 })
 export class DialogueDetailsPlayerComponent  {
+  PATHS = environment.playerSourcesPaths
+  API_URL = environment.apiUrl
   @Input() id : number;
 }
