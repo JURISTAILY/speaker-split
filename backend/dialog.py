@@ -327,11 +327,11 @@ class Dialog:
         for interruption in self.influence_iterator():
             if interruption[0] is SpeechState.INTERRUPTION:
                 if interruption[1] is SpeechState.CLIENT:
-                    client += 1
-                    clientFrames += interruption[2]
-                elif interruption[1] is SpeechState.OPERATOR:
                     operator += 1
                     operatorFrames += interruption[2]
+                elif interruption[1] is SpeechState.OPERATOR:
+                    client += 1
+                    clientFrames += interruption[2]
                 both += 1
                 bothFrames += interruption[2]
             elif interruption[0] is SpeechState.SILENCE:
