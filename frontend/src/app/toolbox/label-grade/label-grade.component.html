@@ -1,0 +1,6 @@
+<div class="dialogue-tbl-progress">
+    <div class="value" [style.background-color]="grade | gradeToColor">
+    	{{ (isNaN(grade) ? '—' : (grade | number:'1.0-1')) }}
+    	<div class="hexagon"><hexagon ></hexagon></div>
+    </div>
+</div>

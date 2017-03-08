@@ -5,6 +5,7 @@
   border: 1px solid #dcdcdc;
   background: white;
   border-radius: 2px;
+  overflow: visible; 
 }
 
 /*=================toolbox==================*/

@@ -26,6 +26,7 @@ import { ReportComponent } from './report/report.component';
 import { UnavailableComponent } from './unavailable/unavailable.component';
 import { NaNUniformerPipe } from './toolbox/nanuniformer.pipe';
 import { DialogueMaskViewComponent } from './dialogue-mask-view/dialogue-mask-view.component';
+import { HexagonComponent } from './toolbox/hexagon/hexagon.component';
 
 const appRoutes : Routes = [
   { path: 'debug/:fileName', component: CallDebugComponent },
@@ -63,7 +64,8 @@ const appRoutes : Routes = [
     ReportComponent,
     UnavailableComponent,
     NaNUniformerPipe,
-    DialogueMaskViewComponent
+    DialogueMaskViewComponent,
+    HexagonComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes),

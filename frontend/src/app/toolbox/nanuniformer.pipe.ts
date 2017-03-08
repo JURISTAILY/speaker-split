@@ -15,16 +15,16 @@ export class NaNUniformerPipe implements PipeTransform {
   static TRANSFORMER = {
   	decimal : new DecimalPipe('rus'),
   	uniformer : new NaNUniformerPipe(),
-  	transform(num : number) : string {
-  	  return this.uniformer.transform(this.decimal.transform(num));
+  	transform(num : number, style : string) : string {
+  	  return this.uniformer.transform(this.decimal.transform(num, style));
   	}
   }
 
   static PERCENT_TANSFORMER = {
     perc : new PercentPipe('rus'),
-    transform(num : number) : string {
+    transform(num : number, style : string) : string {
       if (isFinite(num)) {
-        return this.perc.transform(num);
+        return this.perc.transform(num, style);
       }
       return "—";
     }

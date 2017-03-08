@@ -4,10 +4,7 @@ declare var isNaN: any;
 
 @Component({
   selector: 'label-grade',
-  template: `
-  <div class="dialogue-tbl-progress">
-  	<div [style.background-color]="grade | gradeToColor">{{ (isNaN(grade) ? '—' : (grade | number:'1.0-1')) }}</div>
-  </div>`,
+  templateUrl: './label-grade.component.html',
   styleUrls: ['./label-grade.component.css']
 })
 export class LabelGradeComponent  {
