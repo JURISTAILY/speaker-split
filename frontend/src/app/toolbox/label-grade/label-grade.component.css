@@ -14,21 +14,22 @@
   height: 20px;
   position: relative;
   cursor: pointer;
+  z-index: 1;
 }
 
 .hexagon {
 	position: relative;
-	bottom: 200%;
+	bottom: 50%;
 	transition: transform 0.5s cubic-bezier(0.19, 0.6, 0.11, 0.99) 0.1s, height 0.5s cubic-bezier(0.19, 0.6, 0.11, 0.99) 0.1s, width 0.5s cubic-bezier(0.19, 0.6, 0.11, 0.99) 0.1s;
 	cursor: default;
-	height: 0px;
-	width: 0px;
+	height: 173.20508075688772935274463415059px;
+	width: 100px;
 	transform: translate(-100%,-50%) scale(0);
 }
 
 .value:hover .hexagon
 {
   height: 173.20508075688772935274463415059px;
-  width: 200px;
+  width: 220px;
 	transform: translate(-100%,-50%) scale(1);
 }
