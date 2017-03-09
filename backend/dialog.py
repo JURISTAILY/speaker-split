@@ -13,6 +13,7 @@ def _split(x, n, trim=False):
         return chunks[:-1]
     return chunks
 
+
 class Mask:
     def __init__(self, *, mask, frame_duration):
         # mask true when the frame is speech
@@ -24,7 +25,6 @@ class Mask:
 
     def __str__(self):
         return str(self.mask)
-
 
     @staticmethod
     def __compress(array):
