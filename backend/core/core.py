@@ -21,17 +21,17 @@ class Engine:
         """
         filename = os.path.join(self.recordings_dir, os.path.basename(filename))
 
-        with tempfile.TemporaryDirectory as d:
-            wav_file = utils.get_wav_file(filename, temp_dir=d.name)
+        with tempfile.TemporaryDirectory as temp_dir:
+            wav_file = utils.get_wav_file(filename, temp_dir=temp_dir)
             dialog = Dialog.from_file(wav_file,
                                       vad_agressiviness_level=vad_agressiviness_level,
-                                      temp_dir=d.name)
+                                      temp_dir=temp_dir)
             return dialog.transcript()
 
     def process_recording(self, filename, debug=False, *, vad_agressiviness_level=3):
-        with tempfile.TemporaryDirectory as d:
+        with tempfile.TemporaryDirectory as temp_dir:
             filename = os.path.join(self.recordings_dir, os.path.basename(filename))
-            wav_file = utils.get_wav_file(filename, temp_dir=d.name)
+            wav_file = utils.get_wav_file(filename, temp_dir=temp_dir)
 
             tr_1 = Track.from_file(wav_file, channel=0)
             tr_2 = Track.from_file(wav_file, channel=1)
