@@ -45,6 +45,7 @@ def _stereo_to_two_mono(filename):
 
         def gen(ch):
             window = params.sampwidth * 2
+            assert not window % 2
             half = int(window / 2)
             for i in range(0, len(frames), window):
                 e = frames[i:i+window]
