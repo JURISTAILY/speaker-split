@@ -24,30 +24,35 @@ def advanced_utterance_callback(asr_response, data_chunks):
     print("Metainfo", asr_response.metainfo.minBeam, asr_response.metainfo.maxBeam)
     print("Data length = {0}".format(data_length))"""
 
-
+import sys
 
 from asrclient.voiceproxy_pb2 import AddDataResponse as AsrResponse
 
 
 session_id = "not-set"
 
-wasPrint = False
 wasPrintUtterance = False
 
 def advanced_callback(asr_response, correction = 0):
     """
+    it's a dor for raw data to provide aditional analysis. useles for our stupid project
     r = asr_response.recognition[0]
     print "\t{"
     print(u"\t\tconfidence: {},".format(r.confidence))
     print(u"\t\tvalue: {}".format(r.normalized))
     print "\t},"
     """
+    pass
 
 
 def advanced_utterance_callback(asr_response, data_chunks):
+    global wasPrintUtterance
+    if wasPrintUtterance:
+        print(",")
+    wasPrintUtterance = True
     recognition = asr_response.recognition[0]
-    print "{"
-    print(u"value:{}".format(recognition.normalized))
-    print(u"confidence:{}".format(recognition.confidence))
-    print(u"{}".format(recognition.align_info))
-    print "},"
+    print("{")
+    print("\"value\":\""+recognition.normalized.encode('utf-8')+"\",")
+    print(u"\"confidence\":{},".format(recognition.confidence))
+    print(u"\"{}".format(recognition.align_info)[:-1].replace("\n", ",\n\"").replace(":","\":"))
+    print("}")

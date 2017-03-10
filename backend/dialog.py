@@ -1,9 +1,13 @@
 import wave
 import functools
 import itertools
+import tempfile
+import subprocess
+import os.path
 from enum import IntEnum
 
 import webrtcvad
+import json
 
 
 def _split(x, n, trim=False):
@@ -142,13 +146,24 @@ class Mask:
 
 
 class Track:
-    def __init__(self, bytes, *, sampwidth, framerate):
+    def __init__(self, bytes, *, sampwidth, framerate, filename):
         self.bytes = bytes
         self.sampwidth = sampwidth
         self.framerate = framerate
+        self.filename = filename
 
         assert self.sampwidth == 2  # only 2 bytes (16 bits) per sample
         assert self.framerate in [8000, 16000]
+
+    def transcript(self) :
+        print("transcribe filename {}".format(self.filename))
+        assert os.path.isfile(self.filename)
+        key = "6478b5d9-bd01-4538-8ff6-87b372205073"
+        comand = "./speechkitcloud/asrclient-cli.py --key={}\
+            --format=\"audio/x-pcm;bit=16;rate={}\" \
+            --silent --callback-module json_callback {}".format(key, self.framerate, self.filename)
+        result = subprocess.getoutput(comand)
+        return json.loads("["+result+"]")
 
     @classmethod
     def from_file(cls, filename, channel=None):
@@ -181,7 +196,7 @@ class Track:
 
         print('binary constructed')
 
-        return cls(binary, sampwidth=meta.sampwidth, framerate=meta.framerate)
+        return cls(binary, sampwidth=meta.sampwidth, framerate=meta.framerate, filename=filename)
 
     @property
     def duration(self):
@@ -246,8 +261,8 @@ class Dialog:
                                     sampwidth=track_1.sampwidth,
                                     framerate=track_1.framerate)
 
-        self.track_client = factory(track_1.bytes[:self.common_length])
-        self.track_operator = factory(track_2.bytes[:self.common_length])
+        self.track_client   = factory(track_1.bytes[:self.common_length], filename = track_1.filename)
+        self.track_operator = factory(track_2.bytes[:self.common_length], filename = track_2.filename)
 
         self.mask_client = self.track_client.get_mask(vad_agressiviness_level,
                                                       frame_duration)
@@ -256,6 +271,18 @@ class Dialog:
 
         self.mask_both = Mask.intersect(self.mask_client, self.mask_operator)
         self.freezingLimit = freezingLimit
+
+
+    @classmethod
+    def from_file(cls, filename, *, freezingLimit=5,
+                 vad_agressiviness_level=3, frame_duration=30):
+        client_file, operator_file = Dialog._stereo_to_two_mono(filename)
+        print("FROM FILE creating {}, {}".format(client_file, operator_file))
+
+        track_client   = Track.from_file(client_file, channel=0) 
+        track_operator = Track.from_file(operator_file, channel=0)
+        print("FROM FILE READY {}, {}".format(client_file, operator_file))
+        return cls(track_client, track_operator, vad_agressiviness_level=vad_agressiviness_level, freezingLimit=freezingLimit, frame_duration=frame_duration)
 
     def frames_to_ratio(self, frames_count):
         return self.mask_client.frames_to_ratio(frames_count)
@@ -314,6 +341,50 @@ class Dialog:
 
     def get_influence_array(self):
         return [(i[0], i[2]) for i in self.influence_iterator()]
+
+    def transcript(self):
+        return {
+            "client" : self.track_client.transcript(),
+            "operator" : self.track_operator.transcript()
+        }
+
+    @staticmethod
+    def __gen_temp_file(name=''):
+        return tempfile.NamedTemporaryFile(prefix='{}_'.format(name),
+                                           suffix='.wav',
+                                           delete=False)
+
+    @staticmethod
+    def _stereo_to_two_mono(filename):
+        print(filename)
+        with wave.open(filename, 'rb') as source, \
+                Dialog.__gen_temp_file() as temp_l, \
+                Dialog.__gen_temp_file() as temp_r, \
+                wave.open(temp_l, 'wb') as ch_l, \
+                wave.open(temp_r, 'wb') as ch_r:
+            params = source.getparams()
+            assert params.nchannels == 2
+
+            for ch in (ch_l, ch_r):
+                ch.setparams(params)
+                ch.setnchannels(1)
+
+            frames = source.readframes(params.nframes)
+
+            def gen(ch):
+                window = params.sampwidth * 2
+                assert not window % 2
+                half = int(window / 2)
+                for i in range(0, len(frames), window):
+                    e = frames[i:i+window]
+                    yield e[:half] if ch == 'L' else e[half:]
+
+            data_l = b''.join(gen('L'))
+            data_r = b''.join(gen('R'))
+            ch_l.writeframes(data_l)
+            ch_r.writeframes(data_r)
+
+            return temp_l.name, temp_r.name
 
     def get_interruptions_info(self):
         client = 0
