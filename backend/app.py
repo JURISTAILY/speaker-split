@@ -2,9 +2,8 @@ from flask import send_from_directory, abort
 from flask_restful import Api, Resource
 import flask_cors
 
-import core
-
 from models import Call, db, app
+import core
 
 api = Api(app)
 flask_cors.CORS(app, resources={'/*': {'origins': '*'}})
