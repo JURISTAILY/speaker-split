@@ -8,7 +8,7 @@ from enum import IntEnum
 
 import webrtcvad
 
-from .utils import gen_temp_file
+import utils
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 SPEECHKIT_DIR = os.path.join(BASE_DIR, 'speechkitcloud')
@@ -266,18 +266,13 @@ class Dialog:
         self.freezing_limit = freezing_limit
 
     @classmethod
-    def from_file(cls, filename, *, freezing_limit=5,
-                  vad_agressiviness_level=3, frame_duration=30):
-        client_file, operator_file = Dialog._stereo_to_two_mono(filename)
-
-        track_client = Track.from_file(client_file, channel=0)
-        track_operator = Track.from_file(operator_file, channel=0)
-        return cls(track_client,
-                   track_operator,
-                   vad_agressiviness_level=vad_agressiviness_level,
-                   freezing_limit=freezing_limit,
-                   frame_duration=frame_duration,
-                   )
+    def from_file(cls, filename, **kwargs):
+        file_client, file_operator = utils.stereo_to_two_mono(
+            filename, temp_dir=kwargs.pop('temp_dir', None),
+        )
+        track_client = Track.from_file(file_client, channel=0)
+        track_operator = Track.from_file(file_operator, channel=0)
+        return cls(track_client, track_operator, **kwargs)
 
     def frames_to_ratio(self, frames_count):
         return self.mask_client.frames_to_ratio(frames_count)
@@ -342,38 +337,6 @@ class Dialog:
             "client": self.track_client.transcript(),
             "operator": self.track_operator.transcript()
         }
-
-    @staticmethod
-    def _stereo_to_two_mono(filename):
-        print(filename)
-        with wave.open(filename, 'rb') as source, \
-                gen_temp_file() as temp_l, \
-                gen_temp_file() as temp_r, \
-                wave.open(temp_l, 'wb') as ch_l, \
-                wave.open(temp_r, 'wb') as ch_r:
-            params = source.getparams()
-            assert params.nchannels == 2
-
-            for ch in (ch_l, ch_r):
-                ch.setparams(params)
-                ch.setnchannels(1)
-
-            frames = source.readframes(params.nframes)
-
-            def gen(ch):
-                window = params.sampwidth * 2
-                assert not window % 2
-                half = int(window / 2)
-                for i in range(0, len(frames), window):
-                    e = frames[i:i+window]
-                    yield e[:half] if ch == 'L' else e[half:]
-
-            data_l = b''.join(gen('L'))
-            data_r = b''.join(gen('R'))
-            ch_l.writeframes(data_l)
-            ch_r.writeframes(data_r)
-
-            return temp_l.name, temp_r.name
 
     def get_interruptions_info(self):
         client = 0
