@@ -30,29 +30,30 @@ def _mp3_to_wav(f1, f2):
 def _stereo_to_two_mono(filename):
     with wave.open(filename, 'rb') as source, \
             gen_temp_file() as temp_l, \
-            gen_temp_file() as temp_r:
+            gen_temp_file() as temp_r, \
+            wave.open(temp_l, 'wb') as ch_l, \
+            wave.open(temp_r, 'wb') as ch_r:
 
         params = source.getparams()
         assert params.nchannels == 2
 
-        with wave.open(temp_l, 'wb') as ch_l, wave.open(temp_r, 'wb') as ch_r:
-            for ch in (ch_l, ch_r):
-                ch.setparams(params)
-                ch.setnchannels(1)
+        for ch in (ch_l, ch_r):
+            ch.setparams(params)
+            ch.setnchannels(1)
 
-            frames = source.readframes(params.nframes)
+        frames = source.readframes(params.nframes)
 
-            def gen(ch):
-                window = params.sampwidth * 2
-                half = int(window / 2)
-                for i in range(0, len(frames), window):
-                    e = frames[i:i+window]
-                    yield e[:half] if ch == 'L' else e[half:]
+        def gen(ch):
+            window = params.sampwidth * 2
+            half = int(window / 2)
+            for i in range(0, len(frames), window):
+                e = frames[i:i+window]
+                yield e[:half] if ch == 'L' else e[half:]
 
-            data_l = b''.join(gen('L'))
-            data_r = b''.join(gen('R'))
-            ch_l.writeframes(data_l)
-            ch_r.writeframes(data_r)
+        data_l = b''.join(gen('L'))
+        data_r = b''.join(gen('R'))
+        ch_l.writeframes(data_l)
+        ch_r.writeframes(data_r)
 
         return temp_l.name, temp_r.name
 
