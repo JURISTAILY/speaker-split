@@ -1,7 +1,11 @@
 pydub==0.18.0
 webrtcvad==2.0.10
-Flask-SQLAlchemy==2.1
+psycopg2==2.6.2
+arrow==0.10.0
+uWSGI==2.0.14
 SQLAlchemy==1.1.5
 SQLAlchemy-Utils==0.32.12
-uWSGI==2.0.14
-psycopg2==2.6.2
+Flask==0.12
+Flask-SQLAlchemy==2.1
+Flask-Cors==3.0.2
+Flask-RESTful==0.3.5
