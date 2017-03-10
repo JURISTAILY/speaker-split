@@ -151,14 +151,17 @@ class Mask:
 
 
 class Track:
-    def __init__(self, bytes, *, sampwidth, framerate, filename):
-        self.bytes = bytes
+    def __init__(self, bytes_, *, sampwidth, framerate, filename):
+        self.bytes = bytes_
         self.sampwidth = sampwidth
         self.framerate = framerate
         self.filename = filename
 
         assert self.sampwidth == 2  # only 2 bytes (16 bits) per sample
         assert self.framerate in [8000, 16000]
+
+    def __len__(self):
+        return len(self.bytes)
 
     def transcript(self):
         print("transcribe filename {}".format(self.filename))
@@ -195,7 +198,8 @@ class Track:
             span = slice(channel, None, 2)  # equvivalent to [0::2] or [1::2]
             binary = b''.join(chunks[span])
 
-        return cls(binary, sampwidth=meta.sampwidth, framerate=meta.framerate, filename=filename)
+        return cls(binary, sampwidth=meta.sampwidth,
+                   framerate=meta.framerate, filename=filename)
 
     @property
     def duration(self):
@@ -247,32 +251,23 @@ class SpeechState(IntEnum):
 
 
 class Dialog:
-
     def __init__(self, track_client, track_operator, *, freezing_limit=5,
                  vad_agressiviness_level=3, frame_duration=30):
+        assert len(track_client) == len(track_operator)
 
-        track_1, track_2 = track_client, track_operator
-        assert Track.same_format(track_1, track_2)
+        self.track_client, self.track_operator = track_client, track_operator
 
-        self.common_length = min(len(track_1.bytes), len(track_2.bytes))
-
-        factory = functools.partial(Track,
-                                    sampwidth=track_1.sampwidth,
-                                    framerate=track_1.framerate)
-
-        self.track_client = factory(track_1.bytes[:self.common_length], filename=track_1.filename)
-        self.track_operator = factory(track_2.bytes[:self.common_length], filename=track_2.filename)
-
-        self.mask_client = self.track_client.get_mask(vad_agressiviness_level,
-                                                      frame_duration)
-        self.mask_operator = self.track_operator.get_mask(vad_agressiviness_level,
-                                                          frame_duration)
-
+        self.mask_client, self.mask_operator = (
+            self.track_client.get_mask(vad_agressiviness_level, frame_duration),
+            self.track_operator.get_mask(vad_agressiviness_level, frame_duration)
+        )
         self.mask_both = Mask.intersect(self.mask_client, self.mask_operator)
+
         self.freezing_limit = freezing_limit
 
     @classmethod
-    def from_file(cls, filename, *, freezing_limit=5, vad_agressiviness_level=3, frame_duration=30):
+    def from_file(cls, filename, *, freezing_limit=5,
+                  vad_agressiviness_level=3, frame_duration=30):
         client_file, operator_file = Dialog._stereo_to_two_mono(filename)
 
         track_client = Track.from_file(client_file, channel=0)
