@@ -10,6 +10,10 @@ import webrtcvad
 
 from .utils import gen_temp_file
 
+BASE_DIR = os.path.dirname(os.path.realpath(__file__))
+SPEECHKIT_DIR = os.path.join(BASE_DIR, 'speechkitcloud')
+SPEECHKIT_API_KEY = '6478b5d9-bd01-4538-8ff6-87b372205073'
+
 
 def _split(x, n, trim=False):
     # TODO: Refactor this shit. It eats memory like a pig.
@@ -159,43 +163,37 @@ class Track:
     def transcript(self):
         print("transcribe filename {}".format(self.filename))
         assert os.path.isfile(self.filename)
-        key = "6478b5d9-bd01-4538-8ff6-87b372205073"
-        comand = "./speechkitcloud/asrclient-cli.py --key={}\
-            --format=\"audio/x-pcm;bit=16;rate={}\" \
-            --silent --callback-module json_callback {}".format(key, self.framerate, self.filename)
-        result = subprocess.getoutput(comand)
-        return json.loads("["+result+"]")
+        util = os.path.join(SPEECHKIT_DIR, 'asrclient-cli.py')
+        command = [
+            util,
+            '--key', SPEECHKIT_API_KEY,
+            '--format', '"audio/x-pcm;bit=16;rate={}"'.format(self.framerate),
+            '--silent',
+            '--callback-module', 'json_callback',
+            self.filename,
+        ]
+        output = subprocess.check_output(command, universal_newlines=True)
+        return json.loads('[{}]'.format(output))
 
     @classmethod
     def from_file(cls, filename, channel=None):
-
-        print('Opening file {}'.format(filename))
-
         with wave.open(filename, 'rb') as container:
             meta = container.getparams()
             bytes_ = container.readframes(meta.nframes)  # Read the whole file
 
-        print('File opened')
-
         assert meta.nchannels in [1, 2]
         assert meta.comptype == 'NONE'  # No compression
-
-        print('Assertions success.')
 
         if meta.nchannels == 1:
             binary = bytes_
         else:
             # Dealing with stereo format.
-            print('Stereo...')
             assert channel in [0, 1]
             chunks = _split(bytes_, meta.sampwidth)
-            print('chunks gotten.')
 
             assert len(chunks[-1]) == meta.sampwidth
             span = slice(channel, None, 2)  # equvivalent to [0::2] or [1::2]
             binary = b''.join(chunks[span])
-
-        print('binary constructed')
 
         return cls(binary, sampwidth=meta.sampwidth, framerate=meta.framerate, filename=filename)
 
