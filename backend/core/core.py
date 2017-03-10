@@ -4,9 +4,8 @@ import random
 
 import pydub
 
-from dialog import Track, Dialog
-import settings
-import utils
+from .dialog import Track, Dialog
+from .utils import gen_temp_file
 
 log = logging.getLogger(__name__)
 
@@ -34,7 +33,7 @@ class Engine:
             return filename
 
         if basename.endswith('.mp3'):
-            with utils.gen_temp_file(basename) as temp:
+            with gen_temp_file(basename) as temp:
                 wav_file = temp.name
 
             _mp3_to_wav(filename, wav_file)
@@ -93,8 +92,3 @@ class Engine:
             })
 
         return data
-
-
-if __name__ == '__main__':
-    engine = Engine(settings['RECORDINGS_DIR'])
-    print(engine.transcribe_recording("dialog2.wav"))

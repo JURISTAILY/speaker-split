@@ -8,7 +8,7 @@ from enum import IntEnum
 
 import webrtcvad
 
-import utils
+from .utils import gen_temp_file
 
 
 def _split(x, n, trim=False):
@@ -354,8 +354,8 @@ class Dialog:
     def _stereo_to_two_mono(filename):
         print(filename)
         with wave.open(filename, 'rb') as source, \
-                utils.gen_temp_file() as temp_l, \
-                utils.gen_temp_file() as temp_r, \
+                gen_temp_file() as temp_l, \
+                gen_temp_file() as temp_r, \
                 wave.open(temp_l, 'wb') as ch_l, \
                 wave.open(temp_r, 'wb') as ch_r:
             params = source.getparams()
