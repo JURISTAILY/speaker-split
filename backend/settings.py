@@ -1,3 +1,5 @@
+import os.path
+
 RESTFUL_JSON = {
     'ensure_ascii': False,
     'sort_keys': True,
@@ -13,6 +15,5 @@ MIMETYPES = {
     '.wav': 'audio/wav',
     '.mp3': 'audio/mpeg',
 }
-# We better make this an absolute path
-# to avoid ambiguity during relative imports.
-RECORDINGS_DIR = 'audio_samples'
+PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
+RECORDINGS_DIR = os.path.join(PROJECT_DIR, 'audio_samples')
