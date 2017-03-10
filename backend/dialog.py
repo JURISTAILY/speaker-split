@@ -1,13 +1,14 @@
 import wave
 import functools
 import itertools
-import tempfile
 import subprocess
 import os.path
+import json
 from enum import IntEnum
 
 import webrtcvad
-import json
+
+import utils
 
 
 def _split(x, n, trim=False):
@@ -249,7 +250,7 @@ class SpeechState(IntEnum):
 
 class Dialog:
 
-    def __init__(self, track_client, track_operator, *, freezingLimit=5,
+    def __init__(self, track_client, track_operator, *, freezing_limit=5,
                  vad_agressiviness_level=3, frame_duration=30):
 
         track_1, track_2 = track_client, track_operator
@@ -270,15 +271,20 @@ class Dialog:
                                                           frame_duration)
 
         self.mask_both = Mask.intersect(self.mask_client, self.mask_operator)
-        self.freezingLimit = freezingLimit
+        self.freezing_limit = freezing_limit
 
     @classmethod
-    def from_file(cls, filename, *, freezingLimit=5, vad_agressiviness_level=3, frame_duration=30):
+    def from_file(cls, filename, *, freezing_limit=5, vad_agressiviness_level=3, frame_duration=30):
         client_file, operator_file = Dialog._stereo_to_two_mono(filename)
-        
+
         track_client = Track.from_file(client_file, channel=0)
         track_operator = Track.from_file(operator_file, channel=0)
-        return cls(track_client, track_operator, vad_agressiviness_level=vad_agressiviness_level, freezingLimit=freezingLimit, frame_duration=frame_duration)
+        return cls(track_client,
+                   track_operator,
+                   vad_agressiviness_level=vad_agressiviness_level,
+                   freezing_limit=freezing_limit,
+                   frame_duration=frame_duration,
+                   )
 
     def frames_to_ratio(self, frames_count):
         return self.mask_client.frames_to_ratio(frames_count)
@@ -345,17 +351,11 @@ class Dialog:
         }
 
     @staticmethod
-    def __gen_temp_file(name=''):
-        return tempfile.NamedTemporaryFile(prefix='{}_'.format(name),
-                                           suffix='.wav',
-                                           delete=False)
-
-    @staticmethod
     def _stereo_to_two_mono(filename):
         print(filename)
         with wave.open(filename, 'rb') as source, \
-                Dialog.__gen_temp_file() as temp_l, \
-                Dialog.__gen_temp_file() as temp_r, \
+                utils.gen_temp_file() as temp_l, \
+                utils.gen_temp_file() as temp_r, \
                 wave.open(temp_l, 'wb') as ch_l, \
                 wave.open(temp_r, 'wb') as ch_r:
             params = source.getparams()
@@ -389,8 +389,8 @@ class Dialog:
         clientFrames = 0
         operatorFrames = 0
         bothFrames = 0
-        clientFreezing = 0
-        operatorFreezing = 0
+        client_freezing = 0
+        operator_freezing = 0
         for interruption in self.influence_iterator():
             if interruption[0] is SpeechState.INTERRUPTION:
                 if interruption[1] is SpeechState.CLIENT:
@@ -405,16 +405,16 @@ class Dialog:
                 dur = self.frames_to_duration(interruption[2])
                 if interruption[1] is SpeechState.CLIENT \
                         or interruption[1] is SpeechState.INTERRUPTION:
-                    if dur > self.freezingLimit:
-                        operatorFreezing += dur
+                    if dur > self.freezing_limit:
+                        operator_freezing += dur
                 if interruption[1] is SpeechState.OPERATOR \
                         or interruption[1] is SpeechState.INTERRUPTION:
-                    if dur > self.freezingLimit:
-                        clientFreezing += dur
+                    if dur > self.freezing_limit:
+                        client_freezing += dur
 
         return {
-            'operator_freezing_duration': operatorFreezing,
-            'client_freezing_duration': clientFreezing,
+            'operator_freezing_duration': operator_freezing,
+            'client_freezing_duration': client_freezing,
 
             'operator_interruptions_ratio': self.frames_to_ratio(operatorFrames),
             'client_interruptions_ratio': self.frames_to_ratio(clientFrames),

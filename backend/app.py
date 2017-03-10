@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, abort
+from flask import send_from_directory, abort
 from flask_restful import Api, Resource
 import flask_cors
 
@@ -8,6 +8,7 @@ from models import Call, db, app
 
 api = Api(app)
 flask_cors.CORS(app, resources={'/*': {'origins': '*'}})
+
 
 class CallResource(Resource):
     def get(self):
@@ -27,15 +28,17 @@ class DevelopmentResource(Resource):
         engine = core.Engine(app.config['RECORDINGS_DIR'])
         return engine.process_recording(filename, debug=True)
 
-class RranscribeResource(Resource):
+
+class TranscribeResource(Resource):
     def get(self, filename):
         engine = core.Engine(app.config['RECORDINGS_DIR'])
-        return engine.transcribe_recordig(filename)
+        return engine.transcribe_recording(filename)
 
 
 api.add_resource(CallResource, '/calls')
 api.add_resource(DevelopmentResource, '/calc/<string:filename>')
-api.add_resource(RranscribeResource, '/transcribation_direct_process/<string:filename>')
+api.add_resource(TranscribeResource, '/transcribation_direct_process/<string:filename>')
+
 
 @app.route('/recordings/<int:call_id>')
 def serve_recording(call_id):
@@ -46,6 +49,7 @@ def serve_recording(call_id):
 
     return serve_recording_from_name(call.recording_filename)
 
+
 @app.route('/recordings/<string:recording_filename>')
 def serve_recording_from_name(recording_filename):
     extension = recording_filename[-4:]
@@ -53,12 +57,12 @@ def serve_recording_from_name(recording_filename):
         mimetype = app.config['MIMETYPES'][extension]
     except KeyError:
         raise RuntimeError(
-            'Unsupported recording file extension ({}) (call_id={}).'
-            .format(call.recording_filename, call_id)
+            'Unsupported recording file extension ({}).'
+            .format(recording_filename)
         )
-    return send_from_directory(app.config['RECORDINGS_DIR'],
-                               recording_filename,
+    return send_from_directory(app.config['RECORDINGS_DIR'], recording_filename,
                                mimetype=mimetype)
+
 
 if __name__ == '__main__':
     app.run(port=8001, debug=True)

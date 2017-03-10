@@ -1,12 +1,12 @@
 import os.path
 import logging
 import random
-import wave
 
 import pydub
 
 from dialog import Track, Dialog
-from settings import RECORDINGS_DIR
+import settings
+import utils
 
 log = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ def _mp3_to_wav(f1, f2):
 
 class Engine:
 
-    def __init__(self, recordings_dir=RECORDINGS_DIR):
+    def __init__(self, recordings_dir):
         self.recordings_dir = recordings_dir
 
     @staticmethod
@@ -34,7 +34,7 @@ class Engine:
             return filename
 
         if basename.endswith('.mp3'):
-            with gen_temp_file(basename) as temp:
+            with utils.gen_temp_file(basename) as temp:
                 wav_file = temp.name
 
             _mp3_to_wav(filename, wav_file)
@@ -44,7 +44,7 @@ class Engine:
 
         raise RuntimeError('Unsupported file format: {}'.format(basename))
 
-    def transcribe_recordig(self, filename, *, vad_agressiviness_level=3):
+    def transcribe_recording(self, filename, *, vad_agressiviness_level=3):
 
         filename = os.path.join(self.recordings_dir, os.path.basename(filename))
         wav_file = self._get_wav_file(filename)
@@ -94,6 +94,7 @@ class Engine:
 
         return data
 
+
 if __name__ == '__main__':
-    engine = Engine()
-    print(engine.transcribe_recordig("dialog2.wav"))
+    engine = Engine(settings['RECORDINGS_DIR'])
+    print(engine.transcribe_recording("dialog2.wav"))

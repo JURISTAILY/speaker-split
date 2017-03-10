@@ -47,7 +47,7 @@ class Monitor:
                 data = self.engine.process_recording(
                     rec, vad_agressiviness_level=vad_agressiviness_level,
                     )
-                transcript = self.engine.transcribe_recordig(rec)
+                transcript = self.engine.transcribe_recording(rec)
                 Call.add_new(data, transcript)
                 log.debug('Recording successfully processed.')
             except Exception:
