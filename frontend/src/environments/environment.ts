@@ -4,5 +4,9 @@ export const environment = {
   callsPath : 'calls',
   calcPath : 'calc/',
   recordingsPath : 'recordings/',
-  playerSourcesPaths : [ 'recordings/' ]
+  transcribationProcess : "transcribation_direct_process/",
+  playerSourcesPaths : [ 'recordings/' ],
+
+
+  ask_script_from_debuger : false
 };

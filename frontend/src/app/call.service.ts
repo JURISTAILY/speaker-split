@@ -27,6 +27,13 @@ export class CallService {
                     .catch(this.handleError);
   }
 
+  private getProcessedTranscribation(callName): Promise<any[]> {
+    return this.http.get(environment.apiUrl + environment.transcribationProcess + callName)
+                    .toPromise()
+                    .then(response => response.json())
+                    .catch(this.handleError);
+  }
+
   private static fromDataForMainTable(datum : any) {
     let arr = ColumnDescription.DIALOGUE_VIEW_COLUMNS;
     let result = Array<any>(arr.length)
@@ -83,6 +90,30 @@ export class CallService {
     }
   }
 
+  private static takeTranscripts(data) {
+    let result = [];
+    let pushScript = function(items, isOperator) {
+      for (let i = 0; i != items.length; ++i) {
+        let itm = items[i]
+        result.push({
+          isOperator: isOperator,
+          transcript: itm["value"],
+          begin : itm["start_time"],
+          end : itm["end_time"]
+        })
+      }
+    }
+    console.log(data);
+    if ("client" in data) {
+      pushScript(data["client"], false);
+    }
+    if ("operator" in data) {
+      pushScript(data["operator"], true);
+    }
+    result.sort((a,b) => a.begin - b.begin)
+    return result;
+  }
+
   private convertCalls(arr: any[]): Call[] {
     let adapted : Array<Call> = new Array<Call>(arr.length);
 
@@ -99,17 +130,7 @@ export class CallService {
           if (typeof(transcripts) === "undefined") {
             return new Array<CallTranscript>();
           }
-          let res : Array<CallTranscript> = new Array<CallTranscript>(transcripts.length);
-          for (let id in transcripts) {
-            let transcript = transcripts[id];
-            res[id] = {
-              'begin' : transcript['begin'],
-              'end' : transcript['end'],
-              transcript: transcript.phrase,
-              isOperator : transcript.speaker === "operator"
-            };
-          }
-          return res;
+          return CallService.takeTranscripts(transcripts);
         })(i.transcript),
         details : CallService.infoToDetails(i.info),
         sources : (function(sources : Array<any>) : CallSource[] {
@@ -130,7 +151,7 @@ export class CallService {
 
   getComputedCallDebug(callName : string) : Promise<Array<Call>> {
     return this.getRawComputedCallDebug(callName).then(rawCall => {
-      return [
+      let result = [
         {
           id : 0,
           tableValues : (function(data) {
@@ -171,6 +192,13 @@ export class CallService {
           debug : rawCall['debug']
         } as Call
       ];
+      if (environment.ask_script_from_debuger) {
+        console.log("Transcribation request! Be worry about eour server!")
+        this.getProcessedTranscribation(callName).then(rawTranscript => {
+          result[0].transcripts = CallService.takeTranscripts(rawTranscript)
+        })
+      }
+      return result;
     });
   }
 

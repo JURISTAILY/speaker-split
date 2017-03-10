@@ -27,10 +27,15 @@ class DevelopmentResource(Resource):
         engine = core.Engine(app.config['RECORDINGS_DIR'])
         return engine.process_recording(filename, debug=True)
 
+class RranscribeResource(Resource):
+    def get(self, filename):
+        engine = core.Engine(app.config['RECORDINGS_DIR'])
+        return engine.transcribe_recordig(filename)
+
 
 api.add_resource(CallResource, '/calls')
 api.add_resource(DevelopmentResource, '/calc/<string:filename>')
-
+api.add_resource(RranscribeResource, '/transcribation_direct_process/<string:filename>')
 
 @app.route('/recordings/<int:call_id>')
 def serve_recording(call_id):

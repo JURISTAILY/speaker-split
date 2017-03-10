@@ -47,13 +47,13 @@ class Call(db.Model, PrimaryKeyMixin):
     parameters = relationship('Parameter', lazy='joined', order_by='Parameter.id')
 
     @classmethod
-    def add_new(cls, data):
+    def add_new(cls, data, transcript):
         try:
             call = cls(
                 duration=data['duration'],
                 is_incoming=data['is_incoming'],
                 recording_filename=data['filename'],
-                transcript=data.get('transcript', []),
+                transcript=transcript,
             )
 
             db.session.add(call)

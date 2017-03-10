@@ -31,11 +31,7 @@ export class DialogueViewComponent implements OnInit {
     } else {
       call = this.callService.getCalls();
     }
-    call.then(calls => this.takeData(calls));
-  }
-
-  private takeData(data : Array<Call>) {
-    this.calls = data;
+    call.then(calls => this.calls = calls);
   }
 
   ngOnInit(): void {

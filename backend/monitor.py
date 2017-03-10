@@ -43,10 +43,12 @@ class Monitor:
                 continue
             log.debug('This recording is new. Processing it...')
             try:
+                log.debug('Processed recording . . .')
                 data = self.engine.process_recording(
                     rec, vad_agressiviness_level=vad_agressiviness_level,
                     )
-                Call.add_new(data)
+                transcript = self.engine.transcribe_recordig(rec)
+                Call.add_new(data, transcript)
                 log.debug('Recording successfully processed.')
             except Exception:
                 log.exception('Could not process recording.')

@@ -57,7 +57,7 @@ class Mask:
         return result
 
     @staticmethod
-    def __smooth(array, radius = 10):
+    def __smooth(array, radius=10):
         presum = 0
         result = []
         l = len(array)
@@ -155,7 +155,7 @@ class Track:
         assert self.sampwidth == 2  # only 2 bytes (16 bits) per sample
         assert self.framerate in [8000, 16000]
 
-    def transcript(self) :
+    def transcript(self):
         print("transcribe filename {}".format(self.filename))
         assert os.path.isfile(self.filename)
         key = "6478b5d9-bd01-4538-8ff6-87b372205073"
@@ -261,8 +261,8 @@ class Dialog:
                                     sampwidth=track_1.sampwidth,
                                     framerate=track_1.framerate)
 
-        self.track_client   = factory(track_1.bytes[:self.common_length], filename = track_1.filename)
-        self.track_operator = factory(track_2.bytes[:self.common_length], filename = track_2.filename)
+        self.track_client = factory(track_1.bytes[:self.common_length], filename=track_1.filename)
+        self.track_operator = factory(track_2.bytes[:self.common_length], filename=track_2.filename)
 
         self.mask_client = self.track_client.get_mask(vad_agressiviness_level,
                                                       frame_duration)
@@ -272,16 +272,12 @@ class Dialog:
         self.mask_both = Mask.intersect(self.mask_client, self.mask_operator)
         self.freezingLimit = freezingLimit
 
-
     @classmethod
-    def from_file(cls, filename, *, freezingLimit=5,
-                 vad_agressiviness_level=3, frame_duration=30):
+    def from_file(cls, filename, *, freezingLimit=5, vad_agressiviness_level=3, frame_duration=30):
         client_file, operator_file = Dialog._stereo_to_two_mono(filename)
-        print("FROM FILE creating {}, {}".format(client_file, operator_file))
-
-        track_client   = Track.from_file(client_file, channel=0) 
+        
+        track_client = Track.from_file(client_file, channel=0)
         track_operator = Track.from_file(operator_file, channel=0)
-        print("FROM FILE READY {}, {}".format(client_file, operator_file))
         return cls(track_client, track_operator, vad_agressiviness_level=vad_agressiviness_level, freezingLimit=freezingLimit, frame_duration=frame_duration)
 
     def frames_to_ratio(self, frames_count):
@@ -344,8 +340,8 @@ class Dialog:
 
     def transcript(self):
         return {
-            "client" : self.track_client.transcript(),
-            "operator" : self.track_operator.transcript()
+            "client": self.track_client.transcript(),
+            "operator": self.track_operator.transcript()
         }
 
     @staticmethod
