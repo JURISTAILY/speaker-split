@@ -1,6 +1,7 @@
 import functools
 import itertools
 
+
 class Mask:
     def __init__(self, *, mask, frame_duration):
         # mask true when the frame is speech

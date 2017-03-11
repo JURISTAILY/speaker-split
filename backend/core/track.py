@@ -1,10 +1,16 @@
 import wave
-import functools
-import webrtcvad
 import json
 import subprocess
+import os.path
+
+import webrtcvad
 
 from .mask import Mask
+
+BASE_DIR = os.path.dirname(os.path.realpath(__file__))
+SPEECHKIT_DIR = os.path.join(BASE_DIR, 'speechkitcloud')
+SPEECHKIT_API_KEY = '6478b5d9-bd01-4538-8ff6-87b372205073'
+
 
 def _split(x, n, trim=False):
     # TODO: Refactor this shit. It eats memory like a pig.
@@ -12,6 +18,7 @@ def _split(x, n, trim=False):
     if trim and len(chunks[-1]) < n:
         return chunks[:-1]
     return chunks
+
 
 class Track:
     def __init__(self, bytes_, *, sampwidth, framerate, filename):

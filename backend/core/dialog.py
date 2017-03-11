@@ -1,15 +1,8 @@
-import functools
-import itertools
-import os.path
 from enum import IntEnum
 
 from .utils import stereo_to_two_mono
 from .track import Track
 from .mask import Mask
-
-BASE_DIR = os.path.dirname(os.path.realpath(__file__))
-SPEECHKIT_DIR = os.path.join(BASE_DIR, 'speechkitcloud')
-SPEECHKIT_API_KEY = '6478b5d9-bd01-4538-8ff6-87b372205073'
 
 
 class SpeechState(IntEnum):
