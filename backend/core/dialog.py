@@ -8,7 +8,7 @@ from enum import IntEnum
 
 import webrtcvad
 
-import utils
+from .utils import stereo_to_two_mono
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 SPEECHKIT_DIR = os.path.join(BASE_DIR, 'speechkitcloud')
@@ -267,7 +267,7 @@ class Dialog:
 
     @classmethod
     def from_file(cls, filename, **kwargs):
-        file_client, file_operator = utils.stereo_to_two_mono(
+        file_client, file_operator = stereo_to_two_mono(
             filename, temp_dir=kwargs.pop('temp_dir', None),
         )
         track_client = Track.from_file(file_client, channel=0)

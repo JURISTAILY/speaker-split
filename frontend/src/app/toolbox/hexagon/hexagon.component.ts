@@ -100,7 +100,7 @@ export class HexagonComponent implements OnInit {
       let tooltip = g.append("text")
         .style("stroke-width", 0.5)
         .style("font-size", 16)
-          .style("fill","#000000")
+        .style("fill","#000000")
         .style("pointer-events", "none");
       tooltip.billet = billet;
       tooltip.take = function(text, pos) {
@@ -109,7 +109,7 @@ export class HexagonComponent implements OnInit {
         this.billet.attr("width", box.width + 14)
           .attr("height", box.height + 6)
           .attr("x", box.x - 7)
-          .attr("y", box.y - 2).transition().style("opacity", "1");
+          .attr("y", box.y - 3).transition().style("opacity", "1");
       };
       tooltip.hide = function() {
         this.transition().style("opacity", "0");
@@ -149,7 +149,8 @@ export class HexagonComponent implements OnInit {
         axisTooltips[i].attr("text-anchor","end");
       }
       axisTooltips[i].pos = {
-        x : Math.cos(anglesD[i] / 180 * Math.PI) * r - (anglesD[i] > 90 && anglesD[i] < 270 ? (anglesD[i] > 160 && anglesD[i] < 200 ? 30 : 40) : 0),
+        x : Math.cos(anglesD[i] / 180 * Math.PI) * r - 
+          (anglesD[i] > 90 && anglesD[i] < 270 ? 40 : 0),
         y : Math.sin(anglesD[i] / 180 * Math.PI) * r
       };
     }
