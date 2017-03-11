@@ -2,7 +2,6 @@ import tempfile
 import wave
 import os.path
 import logging
-import time
 
 import pydub
 
@@ -46,8 +45,6 @@ def stereo_to_two_mono(filename, temp_dir=None):
         data_r = b''.join(gen('R'))
         ch_l.writeframes(data_l)
         ch_r.writeframes(data_r)
-
-        time.sleep(100)
 
         return temp_l.name, temp_r.name
 

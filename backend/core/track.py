@@ -43,9 +43,10 @@ class Track:
         bits = int(self.sampwidth * 8)
         command = [
             util,
-            '--key', SPEECHKIT_API_KEY,
-            '--format', '"audio/x-pcm;bit={};rate={}"'.format(bits, self.framerate),
+            '--key={}'.format(SPEECHKIT_API_KEY),
+            '--format="audio/x-pcm;bit={};rate={}"'.format(bits, self.framerate),
             '--silent',
+            '--format="audio/x-pcm;bit=16;rate={}"'.format(self.framerate),
             '--callback-module', 'json_callback',
             self.filename,
         ]
