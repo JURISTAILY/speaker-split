@@ -49,6 +49,9 @@ def stereo_to_two_mono(filename, temp_dir=None):
 
 
 def _mp3_to_wav(f1, f2):
+
+    # TODO: use Ubuntu `sox` utility with Python `subprocess`.
+
     mp3 = pydub.AudioSegment.from_file(f1, format='mp3')
 
     assert mp3.channels == 2

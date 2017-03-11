@@ -32,18 +32,15 @@ def _split(binary, n, trim=False):
 class Track:
     def __init__(self, filename):
         with wave.open(filename, 'rb') as container:
-            meta = container.getparams()
-            binary = container.readframes(meta.nframes)  # Read the whole file
+            self.meta = container.getparams()
+            self.bytes = container.readframes(self.meta.nframes)
 
-        assert meta.nchannels == 1
-        assert meta.framerate in (8000, 16000)
-        assert meta.sampwidth == 2  # Only 2 bytes (16 bits) per sample
-        assert meta.comptype == 'NONE'  # No compression
+        assert self.meta.nchannels == 1
+        assert self.meta.framerate in [8000, 16000]
+        assert self.meta.sampwidth == 2  # Only 2 bytes (16 bits) per sample
+        assert self.meta.comptype == 'NONE'  # No compression
 
-        self.meta = meta
-        self.bytes = binary
-        self.sampwidth = meta.sampwidth
-        self.framerate = meta.framerate
+        # For speech recognition to pass as argument to `asrclient-cli.py`.
         self.filename = filename
 
     def __len__(self):
@@ -54,8 +51,8 @@ class Track:
 
         log.debug('Started transcribing file "{}"'.format(self.filename))
 
-        bit = int(self.sampwidth * BITS_IN_BYTE)
-        audio_format = 'audio/x-pcm;bit={};rate={}'.format(bit, self.framerate)
+        bit = int(self.meta.sampwidth * BITS_IN_BYTE)
+        audio_format = 'audio/x-pcm;bit={};rate={}'.format(bit, self.meta.framerate)
 
         if audio_format != SPEECHKIT_AUDIO_FORMAT:
             log.warning('Yandex.SpeechKit ASR works reliably only with format "{0}". '
@@ -79,21 +76,23 @@ class Track:
     @property
     def duration(self):
         """Get track duration in seconds."""
-        return (len(self.bytes) / self.sampwidth) / self.framerate
+        return (len(self.bytes) / self.meta.sampwidth) / self.meta.framerate
 
     @property
     def delta(self):
-        return 1 / self.framerate
+        return 1 / self.meta.framerate
 
     def _generate_frames(self, frame_duration):
-        bytes_per_frame = int(self.sampwidth * self.framerate * frame_duration / MS_IN_S)
+        bytes_per_frame = int(
+            self.meta.sampwidth * self.meta.framerate * frame_duration / MS_IN_S
+        )
         return _split(self.bytes, bytes_per_frame, trim=True)
 
     def get_mask(self, vad_agressiviness_level, frame_duration=30):
         vad = webrtcvad.Vad(mode=vad_agressiviness_level)
         assert frame_duration in [10, 20, 30]  # ms
         mask = [
-            vad.is_speech(frame, self.framerate)
+            vad.is_speech(frame, self.meta.framerate)
             for frame in self._generate_frames(frame_duration=frame_duration)
         ]
         return Mask(mask=mask, frame_duration=frame_duration)
