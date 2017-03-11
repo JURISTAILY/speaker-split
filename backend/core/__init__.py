@@ -1,1 +1,1 @@
-from .core import Engine, Track
+from .core import Engine, Track, Dialog

@@ -2,10 +2,13 @@ import wave
 import json
 import subprocess
 import os.path
+import logging
 
 import webrtcvad
 
 from .mask import Mask
+
+log = logging.getLogger(__name__)
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 SPEECHKIT_DIR = os.path.join(BASE_DIR, 'speechkitcloud')
@@ -37,14 +40,16 @@ class Track:
         print("transcribe filename {}".format(self.filename))
         assert os.path.isfile(self.filename)
         util = os.path.join(SPEECHKIT_DIR, 'asrclient-cli.py')
+        bits = int(self.sampwidth * 8)
         command = [
             util,
             '--key', SPEECHKIT_API_KEY,
-            '--format', '"audio/x-pcm;bit=16;rate={}"'.format(self.framerate),
+            '--format', '"audio/x-pcm;bit={};rate={}"'.format(bits, self.framerate),
             '--silent',
             '--callback-module', 'json_callback',
             self.filename,
         ]
+        log.warning('Sending command: {}'.format(command))
         output = subprocess.check_output(command, universal_newlines=True)
         return json.loads('[{}]'.format(output))
 

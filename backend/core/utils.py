@@ -2,6 +2,7 @@ import tempfile
 import wave
 import os.path
 import logging
+import time
 
 import pydub
 
@@ -25,12 +26,13 @@ def stereo_to_two_mono(filename, temp_dir=None):
             wave.open(temp_r, 'wb') as ch_r:
         params = source.getparams()
         assert params.nchannels == 2
+        frames = source.readframes(params.nframes)
+        # That is an invariant. Must always be True.
+        assert params.nframes == len(frames) // (params.sampwidth * params.nchannels)
 
         for ch in (ch_l, ch_r):
             ch.setparams(params)
             ch.setnchannels(1)
-
-        frames = source.readframes(params.nframes)
 
         def gen(ch):
             window = params.sampwidth * 2
@@ -44,6 +46,8 @@ def stereo_to_two_mono(filename, temp_dir=None):
         data_r = b''.join(gen('R'))
         ch_l.writeframes(data_l)
         ch_r.writeframes(data_r)
+
+        time.sleep(100)
 
         return temp_l.name, temp_r.name
 
