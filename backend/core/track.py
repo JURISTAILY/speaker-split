@@ -39,12 +39,13 @@ class Track:
         util = os.path.join(SPEECHKIT_DIR, 'asrclient-cli.py')
         command = [
             util,
-            '--key', SPEECHKIT_API_KEY,
-            '--format', '"audio/x-pcm;bit=16;rate={}"'.format(self.framerate),
+            '--key={}'.format(SPEECHKIT_API_KEY),
             '--silent',
+            '--format="audio/x-pcm;bit=16;rate={}"'.format(self.framerate),
             '--callback-module', 'json_callback',
             self.filename,
         ]
+        print('--format="audio/x-pcm;bit=16;rate={}"'.format(self.framerate))
         output = subprocess.check_output(command, universal_newlines=True)
         return json.loads('[{}]'.format(output))
 
