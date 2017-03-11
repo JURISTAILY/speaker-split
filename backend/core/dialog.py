@@ -1,4 +1,5 @@
 from enum import IntEnum
+import tempfile
 
 from .utils import stereo_to_two_mono
 from .track import Track
@@ -23,11 +24,16 @@ class SpeechState(IntEnum):
 
 
 class Dialog:
-    def __init__(self, track_client, track_operator, *, freezing_limit=5,
-                 vad_agressiviness_level=3, frame_duration=30):
-        assert len(track_client) == len(track_operator)
+    def __init__(self, filename, *, freezing_limit=5, vad_agressiviness_level=3,
+                 frame_duration=30):
+        self.temp_dir_obj = tempfile.TemporaryDirectory()
+        self.filename = filename
+        file_client, file_operator = stereo_to_two_mono(self.filename,
+                                                        temp_dir=self.temp_dir_obj.name)
 
-        self.track_client, self.track_operator = track_client, track_operator
+        self.track_client = Track(file_client)
+        self.track_operator = Track(file_operator)
+        assert len(self.track_client) == len(self.track_operator)
 
         self.mask_client, self.mask_operator = (
             self.track_client.get_mask(vad_agressiviness_level, frame_duration),
@@ -36,15 +42,6 @@ class Dialog:
         self.mask_both = Mask.intersect(self.mask_client, self.mask_operator)
 
         self.freezing_limit = freezing_limit
-
-    @classmethod
-    def from_file(cls, filename, **kwargs):
-        file_client, file_operator = stereo_to_two_mono(
-            filename, temp_dir=kwargs.pop('temp_dir', None),
-        )
-        track_client = Track.from_file(file_client, channel=0)
-        track_operator = Track.from_file(file_operator, channel=0)
-        return cls(track_client, track_operator, **kwargs)
 
     def frames_to_ratio(self, frames_count):
         return self.mask_client.frames_to_ratio(frames_count)
@@ -93,21 +90,21 @@ class Dialog:
         for cl, op in zip(self.mask_client.mask, self.mask_operator.mask):
             if cur != SpeechState.fromMasks(cl, op):
                 if duration:
-                    yield (cur, prev, duration)
+                    yield cur, prev, duration
                 prev = cur
                 cur = SpeechState.fromMasks(cl, op)
                 duration = 1
             else:
                 duration += 1
-        yield (cur, prev, duration)
+        yield cur, prev, duration
 
     def get_influence_array(self):
         return [(i[0], i[2]) for i in self.influence_iterator()]
 
     def transcript(self):
         return {
-            "client": self.track_client.transcript(),
-            "operator": self.track_operator.transcript()
+            'client': self.track_client.transcript(),
+            'operator': self.track_operator.transcript(),
         }
 
     def get_interruptions_info(self):

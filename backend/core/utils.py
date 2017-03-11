@@ -8,7 +8,7 @@ import pydub
 log = logging.getLogger(__name__)
 
 
-def gen_temp_file(temp_dir=None):
+def _gen_temp_file(temp_dir=None):
     return tempfile.NamedTemporaryFile(prefix='speech_temp_',
                                        suffix='.wav',
                                        dir=temp_dir,
@@ -17,10 +17,9 @@ def gen_temp_file(temp_dir=None):
 
 
 def stereo_to_two_mono(filename, temp_dir=None):
-    print(filename)
     with wave.open(filename, 'rb') as source, \
-            gen_temp_file(temp_dir) as temp_l, \
-            gen_temp_file(temp_dir) as temp_r, \
+            _gen_temp_file(temp_dir) as temp_l, \
+            _gen_temp_file(temp_dir) as temp_r, \
             wave.open(temp_l, 'wb') as ch_l, \
             wave.open(temp_r, 'wb') as ch_r:
         params = source.getparams()
@@ -67,7 +66,7 @@ def get_wav_file(filename, *, temp_dir=None):
         return filename
 
     if basename.endswith('.mp3'):
-        with gen_temp_file(temp_dir) as temp:
+        with _gen_temp_file(temp_dir) as temp:
             wav_file = temp.name
 
         _mp3_to_wav(filename, wav_file)
